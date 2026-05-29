@@ -1,0 +1,70 @@
+{
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "registry/main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/registry",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/registry/(.*)",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/revoke/(.*)",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/register",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/agents",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/health",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/.well-known/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/",
+      "destination": "/api/index.py"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization, CREDUENT-ADMIN-KEY, CREDUENT_ADMIN_KEY"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        }
+      ]
+    }
+  ]
+}
+

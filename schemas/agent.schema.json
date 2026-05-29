@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AgentIdentity",
+  "description": "Schema for verifying the identity profile of an AI agent (agent.json)",
+  "type": "object",
+  "required": [
+    "version",
+    "agent_id",
+    "owner",
+    "public_key",
+    "endpoint",
+    "capabilities",
+    "signature"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "enum": ["1.0"],
+      "description": "Protocol specification version"
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 formatted UTC timestamp of document issuance"
+    },
+    "agent_id": {
+      "type": "string",
+      "pattern": "^agent:\\/\\/[a-zA-Z0-9_-]+\\/[a-zA-Z0-9_-]+$",
+      "description": "Global agent URI following agent://<namespace>/<agent_name>"
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Operator/Owner identifier of the agent"
+    },
+    "public_key": {
+      "type": "string",
+      "pattern": "^ed25519:[a-zA-Z0-9+/=]+$",
+      "description": "Cryptographic public key prefixed with the algorithm (e.g. ed25519:base64)"
+    },
+    "endpoint": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https:\\/\\/.*",
+      "description": "The main HTTPS base URL of the agent"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "description": "Exposed semantic tags of agent functionality"
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9+/=]+$",
+      "description": "Base64-encoded Ed25519 cryptographic signature of the RFC 8785 JCS canonicalized payload"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,9 @@
+fastapi
+cryptography
+requests
+jsonschema
+mcp
+jcs
+dnspython
+upstash-redis
+

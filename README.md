@@ -58,9 +58,21 @@ _creduent.example.com TXT "agent://example/reconbot"
 ### 3. Register with Creduent Registry
 Submit your agent's registration to the registry:
 ```bash
-curl -X POST http://localhost:8001/register \
+curl -X POST https://api.idevsec.com/register \
   -H "Content-Type: application/json" \
   -d '{"agent_id": "agent://example/reconbot", "domain": "example.com", "agent_json_url": "https://example.com/.well-known/agent.json"}'
+```
+
+## SDKs
+
+### Python
+```bash
+pip install creduent
+```
+
+### JavaScript / TypeScript
+```bash
+npm install @creduent/sdk
 ```
 
 ## MCP Integration
@@ -86,9 +98,16 @@ Call `verify_agent` with target agent ID or domain to receive structural, crypto
 ## Registry API
 
 - `POST /register` - Verifies the agent's identity via signature and DNS TXT checks, then issues a signed attestation.
+- `POST /attest` - Developer direct agent registration (no agent_json_url required).
 - `GET /attest/{agent_id}` - Retrieves the active Creduent-signed attestation for the specified agent.
 - `GET /agents` - Lists all registered agent metadata and attestations in the registry.
 - `DELETE /revoke/{agent_id}` - Revokes an agent attestation from the registry (requires `CREDUENT-ADMIN-KEY` header).
+- `POST /renew` - Renew agent attestation with a new expiry date.
+- `POST /webhook/register` - Register a webhook URL for expiry notifications.
+- `GET /webhook/{agent_id}` - Retrieve the registered webhook URL for an agent.
+- `GET /stats` - Registry telemetry (total, verified, unverified, revoked, expiring soon).
+- `GET /dashboard` - Developer dashboard UI at `api.idevsec.com/dashboard`.
+- `GET /resolver` - Agent:// URI resolver UI at `api.idevsec.com/resolver`.
 
 ## Protocol Specification
 

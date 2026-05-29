@@ -16,20 +16,20 @@ This document outlines the development phases, adoption targets, and infrastruct
 
 ---
 
-## Phase 2 — Ecosystem 🔵 Now → August 2026
+## Phase 2 — Ecosystem ✅ Complete
 **Goal:** Drop integration friction to zero. Make adoption a 3-minute decision.  
 **Target:** 50 registered agents by end of August 2026.
-* [ ] **`pip install creduent`**: Python SDK with `sign()`, `verify()`, `register()`, and `attest()` as first-class methods.
-* [ ] **`agent://` URI public resolver**: Any client can resolve `agent://<namespace>/<name>` to a live `agent.json` without knowing the host domain.
-* [ ] **JavaScript/TypeScript SDK**: `npm install creduent-protocol` for MCP hosts running Node.
-* [ ] **Auto-renewal daemon**: Lightweight background process for agents to automatically re-attest 30 days before expiry.
-* [ ] **Webhook notifications**: POST notifications to a configured URL on registration, revocation, and expiry.
-* [ ] **Developer dashboard**: Web UI at `api.idevsec.com/dashboard` to manage registered agents, view attestation status, and rotate keys.
-* [ ] **GitHub Action**: `creduent-attest` action to register/re-attest automatically on every deploy.
+* [x] **`pip install creduent`**: Python SDK with `sign()`, `verify()`, `register()`, and `attest()` as first-class methods.
+* [x] **`agent://` URI public resolver**: Any client can resolve `agent://<namespace>/<name>` to a live `agent.json` without knowing the host domain.
+* [x] **JavaScript/TypeScript SDK**: `npm install @creduent/sdk` for MCP hosts running Node.
+* [x] **Auto-renewal daemon**: Lightweight background process for agents to automatically re-attest 30 days before expiry.
+* [x] **Webhook notifications**: POST notifications to a configured URL on registration, revocation, and expiry.
+* [x] **Developer dashboard**: Web UI at `api.idevsec.com/dashboard` to manage registered agents, view attestation status, and rotate keys.
+* [x] **GitHub Action**: `creduent-attest` action to register/re-attest automatically on every deploy.
 
 ---
 
-## Phase 3 — Scale 🟡 September → December 2026
+## Phase 3 — Scale 🔵 Now → December 2026
 **Goal:** Make Creduent the default trust layer in major agent frameworks.  
 **Target:** 500 registered agents, 3 framework integrations.
 * [ ] **CrewAI integration**: Native `creduent_verify` step in Crew definitions.
@@ -69,7 +69,7 @@ This document outlines the development phases, adoption targets, and infrastruct
 
 | Milestone | Agents | What it proves |
 | :--- | :--- | :--- |
-| **Today** | 1 | Protocol works |
+| **Today** | 1+ | Protocol works, ecosystem live |
 | **August 2026** | 50 | Developers will adopt |
 | **December 2026** | 500 | Frameworks will integrate |
 | **June 2027** | 5,000 | Standard in the making |

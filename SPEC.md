@@ -1,9 +1,9 @@
 # CREDUENT-001: agent.json Specification
 
-**Status:** Draft  
-**Version:** 0.2  
+**Status:** Active  
+**Version:** 0.3  
 **Author:** Creduent Protocol Working Group  
-**Date:** 2026-05-29  
+**Date:** 2026-05-30  
 
 ---
 
@@ -141,7 +141,7 @@ A Creduent attestation is a JSON document consisting of the following fields:
 2. **`issuer`** (String, Required)
    The identity URI of the attestation registry. Value MUST be `"agent://creduent/registry"`.
 3. **`level`** (String, Required)
-   The verification level. For standard successful validations, the value MUST be `"verified"`.
+   The verification level. Possible values: `"verified"`, `"unverified"`, `"revoked"`.
 4. **`issued_at`** (String, Required)
    An RFC 3339 formatted UTC timestamp of when the attestation was issued.
 5. **`expires_at`** (String, Required)
@@ -162,14 +162,45 @@ To register an agent, the owner submits the agent's URI, domain, and agent.json 
 4. **Endpoint Healthcheck:** The registry performs an HTTP request to the agent's declared endpoint to ensure connectivity.
 5. **Issue Attestation:** If all verification steps succeed, the registry signs the attestation payload using its private key and stores the attestation in the registry database.
 
+> **Note:** Developers may also register directly via `POST /attest` using Agent ID, Domain, and Public Key without providing `agent_json_url`. This is intended for dashboard and programmatic use.
+
 ### 6.4 Revocation Model
-Administrators can revoke an agent's registration by submitting a request to the `/revoke/{agent_id}` endpoint containing a valid admin credential (`CREDUENT-ADMIN-KEY` header). Revoked agents have their attestation records removed, and subsequent queries to `/attest/{agent_id}` will return an HTTP 404 response.
+Administrators can revoke an agent's registration by submitting a request to the `/revoke/{agent_id}` endpoint containing a valid admin credential (`CREDUENT-ADMIN-KEY` header). Revoked agents have their attestation level set to `revoked`, and subsequent queries to `/attest/{agent_id}` will return `level: revoked`.
 
 ### 6.5 DNS TXT Record Format
 To bind a web domain to a Creduent identity, the domain owner MUST configure a DNS TXT record under the `_creduent` subdomain.
 - **Record Name:** `_creduent.{domain}`
 - **Record Value:** `{agent_id}`
 - **Example:** `_creduent.example.com TXT "agent://example/mybot"`
+
+### 6.6 Renewal
+Agents may renew their attestation before expiry via `POST /renew`.
+
+**Request body:**
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "new_expires_at": "2028-05-30T00:00:00Z",
+  "signature": "<base64_signature>"
+}
+```
+
+The signature MUST be computed over the pipeline-delimited string: `agent_id|new_expires_at`, signed with the agent's private key. On success, the registry re-signs and persists the updated attestation.
+
+### 6.7 Webhook Notifications
+Owners may register a webhook URL via `POST /webhook/register`. The auto-renewal daemon runs daily and fires a POST to the registered webhook 30 days before attestation expiry.
+
+**Webhook payload:**
+```json
+{
+  "event": "agent.expiry_warning",
+  "agent_id": "agent://example/mybot",
+  "domain": "example.com",
+  "expires_at": "2027-05-30T00:00:00Z",
+  "days_remaining": 28,
+  "action_url": "https://api.idevsec.com/renew"
+}
+```
 
 ---
 
@@ -217,3 +248,22 @@ If the Creduent registry is offline or unreachable, the verify_agent tool MUST N
   "checked_at": "2026-05-29T01:50:00Z"
 }
 ```
+
+---
+
+## 8. Official SDKs
+
+### 8.1 Python SDK
+```bash
+pip install creduent
+```
+Methods: `sign()`, `verify()`, `register()`, `attest()`  
+Source: https://github.com/creduent-foundation/creduent-python
+
+### 8.2 JavaScript / TypeScript SDK
+```bash
+npm install @creduent/sdk
+```
+Functions: `resolveAgent()`, `verifyAgent()`, `registerAgent()`  
+Types: `AgentRecord`, `RegisterPayload`, `ClientOptions`  
+Source: https://github.com/creduent-foundation/creduent-js

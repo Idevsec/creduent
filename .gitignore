@@ -3,14 +3,8 @@
 .env.pulled
 .env.pulled.*
 *.pem
-private_key.pem
 registry_db.json
 scratch/
 __pycache__/
 *.pyc
 .vercel
-
-.vercel
-
-private_key.pem
-registry_db.json

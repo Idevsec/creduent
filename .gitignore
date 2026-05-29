@@ -11,3 +11,6 @@ __pycache__/
 .vercel
 
 .vercel
+
+private_key.pem
+registry_db.json

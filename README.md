@@ -109,9 +109,16 @@ Call `verify_agent` with target agent ID or domain to receive structural, crypto
 - `GET /dashboard` - Developer dashboard UI at `api.idevsec.com/dashboard`.
 - `GET /resolver` - Agent:// URI resolver UI at `api.idevsec.com/resolver`.
 
-## Protocol Specification
+## Protocol Standards & Specification
 
-For full protocol rules, signing details, and schema definitions, refer to [SPEC.md](SPEC.md).
+The Creduent Protocol is structured as a series of formal standards-track documents maintained by the Creduent Foundation:
+
+* **[Standards Index](standards/README.md)** - Main index of all protocol standards
+* **[CREDUENT-001: agent.json](standards/CREDUENT-001-agent-json.md)** (based on canonical **[SPEC.md](SPEC.md)**) - Base identity specification
+* **[CREDUENT-002: Attestation](standards/CREDUENT-002-attestation.md)** - Signed attestation schemas and verification pipelines
+* **[CREDUENT-003: Registry API](standards/CREDUENT-003-registry-api.md)** - Registry HTTP API endpoints and security controls
+* **[CREDUENT-004: Agent URI Resolution](standards/CREDUENT-004-uri-resolution.md)** - DNS-bound `agent://` URI scheme resolution
+* **[CREDUENT-005: Federation](standards/CREDUENT-005-federation.md)** - Multi-registry cross-trust models (Draft)
 
 ## Origin and Stewardship
 

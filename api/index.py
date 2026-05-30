@@ -41,7 +41,7 @@ AGENT_METADATA_FALLBACK = {
   "agent_id": "agent://creduent/reconbot",
   "owner": "Creduent",
   "public_key": "ed25519:uMMQ6RfZB5RJuYcZPwzLoiv8b6EQfU7CUJ2oLragCHg=",
-  "endpoint": "https://axi-beta.vercel.app",
+  "endpoint": "https://api.idevsec.com",
   "capabilities": [
     "osint",
     "dns_lookup",

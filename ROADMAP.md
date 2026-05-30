@@ -1,10 +1,16 @@
-# Creduent Protocol — Full Roadmap v1.1
+# Creduent Protocol - Full Roadmap v1.1
 
 This document outlines the development phases, adoption targets, and infrastructure path for the Creduent Protocol.
 
 ---
 
-## Phase 1 — Foundation ✅ Complete
+## Protocol Origins
+
+Originally designed and developed by Kashish Kanojia through IDevSec, the Creduent Protocol reference registry, signing utilities, and SDKs were initially established to solve core agent identity challenges. To foster global adoption, federated trust, and vendor neutrality, the stewardship of the protocol and its future development roadmap have transitioned to the Creduent Foundation. Under this community-governed model, the roadmap represents a collaborative effort among autonomous system developers, security practitioners, and open standards organizations.
+
+---
+
+## Phase 1 - Foundation ✅ Complete
 **Timeline:** May 2026
 * [x] `agent.json` schema + Ed25519 + JCS signing standard
 * [x] DNS TXT domain ownership verification
@@ -16,7 +22,7 @@ This document outlines the development phases, adoption targets, and infrastruct
 
 ---
 
-## Phase 2 — Ecosystem ✅ Complete
+## Phase 2 - Ecosystem ✅ Complete
 **Goal:** Drop integration friction to zero. Make adoption a 3-minute decision.  
 **Target:** 50 registered agents by end of August 2026.
 * [x] **`pip install creduent`**: Python SDK with `sign()`, `verify()`, `register()`, and `attest()` as first-class methods.
@@ -29,7 +35,7 @@ This document outlines the development phases, adoption targets, and infrastruct
 
 ---
 
-## Phase 3 — Scale 🔵 Now → December 2026
+## Phase 3 - Scale 🔵 Now -> December 2026
 **Goal:** Make Creduent the default trust layer in major agent frameworks.  
 **Target:** 500 registered agents, 3 framework integrations.
 * [ ] **CrewAI integration**: Native `creduent_verify` step in Crew definitions.
@@ -43,7 +49,7 @@ This document outlines the development phases, adoption targets, and infrastruct
 
 ---
 
-## Phase 4 — Standard 🔴 January → June 2027
+## Phase 4 - Standard 🔴 January -> June 2027
 **Goal:** Creduent becomes the RFC. Establishing universal infrastructure.  
 **Target:** RFC submitted, 5,000+ registered agents, 1 enterprise customer.
 * [ ] **Federated attestation**: Support third-party attesters (e.g., security auditors, compliance bodies, LLM providers) issuing custom attestations.
@@ -56,8 +62,8 @@ This document outlines the development phases, adoption targets, and infrastruct
 
 ---
 
-## Phase 5 — Infrastructure 🌐 2027 and beyond
-**Goal:** Creduent is to agents what TLS is to HTTPS — invisible, universal, assumed.
+## Phase 5 - Infrastructure 🌐 2027 and beyond
+**Goal:** Creduent is to agents what TLS is to HTTPS, invisible, universal, assumed.
 * [ ] Creduent becomes a standard requirement in enterprise AI procurement checklists.
 * [ ] LLM providers (Anthropic, OpenAI, Google) reference Creduent in their agent hosting documentation.
 * [ ] **Cross-chain attestation bridges**: On-chain verifiable agent identity for Web3/decentralized agent ecosystems.

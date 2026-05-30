@@ -652,9 +652,9 @@ LANDING_HTML = """<!DOCTYPE html>
         <section class="philosophy-card">
             <h2 class="section-title" style="text-align: left; margin-bottom: 20px;">Why Creduent exists</h2>
             <div class="philosophy-text">
-                <p>The internet was built for humans. Every website has a domain. Every connection has TLS. Every email has DKIM. Identity infrastructure exists everywhere — except for AI agents.</p>
-                <p>As agents begin to talk to each other, call APIs, make decisions, and act autonomously — the question becomes unavoidable: how do you know the agent on the other end is who it claims to be?</p>
-                <p>Creduent is our answer. Not a platform. Not a product. A protocol — open, minimal, and built to last. Modeled after the boring infrastructure that actually works: OAuth, robots.txt, DNS TXT records, JWT. Eight fields. One signature. Anyone can verify.</p>
+                <p>The internet was built for humans. Every website has a domain. Every connection has TLS. Every email has DKIM. Identity infrastructure exists everywhere, except for AI agents.</p>
+                <p>As agents begin to talk to each other, call APIs, make decisions, and act autonomously, the question becomes unavoidable: how do you know the agent on the other end is who it claims to be?</p>
+                <p>Creduent is our answer. Not a platform. Not a product. A protocol: open, minimal, and built to last. Modeled after the boring infrastructure that actually works: OAuth, robots.txt, DNS TXT records, JWT. Eight fields. One signature. Anyone can verify.</p>
             </div>
         </section>
 
@@ -711,7 +711,7 @@ LANDING_HTML = """<!DOCTYPE html>
 [Any Client / MCP Server]
   → calls GET /registry/attest/{agent_id}
   → verifies Creduent signature on attestation
-  → trusted or not — one call, cryptographic proof</code></pre>
+  → trusted or not: one call, cryptographic proof</code></pre>
         </section>
 
         <div class="stats-banner">
@@ -724,7 +724,7 @@ LANDING_HTML = """<!DOCTYPE html>
             <div class="timeline">
                 <div class="timeline-item complete">
                     <div class="timeline-content">
-                        <h4>Phase 1 — Foundation <span class="status-badge status-complete">Complete</span></h4>
+                        <h4>Phase 1 - Foundation <span class="status-badge status-complete">Complete</span></h4>
                         <ul>
                             <li>agent.json schema + Ed25519 + JCS standard</li>
                             <li>DNS TXT domain ownership verification</li>
@@ -737,11 +737,11 @@ LANDING_HTML = """<!DOCTYPE html>
                 </div>
                 <div class="timeline-item in-progress">
                     <div class="timeline-content">
-                        <h4>Phase 2 — Ecosystem <span class="status-badge status-progress">In Progress</span></h4>
+                        <h4>Phase 2 - Ecosystem <span class="status-badge status-progress">In Progress</span></h4>
                         <ul>
-                            <li>Python SDK — pip install creduent</li>
+                            <li>Python SDK: pip install creduent</li>
                             <li>agent:// URI public resolver</li>
-                            <li>JavaScript/TypeScript SDK — npm install creduent-protocol</li>
+                            <li>JavaScript/TypeScript SDK: npm install creduent-protocol</li>
                             <li>Auto-renewal daemon + Webhook notifications</li>
                             <li>Developer dashboard (key rotation, attestation status)</li>
                             <li>GitHub Action (creduent-attest action)</li>
@@ -750,7 +750,7 @@ LANDING_HTML = """<!DOCTYPE html>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-content">
-                        <h4>Phase 3 — Scale <span class="status-badge status-future">Future</span></h4>
+                        <h4>Phase 3 - Scale <span class="status-badge status-future">Future</span></h4>
                         <ul>
                             <li>CrewAI, LangGraph, AutoGen integrations</li>
                             <li>Multi-key support & Capability-level attestations</li>
@@ -762,7 +762,7 @@ LANDING_HTML = """<!DOCTYPE html>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-content">
-                        <h4>Phase 4 — Standard <span class="status-badge status-future">Future</span></h4>
+                        <h4>Phase 4 - Standard <span class="status-badge status-future">Future</span></h4>
                         <ul>
                             <li>Federated attestation & Cross-registry trust</li>
                             <li>Submit CREDUENT-001 as open RFC to standard body</li>
@@ -777,10 +777,10 @@ LANDING_HTML = """<!DOCTYPE html>
 
         <section class="register-section" id="register">
             <h2 class="section-title">Register your agent</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 40px;">Three steps. Five minutes.</p>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 40px;">Three steps: Five minutes.</p>
 
             <div class="register-step">
-                <h4>Step 1 — Create and sign your agent.json</h4>
+                <h4>Step 1: Create and sign your agent.json</h4>
                 <p>Generate keys and sign your metadata document using the CLI tools.</p>
                 <pre><code>git clone https://github.com/cyberfascinate/creduent
 python cli/creduent-sign.py generate-keys
@@ -788,13 +788,13 @@ python cli/creduent-sign.py sign --key private_key.pem --input examples/draft_ag
             </div>
 
             <div class="register-step">
-                <h4>Step 2 — Add DNS TXT record</h4>
+                <h4>Step 2: Add DNS TXT record</h4>
                 <p>Create a DNS TXT record under the _creduent subdomain of your domain to bind it to the agent ID.</p>
                 <pre><code>_creduent.yourdomain.com  TXT  "agent://yournamespace/agentname"</code></pre>
             </div>
 
             <div class="register-step">
-                <h4>Step 3 — Register</h4>
+                <h4>Step 3: Register</h4>
                 <p>Send a POST request to register your agent on the Creduent registry.</p>
                 <pre><code>curl -X POST https://api.idevsec.com/registry/register \
   -H "Content-Type: application/json" \
@@ -807,7 +807,7 @@ python cli/creduent-sign.py sign --key private_key.pem --input examples/draft_ag
         </section>
 
         <footer>
-            <p>Creduent Protocol v1.0 — MIT License — <a href="https://github.com/cyberfascinate/creduent" target="_blank">github.com/cyberfascinate/creduent</a></p>
+            <p>Creduent Protocol v1.0 - MIT License - <a href="https://github.com/cyberfascinate/creduent" target="_blank">github.com/cyberfascinate/creduent</a></p>
             <p style="font-size: 0.8rem; margin-top: 5px;">Built by IDevSec</p>
         </footer>
     </div>

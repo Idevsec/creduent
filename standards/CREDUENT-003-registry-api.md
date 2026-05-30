@@ -1,0 +1,334 @@
+# CREDUENT-003: Registry API Specification
+
+**Status:** Active  
+**Version:** 0.3  
+**Author:** Creduent Protocol Working Group  
+**Date:** 2026-05-30  
+**Related:** [CREDUENT-001](../SPEC.md), [CREDUENT-002](CREDUENT-002-attestation.md)
+
+---
+
+## 1. Introduction
+
+This document specifies the HTTP API exposed by a Creduent-compatible registry. It defines:
+- All endpoints, request schemas, and response schemas.
+- Authentication model.
+- Error format.
+- Rate limiting expectations.
+
+Any registry implementation that exposes this API surface is considered a Creduent-compatible registry.
+
+Base URL for the reference implementation: `https://api.idevsec.com`
+
+---
+
+## 2. Common Response Format
+
+All API responses use JSON (`Content-Type: application/json`).
+
+### 2.1 Error Response
+
+```json
+{
+  "error": "human-readable error message",
+  "code": "MACHINE_READABLE_CODE"
+}
+```
+
+### 2.2 Standard HTTP Status Codes
+
+| Code | Meaning |
+|:---|:---|
+| 200 | Success |
+| 201 | Created (registration or attestation issued) |
+| 400 | Bad Request (malformed payload or validation failure) |
+| 401 | Unauthorized (admin key missing or wrong) |
+| 404 | Not Found (agent not registered) |
+| 409 | Conflict (agent already registered) |
+| 429 | Too Many Requests (rate limited) |
+| 500 | Internal Server Error |
+
+---
+
+## 3. Endpoints
+
+### 3.1 POST /register
+
+Register an agent and obtain a `verified` attestation.
+
+**Request:**
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "domain": "example.com",
+  "agent_json_url": "https://example.com/.well-known/agent.json"
+}
+```
+
+**Validation steps performed:**
+1. SSRF check on `agent_json_url`.
+2. Fetch and schema-validate `agent.json`.
+3. Ed25519 signature verification.
+4. DNS TXT record check: `_creduent.{domain}` must equal `agent_id`.
+5. Endpoint healthcheck.
+
+**Success Response (201):**
+```json
+{
+  "success": true,
+  "agent_id": "agent://example/mybot",
+  "attestation": { ... }
+}
+```
+
+**Error Responses:**
+
+| Code | Reason |
+|:---|:---|
+| 400 | Missing fields, invalid agent.json, signature invalid |
+| 400 | DNS TXT record not found or mismatch |
+| 400 | Endpoint healthcheck failed |
+| 409 | Agent already registered |
+
+---
+
+### 3.2 POST /attest
+
+Direct registration without DNS or endpoint verification. Results in `level: "unverified"`.
+
+**Request:**
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "domain": "example.com",
+  "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg="
+}
+```
+
+**Success Response (201):** Returns attestation object with `level: "unverified"`.
+
+---
+
+### 3.3 GET /attest/{agent_id}
+
+Retrieve the active attestation for an agent.
+
+**Path Parameter:** `agent_id` is the URI-encoded `agent://namespace/name` string.
+
+**Success Response (200):**
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "issuer": "agent://creduent/registry",
+  "level": "verified",
+  "issued_at": "2026-05-30T00:00:00Z",
+  "expires_at": "2027-05-30T00:00:00Z",
+  "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
+  "domain": "example.com",
+  "signature": "..."
+}
+```
+
+**Error Responses:**
+
+| Code | Reason |
+|:---|:---|
+| 404 | Agent not registered |
+
+---
+
+### 3.4 GET /agents
+
+List all registered agents.
+
+**Query Parameters:**
+
+| Parameter | Type | Description |
+|:---|:---|:---|
+| `limit` | integer | Max results (default 100, max 500). |
+| `offset` | integer | Pagination offset (default 0). |
+| `level` | string | Filter by attestation level: `verified`, `unverified`, `revoked`. |
+| `capability` | string | Filter agents by declared capability tag. |
+
+**Success Response (200):**
+```json
+{
+  "total": 42,
+  "agents": [
+    { "agent_id": "...", "domain": "...", "level": "verified", "expires_at": "..." }
+  ]
+}
+```
+
+---
+
+### 3.5 DELETE /revoke/{agent_id}
+
+Revoke an agent's attestation.
+
+**Required Header:** `CREDUENT-ADMIN-KEY: <admin_secret>`
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "agent_id": "agent://example/mybot",
+  "level": "revoked"
+}
+```
+
+**Error Responses:**
+
+| Code | Reason |
+|:---|:---|
+| 401 | Missing or invalid admin key |
+| 404 | Agent not registered |
+
+---
+
+### 3.6 POST /renew
+
+Renew an attestation before it expires.
+
+**Request:**
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "new_expires_at": "2028-05-30T00:00:00Z",
+  "signature": "<base64_signature>"
+}
+```
+
+The `signature` is Ed25519 over the UTF-8 string: `agent_id|new_expires_at`
+
+**Success Response (200):** Returns updated attestation object.
+
+**Error Responses:**
+
+| Code | Reason |
+|:---|:---|
+| 400 | Invalid signature |
+| 404 | Agent not registered |
+
+---
+
+### 3.7 POST /webhook/register
+
+Register a webhook URL for lifecycle event notifications.
+
+**Request:**
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "webhook_url": "https://example.com/hooks/creduent",
+  "signature": "<base64_signature>"
+}
+```
+
+The `signature` is Ed25519 over: `agent_id|webhook_url`
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "agent_id": "agent://example/mybot",
+  "webhook_url": "https://example.com/hooks/creduent"
+}
+```
+
+---
+
+### 3.8 GET /webhook/{agent_id}
+
+Retrieve the registered webhook URL for an agent.
+
+**Success Response (200):**
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "webhook_url": "https://example.com/hooks/creduent"
+}
+```
+
+---
+
+### 3.9 GET /stats
+
+Registry telemetry.
+
+**Success Response (200):**
+```json
+{
+  "total": 100,
+  "verified": 87,
+  "unverified": 8,
+  "revoked": 5,
+  "expiring_soon": 3
+}
+```
+
+---
+
+### 3.10 GET /dashboard
+
+Returns the developer dashboard HTML UI. Available at `api.idevsec.com/dashboard`.
+
+---
+
+### 3.11 GET /resolver
+
+Returns the `agent://` URI resolver UI. Available at `api.idevsec.com/resolver`.
+
+---
+
+## 4. Authentication
+
+The registry uses admin-key authentication only for destructive operations (revocation). All read and registration endpoints are unauthenticated by design to support open, decentralized verification.
+
+| Operation | Auth Required |
+|:---|:---|
+| POST /register | No |
+| POST /attest | No |
+| GET /attest/{id} | No |
+| GET /agents | No |
+| DELETE /revoke | Yes (CREDUENT-ADMIN-KEY header) |
+| POST /renew | Signature required |
+| POST /webhook/register | Signature required |
+
+---
+
+## 5. Rate Limiting
+
+Implementations SHOULD apply rate limiting to prevent abuse.
+
+| Endpoint | Suggested Limit |
+|:---|:---|
+| POST /register | 10 requests/hour per IP |
+| POST /attest | 20 requests/hour per IP |
+| GET /attest/{id} | 300 requests/minute per IP |
+| GET /agents | 60 requests/minute per IP |
+| DELETE /revoke | 30 requests/hour per admin key |
+
+Rate limit responses use HTTP 429 with a `Retry-After` header.
+
+---
+
+## 6. SSRF Protection
+
+The `/register` endpoint fetches external URLs. Implementations MUST:
+- Resolve the hostname to an IP before connecting.
+- Block requests to private IP ranges (RFC 1918): `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`.
+- Block loopback: `127.0.0.0/8`.
+- Block link-local: `169.254.0.0/16`.
+- Block IPv6 private ranges: `::1`, `fc00::/7`.
+- Set a connection timeout of 5 seconds maximum.
+
+---
+
+## 7. Changelog
+
+| Version | Date | Notes |
+|:---|:---|:---|
+| 0.3 | 2026-05-30 | Extracted from README.md and SPEC.md into standalone standards document. |
+| 0.2 | 2026-05-27 | Added webhook and renewal endpoints. |
+| 0.1 | 2026-05-01 | Initial registry API. |

@@ -2,6 +2,7 @@
 
 **Status:** Active  
 **Version:** 0.3  
+**Founder:** Kashish Kanojia  
 **Author:** Creduent Protocol Working Group  
 **Date:** 2026-05-30  
 
@@ -16,6 +17,8 @@ Creduent is an open application-layer protocol for identifying and verifying aut
 Creduent sits above the existing web stack (HTTPS, DNS, APIs) rather than replacing it. It focuses strictly on identity, cryptographic ownership, and capability exposure. By design:
 * **Identity resolution is decentralized:** Anyone can issue an agent ID and identity document without registering with a central gatekeeper or waiting for ICANN naming extensions.
 * **Trust is federated:** Verifiable trust is built via composable third-party attestations (e.g., identity verification by Creduent Registry, security verification by auditors, provider verification by LLM platforms) rather than a single monolithic authority.
+
+Originally designed and developed by Kashish Kanojia through IDevSec, the Creduent Protocol has transitioned to an open, community-driven standard stewarded by the Creduent Foundation. This transition ensures that the protocol remains a neutral, objective, and globally accessible standard for the broader artificial intelligence and agentic ecosystem.
 
 ---
 

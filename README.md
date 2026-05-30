@@ -113,6 +113,19 @@ Call `verify_agent` with target agent ID or domain to receive structural, crypto
 
 For full protocol rules, signing details, and schema definitions, refer to [SPEC.md](SPEC.md).
 
+## Origin and Stewardship
+
+The Creduent Protocol was originally designed and developed by Kashish Kanojia through IDevSec.
+
+Creduent is an open protocol intended for community adoption, interoperability, and federated trust. Long-term governance and stewardship are managed under the Creduent Foundation to ensure it remains a neutral, open standard for the entire AI agent ecosystem.
+
+For details on the project's history, governance model, and foundation structure, please see:
+* [AUTHORS.md](AUTHORS.md) - Founding details and references
+* [GOVERNANCE.md](GOVERNANCE.md) - Open governance and standard-track processes
+* [FOUNDATION.md](FOUNDATION.md) - Creduent Foundation charter and working groups
+
+The reference registry, SDKs, and protocol tooling serve as the initial implementation of the protocol.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).

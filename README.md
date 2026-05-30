@@ -70,11 +70,6 @@ curl -X POST https://api.idevsec.com/register \
 pip install creduent
 ```
 
-### JavaScript / TypeScript
-```bash
-npm install @creduent/sdk
-```
-
 ## MCP Integration
 
 Creduent exposes a Model Context Protocol (MCP) server with the `verify_agent` tool to enable verification in agent hosts. Configure it in your MCP settings:

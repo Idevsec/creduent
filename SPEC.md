@@ -258,7 +258,7 @@ If the Creduent registry is offline or unreachable, the verify_agent tool MUST N
 pip install creduent
 ```
 Methods: `sign()`, `verify()`, `register()`, `attest()`  
-Source: https://github.com/creduent-foundation/creduent-python
+Source: https://github.com/creduent/creduent-python
 
 ### 8.2 JavaScript / TypeScript SDK
 ```bash
@@ -266,4 +266,4 @@ npm install @creduent/sdk
 ```
 Functions: `resolveAgent()`, `verifyAgent()`, `registerAgent()`  
 Types: `AgentRecord`, `RegisterPayload`, `ClientOptions`  
-Source: https://github.com/creduent-foundation/creduent-js
+Source: https://github.com/creduent/creduent-js

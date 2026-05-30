@@ -36,7 +36,7 @@ A Creduent Attestation is a JSON document with the following fields:
 |:---|:---|:---|:---|
 | `agent_id` | String | ✅ | The agent's globally unique URI (`agent://namespace/name`). |
 | `issuer` | String | ✅ | The attestation issuer's identity URI. MUST be `"agent://creduent/registry"` for official attestations. |
-| `level` | String | ✅ | Verification status. One of: `"verified"`, `"unverified"`, `"revoked"`. |
+| `level` | String | ✅ | Verification status. One of: `"unverified"`, `"verified"`, `"trusted"`, `"revoked"`. |
 | `issued_at` | String | ✅ | RFC 3339 UTC timestamp of attestation issuance. |
 | `expires_at` | String | ✅ | RFC 3339 UTC timestamp when the attestation expires. |
 | `public_key` | String | ✅ | The agent's public key, matching its `agent.json`. Format: `ed25519:<base64>`. |
@@ -62,8 +62,9 @@ A Creduent Attestation is a JSON document with the following fields:
 
 | Level | Meaning |
 |:---|:---|
+| `unverified` | Agent is registered but one or more verification steps failed or were skipped (e.g., public registration before verification is completed). |
 | `verified` | All verification steps passed: schema valid, Ed25519 signature valid, DNS TXT record matches agent_id, endpoint reachable. |
-| `unverified` | Agent is registered but one or more verification steps failed or were skipped (e.g., direct `/attest` submission without DNS check). |
+| `trusted` | Manually reviewed and escalated trust level assigned by registry administrators. |
 | `revoked` | Agent registration was explicitly revoked by an administrator. |
 
 ---

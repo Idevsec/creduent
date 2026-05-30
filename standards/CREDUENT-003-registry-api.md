@@ -147,7 +147,7 @@ List all registered agents.
 |:---|:---|:---|
 | `limit` | integer | Max results (default 100, max 500). |
 | `offset` | integer | Pagination offset (default 0). |
-| `level` | string | Filter by attestation level: `verified`, `unverified`, `revoked`. |
+| `level` | string | Filter by attestation level: `unverified`, `verified`, `trusted`, `revoked`. |
 | `capability` | string | Filter agents by declared capability tag. |
 
 **Success Response (200):**
@@ -181,6 +181,47 @@ Revoke an agent's attestation.
 
 | Code | Reason |
 |:---|:---|
+| 401 | Missing or invalid admin key |
+| 404 | Agent not registered |
+
+---
+
+### 3.5a POST /admin/attest
+
+Upgrade the attestation level of an existing agent.
+
+**Required Header:** `CREDUENT-ADMIN-KEY: <admin_secret>`
+
+**Request:**
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "level": "verified"
+}
+```
+
+Valid levels: `"unverified"`, `"verified"`, `"trusted"`.
+
+**Success Response (200 OK):**
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "issuer": "agent://creduent/registry",
+  "level": "verified",
+  "issued_at": "2026-05-30T00:00:00Z",
+  "expires_at": "2027-05-30T00:00:00Z",
+  "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
+  "domain": "example.com",
+  "signature": "...",
+  "status": "upgraded"
+}
+```
+
+**Error Responses:**
+
+| Code | Reason |
+|:---|:---|
+| 400 | Invalid level value |
 | 401 | Missing or invalid admin key |
 | 404 | Agent not registered |
 
@@ -291,6 +332,7 @@ The registry uses admin-key authentication only for destructive operations (revo
 | POST /attest | No |
 | GET /attest/{id} | No |
 | GET /agents | No |
+| POST /admin/attest | Yes (CREDUENT-ADMIN-KEY header) |
 | DELETE /revoke | Yes (CREDUENT-ADMIN-KEY header) |
 | POST /renew | Signature required |
 | POST /webhook/register | Signature required |

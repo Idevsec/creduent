@@ -144,7 +144,7 @@ A Creduent attestation is a JSON document consisting of the following fields:
 2. **`issuer`** (String, Required)
    The identity URI of the attestation registry. Value MUST be `"agent://creduent/registry"`.
 3. **`level`** (String, Required)
-   The verification level. Possible values: `"verified"`, `"unverified"`, `"revoked"`.
+   The verification level. Possible values: `"unverified"`, `"verified"`, `"trusted"`, `"revoked"`.
 4. **`issued_at`** (String, Required)
    An RFC 3339 formatted UTC timestamp of when the attestation was issued.
 5. **`expires_at`** (String, Required)
@@ -221,6 +221,7 @@ The tool returns a JSON object containing:
 - `creduent_attested` (Boolean): True if the registry's signature on the attestation is verified.
 - `attestation_level` (String): The status of registry verification:
   - `"verified"`: Valid registration and valid registry attestation signature.
+  - `"trusted"`: High authority trust level assigned via admin attestation.
   - `"unregistered"`: Cryptographically valid self-signed agent document, but no active registry attestation.
   - `"registry_offline"`: Degraded verification state when the registry cannot be reached.
 - `attestation_issued_at` (String or null): The RFC 3339 timestamp of attestation issuance.

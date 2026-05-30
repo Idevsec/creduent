@@ -117,6 +117,57 @@ curl https://example.com/.well-known/agent.json
 
 ---
 
+## Cloudflare Users — Required Configuration
+
+If your domain is proxied through Cloudflare (orange cloud), you must add two WAF rules before registering. Without these, Cloudflare will block the Creduent registry server from fetching your agent.json and return HTTP 403.
+
+### Rule 1 — Allow Registry Fetch on /.well-known/agent.json
+
+Cloudflare Dashboard → Security → Security Rules → Custom Rules → Create Rule
+
+Name: Allow Creduent Manifest
+Field: URI Path
+Operator: equals
+Value: /.well-known/agent.json
+Action: Skip
+Skip: All remaining custom rules + All rate limiting rules + All managed rules
+Place at: First
+
+### Rule 2 — Allow Creduent Registry IP
+
+Cloudflare Dashboard → Security → Security Rules → Custom Rules → Create Rule
+
+Name: Allow Creduent Registry IP
+Field: IP Source Address
+Operator: equals
+Value: 76.76.21.21
+Action: Skip
+Skip: All remaining custom rules + All rate limiting rules + All managed rules
+Place at: First
+
+### Verify Rules Are Active
+
+After saving both rules, your Custom Rules list should show:
+- Allow Creduent Registry IP → Skip → First
+- Allow Creduent Manifest → Skip → Second
+
+### DNS TXT Record (Cloudflare)
+
+When adding the _creduent TXT record in Cloudflare DNS:
+- Make sure the orange cloud (proxy) is OFF for the TXT record
+- TXT records do not need to be proxied
+- TTL: Auto
+
+### Common Cloudflare Errors
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Failed to fetch agent.json: HTTP 403 | Cloudflare WAF blocking registry server | Add both WAF rules above |
+| Failed to fetch agent.json: HTTP 403 (after adding rules) | Bot Fight Mode JS challenge | Disable JS Detections under Security → Bots |
+| Registration succeeds but resolver shows 403 | CSP blocking api.idevsec.com | Add api.idevsec.com to connect-src in your site's CSP headers |
+
+---
+
 ## Step 5: Add the DNS TXT Record
 
 In your DNS provider, add a TXT record:

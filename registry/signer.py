@@ -21,11 +21,19 @@ def get_registry_private_key():
     pkey_env = os.environ.get("CREDUENT_REGISTRY_KEY")
     if pkey_env:
         try:
-            if "-----BEGIN PRIVATE KEY-----" not in pkey_env:
-                pkey_bytes = base64.b64decode(pkey_env)
-            else:
+            pkey_env = pkey_env.strip()
+            if "-----BEGIN PRIVATE KEY-----" in pkey_env:
                 pkey_bytes = pkey_env.encode('utf-8')
-            return serialization.load_pem_private_key(pkey_bytes, password=None)
+                return serialization.load_pem_private_key(pkey_bytes, password=None)
+            else:
+                pkey_bytes = base64.b64decode(pkey_env)
+                try:
+                    return serialization.load_pem_private_key(pkey_bytes, password=None)
+                except Exception:
+                    try:
+                        return serialization.load_der_private_key(pkey_bytes, password=None)
+                    except Exception:
+                        return ed25519.Ed25519PrivateKey.from_private_bytes(pkey_bytes)
         except Exception as e:
             print(f"[-] Error loading registry private key from env: {e}", file=sys.stderr)
             
@@ -49,11 +57,18 @@ def get_registry_public_key():
     pubkey_env = os.environ.get("CREDUENT_REGISTRY_PUBKEY") or os.environ.get("CREDUENT_REGISTRY_PUBLIC_KEY")
     if pubkey_env:
         try:
+            pubkey_env = pubkey_env.strip()
             if pubkey_env.startswith("ed25519:"):
                 pubkey_env = pubkey_env.split(":", 1)[1]
             try:
                 pubkey_bytes = base64.b64decode(pubkey_env)
-                return ed25519.Ed25519PublicKey.from_public_bytes(pubkey_bytes)
+                try:
+                    return ed25519.Ed25519PublicKey.from_public_bytes(pubkey_bytes)
+                except Exception:
+                    try:
+                        return serialization.load_pem_public_key(pubkey_bytes)
+                    except Exception:
+                        return serialization.load_der_public_key(pubkey_bytes)
             except Exception:
                 if "-----BEGIN PUBLIC KEY-----" in pubkey_env:
                     return serialization.load_pem_public_key(pubkey_env.encode('utf-8'))
@@ -79,7 +94,7 @@ def get_registry_public_key():
 
     return None
 
-def sign_attestation(agent_data: dict) -> dict:
+def sign_attestation(agent_data: dict, level: str = "unverified") -> dict:
     """
     Constructs and signs a registry attestation for the verified agent.
     """
@@ -96,7 +111,7 @@ def sign_attestation(agent_data: dict) -> dict:
     attestation_obj = {
         "agent_id": agent_data["agent_id"],
         "issuer": "agent://creduent/registry",
-        "level": "verified",
+        "level": level,
         "issued_at": issued_at,
         "expires_at": expires_at,
         "public_key": agent_data["public_key"],
@@ -110,6 +125,7 @@ def sign_attestation(agent_data: dict) -> dict:
     
     attestation_obj["signature"] = signature_b64
     return attestation_obj
+
 
 def verify_attestation(attestation_obj: dict) -> bool:
     """
@@ -135,4 +151,3 @@ def verify_attestation(attestation_obj: dict) -> bool:
         return True
     except Exception:
         return False
-

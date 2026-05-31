@@ -101,6 +101,9 @@ Call `verify_agent` with target agent ID or domain to receive structural, crypto
 - `POST /webhook/register` - Register a webhook URL for expiry notifications.
 - `GET /webhook/{agent_id}` - Retrieve the registered webhook URL for an agent.
 - `GET /stats` - Registry telemetry (total, verified, unverified, revoked, expiring soon).
+- `GET /challenge/{agent_id}` - Generates a secure challenge and nonce for identity verification.
+- `POST /verify-challenge` - Verifies a signed challenge response and issues a short-lived proof token.
+- `GET /public-key` - Retrieves the registry public key used to verify proof tokens.
 - `GET /dashboard` - Developer dashboard UI at `api.idevsec.com/dashboard`.
 - `GET /resolver` - Agent:// URI resolver UI at `api.idevsec.com/resolver`.
 

@@ -56,7 +56,11 @@ def verify_agent_registration(agent_id: str, domain: str, agent_json_url: str) -
     """
     # 1. Fetch agent_json_url
     try:
-        response = safe_requests_get(agent_json_url, timeout=5)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; Creduent-Registry/1.0; +https://api.idevsec.com)",
+            "Accept": "application/json",
+        }
+        response = safe_requests_get(agent_json_url, timeout=5, headers=headers)
         if response.status_code != 200:
             return False, f"Failed to fetch agent.json: HTTP {response.status_code}", {}
         doc = response.json()

@@ -1,5 +1,12 @@
 {
+  "crons": [
+    {
+      "path": "/api/cron/renew",
+      "schedule": "0 0 * * *"
+    }
+  ],
   "builds": [
+
     {
       "src": "api/index.py",
       "use": "@vercel/python"
@@ -11,11 +18,67 @@
   ],
   "rewrites": [
     {
+      "source": "/resolver",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/resolver/(.*)",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/agent:path(.*)",
+      "destination": "/registry/main.py"
+    },
+    {
       "source": "/registry",
       "destination": "/registry/main.py"
     },
     {
       "source": "/registry/(.*)",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/dashboard/(.*)",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/renew",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/renew/(.*)",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/webhook",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/webhook/(.*)",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/attest",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/attest/(.*)",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/admin/attest",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/stats",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/stats/(.*)",
       "destination": "/registry/main.py"
     },
     {
@@ -28,6 +91,18 @@
     },
     {
       "source": "/agents",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/challenge/(.*)",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/verify-challenge",
+      "destination": "/registry/main.py"
+    },
+    {
+      "source": "/public-key",
       "destination": "/registry/main.py"
     },
     {
@@ -53,7 +128,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "*"
+          "value": "https://api.idevsec.com"
         },
         {
           "key": "Access-Control-Allow-Headers",
@@ -67,4 +142,3 @@
     }
   ]
 }
-

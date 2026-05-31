@@ -1,9 +1,9 @@
 # CREDUENT-003: Registry API Specification
 
 **Status:** Active  
-**Version:** 0.3  
+**Version:** 0.4  
 **Author:** Creduent Protocol Working Group  
-**Date:** 2026-05-30  
+**Date:** 2026-05-31  
 **Related:** [CREDUENT-001](../SPEC.md), [CREDUENT-002](CREDUENT-002-attestation.md)
 
 ---
@@ -322,6 +322,67 @@ Returns the `agent://` URI resolver UI. Available at `api.idevsec.com/resolver`.
 
 ---
 
+### 3.12 GET /challenge/{agent_id}
+
+Generate a cryptographic challenge to initiate the authentication process.
+
+**Path Parameter:** `agent_id` is the URI-encoded `agent://namespace/name` string.
+
+**Success Response (200):**
+```json
+{
+  "agent_id": "agent://cyberhavox/havox-ai",
+  "challenge": "8f3a...b2c9",
+  "nonce": "e4f8...1a2b",
+  "expires_at": "2026-05-31T05:25:00Z",
+  "issuer": "agent://creduent/registry"
+}
+```
+
+---
+
+### 3.13 POST /verify-challenge
+
+Verify the signed challenge and return a short-lived proof token.
+
+**Request:**
+```json
+{
+  "agent_id": "agent://cyberhavox/havox-ai",
+  "nonce": "e4f8...1a2b",
+  "signature": "<base64_signature>"
+}
+```
+
+*Note:* The signature is computed using the agent's private key over the `SHA-256` hash of the concatenated string `challenge + nonce` (UTF-8 encoded).
+
+**Success Response (200):**
+```json
+{
+  "agent_id": "agent://cyberhavox/havox-ai",
+  "verified": true,
+  "level": "verified",
+  "proof_token": "<base64_proof_token>",
+  "valid_until": "2026-05-31T06:20:00Z",
+  "issuer": "agent://creduent/registry"
+}
+```
+
+---
+
+### 3.14 GET /public-key
+
+Retrieve the registry's public key for signature verification.
+
+**Success Response (200):**
+```json
+{
+  "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg="
+}
+```
+
+---
+
 ## 4. Authentication
 
 The registry uses admin-key authentication only for destructive operations (revocation). All read and registration endpoints are unauthenticated by design to support open, decentralized verification.
@@ -336,6 +397,9 @@ The registry uses admin-key authentication only for destructive operations (revo
 | DELETE /revoke | Yes (CREDUENT-ADMIN-KEY header) |
 | POST /renew | Signature required |
 | POST /webhook/register | Signature required |
+| GET /challenge/{id} | No |
+| POST /verify-challenge | Signature required |
+| GET /public-key | No |
 
 ---
 
@@ -350,6 +414,9 @@ Implementations SHOULD apply rate limiting to prevent abuse.
 | GET /attest/{id} | 300 requests/minute per IP |
 | GET /agents | 60 requests/minute per IP |
 | DELETE /revoke | 30 requests/hour per admin key |
+| GET /challenge/{id} | 10 requests/minute per IP |
+| POST /verify-challenge | 60 requests/minute per IP |
+| GET /public-key | 300 requests/minute per IP |
 
 Rate limit responses use HTTP 429 with a `Retry-After` header.
 
@@ -371,6 +438,7 @@ The `/register` endpoint fetches external URLs. Implementations MUST:
 
 | Version | Date | Notes |
 |:---|:---|:---|
+| 0.4 | 2026-05-31 | Added Challenge-Response Authentication endpoints (`/challenge`, `/verify-challenge`, `/public-key`). |
 | 0.3 | 2026-05-30 | Extracted from README.md and SPEC.md into standalone standards document. |
 | 0.2 | 2026-05-27 | Added webhook and renewal endpoints. |
 | 0.1 | 2026-05-01 | Initial registry API. |

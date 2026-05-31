@@ -3,6 +3,7 @@ import time
 import json
 import contextlib
 import sys
+import traceback
 
 # Add parent directory to path to allow importing from creduent package
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -76,6 +77,18 @@ def is_redis_configured() -> bool:
         return False
     return True
 
+def diagnose_redis():
+    """Logs Redis environment variable status to stderr for debugging."""
+    url = os.environ.get("UPSTASH_REDIS_REST_URL", "")
+    token = os.environ.get("UPSTASH_REDIS_REST_TOKEN", "")
+    url_preview = (url[:30] + "...") if len(url) > 30 else url
+    token_set = bool(token and len(token) > 10)
+    print(
+        f"[REDIS DIAG] URL set={bool(url)} url_preview={url_preview!r} "
+        f"token_set={token_set} VERCEL={os.environ.get('VERCEL')}",
+        file=sys.stderr
+    )
+
 def get_redis_client():
     url = os.environ.get("UPSTASH_REDIS_REST_URL")
     token = os.environ.get("UPSTASH_REDIS_REST_TOKEN")
@@ -87,8 +100,13 @@ def save_attestation(agent_id: str, attestation_obj: dict):
     Saves or updates an agent attestation in Vercel KV (Upstash Redis) or falls back to local file.
     """
     if is_redis_configured():
-        client = get_redis_client()
-        client.hset("creduent:agents", agent_id, json.dumps(attestation_obj))
+        try:
+            client = get_redis_client()
+            client.hset("creduent:agents", agent_id, json.dumps(attestation_obj))
+        except Exception as e:
+            print(f"[-] Redis error in save_attestation: {e}", file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
+            raise
     else:
         with file_lock(DB_PATH):
             db = {}
@@ -137,8 +155,13 @@ def revoke_agent(agent_id: str):
     Revokes (removes) an agent's attestation.
     """
     if is_redis_configured():
-        client = get_redis_client()
-        client.hdel("creduent:agents", agent_id)
+        try:
+            client = get_redis_client()
+            client.hdel("creduent:agents", agent_id)
+        except Exception as e:
+            print(f"[-] Redis error in revoke_agent: {e}", file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
+            raise
     else:
         with file_lock(DB_PATH):
             if not os.path.exists(DB_PATH):
@@ -151,6 +174,114 @@ def revoke_agent(agent_id: str):
             if agent_id in db:
                 del db[agent_id]
                 with open(DB_PATH, "w", encoding="utf-8") as f:
+                    json.dump(db, f, indent=2, ensure_ascii=False)
+
+# ---------------------------------------------------------------------------
+# Webhook storage — Redis hash "creduent:webhooks" or local webhooks_db.json
+# ---------------------------------------------------------------------------
+
+WEBHOOKS_DB_PATH = os.path.join(BASE_DIR, "registry", "webhooks_db.json")
+
+
+def save_webhook(agent_id: str, webhook_url: str):
+    """Persist an agent → webhook_url mapping."""
+    if is_redis_configured():
+        try:
+            client = get_redis_client()
+            client.hset("creduent:webhooks", agent_id, webhook_url)
+        except Exception as e:
+            print(f"[-] Redis error in save_webhook: {e}", file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
+            raise
+    else:
+        # Local-dev fallback: read-modify-write with file lock
+        os.makedirs(os.path.dirname(WEBHOOKS_DB_PATH), exist_ok=True)
+        if not os.path.exists(WEBHOOKS_DB_PATH):
+            with open(WEBHOOKS_DB_PATH, "w", encoding="utf-8") as f:
+                f.write("{}")
+        with file_lock(WEBHOOKS_DB_PATH):
+            with open(WEBHOOKS_DB_PATH, "r", encoding="utf-8") as f:
+                try:
+                    db = json.load(f)
+                except Exception:
+                    db = {}
+            db[agent_id] = webhook_url
+            with open(WEBHOOKS_DB_PATH, "w", encoding="utf-8") as f:
+                json.dump(db, f, indent=2, ensure_ascii=False)
+
+
+def get_webhook(agent_id: str):
+    """Return the webhook URL for an agent, or None."""
+    if is_redis_configured():
+        try:
+            client = get_redis_client()
+            val = client.hget("creduent:webhooks", agent_id)
+            if isinstance(val, bytes):
+                return val.decode("utf-8")
+            return val if val else None
+        except Exception as e:
+            print(f"[-] Redis error in get_webhook: {e}", file=sys.stderr)
+            return None
+    else:
+        if not os.path.exists(WEBHOOKS_DB_PATH):
+            return None
+        with file_lock(WEBHOOKS_DB_PATH):
+            with open(WEBHOOKS_DB_PATH, "r", encoding="utf-8") as f:
+                try:
+                    db = json.load(f)
+                    return db.get(agent_id)
+                except Exception:
+                    return None
+
+
+def list_webhooks() -> dict:
+    """Return the full {agent_id: webhook_url} mapping."""
+    if is_redis_configured():
+        try:
+            client = get_redis_client()
+            raw = client.hgetall("creduent:webhooks")
+            if not raw:
+                return {}
+            result = {}
+            for k, v in raw.items():
+                key = k.decode("utf-8") if isinstance(k, bytes) else k
+                val = v.decode("utf-8") if isinstance(v, bytes) else v
+                result[key] = val
+            return result
+        except Exception as e:
+            print(f"[-] Redis error in list_webhooks: {e}", file=sys.stderr)
+            return {}
+    else:
+        if not os.path.exists(WEBHOOKS_DB_PATH):
+            return {}
+        with file_lock(WEBHOOKS_DB_PATH):
+            with open(WEBHOOKS_DB_PATH, "r", encoding="utf-8") as f:
+                try:
+                    return json.load(f)
+                except Exception:
+                    return {}
+
+
+def delete_webhook(agent_id: str):
+    """Remove a webhook registration."""
+    if is_redis_configured():
+        try:
+            client = get_redis_client()
+            client.hdel("creduent:webhooks", agent_id)
+        except Exception as e:
+            print(f"[-] Redis error in delete_webhook: {e}", file=sys.stderr)
+    else:
+        if not os.path.exists(WEBHOOKS_DB_PATH):
+            return
+        with file_lock(WEBHOOKS_DB_PATH):
+            with open(WEBHOOKS_DB_PATH, "r", encoding="utf-8") as f:
+                try:
+                    db = json.load(f)
+                except Exception:
+                    return
+            if agent_id in db:
+                del db[agent_id]
+                with open(WEBHOOKS_DB_PATH, "w", encoding="utf-8") as f:
                     json.dump(db, f, indent=2, ensure_ascii=False)
 
 def list_agents() -> list:
@@ -189,3 +320,65 @@ def list_agents() -> list:
                 except Exception:
                     return []
 
+
+CHALLENGE_DB = {}
+
+def save_challenge(agent_id: str, nonce: str, challenge_obj: dict):
+    """
+    Saves a generated challenge object with a 5-minute TTL.
+    """
+    key = f"challenge:{agent_id}:{nonce}"
+    if is_redis_configured():
+        try:
+            client = get_redis_client()
+            client.set(key, json.dumps(challenge_obj), ex=300)
+            return
+        except Exception as e:
+            print(f"[-] Redis error in save_challenge: {e}", file=sys.stderr)
+            
+    # Fallback to local memory
+    CHALLENGE_DB[key] = (challenge_obj, time.time() + 300)
+
+def get_challenge(agent_id: str, nonce: str) -> dict:
+    """
+    Retrieves the challenge object if it exists and has not expired.
+    """
+    key = f"challenge:{agent_id}:{nonce}"
+    if is_redis_configured():
+        try:
+            client = get_redis_client()
+            val = client.get(key)
+            if val:
+                try:
+                    return json.loads(val)
+                except Exception:
+                    return val
+            return None
+        except Exception as e:
+            print(f"[-] Redis error in get_challenge: {e}", file=sys.stderr)
+            
+    # Fallback to local memory
+    if key in CHALLENGE_DB:
+        val, expiry = CHALLENGE_DB[key]
+        if time.time() < expiry:
+            return val
+        else:
+            del CHALLENGE_DB[key]
+    return None
+
+def delete_challenge(agent_id: str, nonce: str):
+    """
+    Deletes the challenge object to ensure one-time use.
+    """
+    key = f"challenge:{agent_id}:{nonce}"
+    if is_redis_configured():
+        try:
+            client = get_redis_client()
+            client.delete(key)
+            return
+        except Exception as e:
+            print(f"[-] Redis error in delete_challenge: {e}", file=sys.stderr)
+            
+    # Fallback to local memory
+    if key in CHALLENGE_DB:
+        del CHALLENGE_DB[key]

@@ -258,7 +258,39 @@ console.log("Verified:", isVerified); // true
 
 ---
 
-## Step 8: Add the MCP Server (Optional)
+## Step 8: Challenge-Response Authentication
+
+You can use the SDK's challenge-response features to cryptographically authenticate your agent's identity to other agents.
+
+**Proving identity (Agent side):**
+```python
+from creduent import challenge
+
+# Generate a signed proof using your private key
+proof = challenge.create_proof(
+    agent_id="agent://example/mybot",
+    private_key_pem=open("private_key.pem").read()
+)
+
+# Send the proof dict (containing proof_token) to the receiver
+# proof = {"verified": True, "level": "verified", "proof_token": "...", "valid_until": "..."}
+```
+
+**Verifying identity (Receiver side):**
+```python
+from creduent import challenge
+
+# Verify the proof token received from the agent
+is_valid = challenge.verify_proof(
+    proof_token=proof["proof_token"],
+    agent_id="agent://example/mybot"
+)
+print("Is agent identity authentic?", is_valid)  # True
+```
+
+---
+
+## Step 9: Add the MCP Server (Optional)
 
 To expose `verify_agent` as a tool in your agent host:
 

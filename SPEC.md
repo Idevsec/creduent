@@ -1,10 +1,10 @@
 # CREDUENT-001: agent.json Specification
 
 **Status:** Active  
-**Version:** 0.3  
+**Version:** 0.4  
 **Founder:** Kashish Kanojia  
 **Author:** Creduent Protocol Working Group  
-**Date:** 2026-05-30  
+**Date:** 2026-05-31  
 
 ---
 
@@ -204,6 +204,13 @@ Owners may register a webhook URL via `POST /webhook/register`. The auto-renewal
   "action_url": "https://api.idevsec.com/renew"
 }
 ```
+
+### 6.8 Challenge-Response Authentication
+Agents can prove their cryptographically registered identity to other agents in a secure, session-locked, and decentralized manner using challenge-response:
+1. **Challenge Generation:** The client requests a challenge for `agent_id` from the registry via `GET /challenge/{agent_id}`. The registry generates a cryptographically random, 32-byte hex `challenge` and a 16-byte hex `nonce`, storing them with a 5-minute TTL.
+2. **Signature Proof Creation:** The proving agent receives the challenge and nonce. It signs the UTF-8 encoded `SHA-256` hash of `challenge + nonce` using its Ed25519 private key.
+3. **Verification and Token Issue:** The agent submits `agent_id`, `nonce`, and `signature` to `POST /verify-challenge`. The registry resolves the agent's registered public key, verifies the signature over the hashed challenge-nonce string, deletes the challenge to prevent reuse (replay protection), and responds with a cryptographically signed `proof_token` (valid for 1 hour).
+4. **Independent Proof Verification:** The verifying agent receives the `proof_token`. It base64-decodes it, fetches the registry's public key from `GET /public-key`, and verifies the registry's signature on the token payload, confirming the identity and attestation validity without making repeated network calls to the registry.
 
 ---
 

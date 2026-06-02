@@ -10,7 +10,7 @@ IDevSec
 
 ## Protocol Stewardship
 
-Creduent Foundation
+IDevSec
 
 ## Contributors
 
@@ -18,6 +18,6 @@ This section is reserved for future contributors to the Creduent Protocol ecosys
 
 ---
 
-The Creduent Protocol was originally designed and developed by Kashish Kanojia through IDevSec. Future protocol evolution, governance, and ecosystem stewardship are intended to occur through the Creduent Foundation.
+The Creduent Protocol was designed and developed by Kashish Kanojia through IDevSec, which maintains the protocol's evolution and ecosystem stewardship.
 
-To contribute to the protocol, please refer to [GOVERNANCE.md](GOVERNANCE.md) for the proposal process, and [FOUNDATION.md](FOUNDATION.md) for the Working Group structure.
+To contribute to the protocol, please open an issue or submit a pull request on the repository.

@@ -22,7 +22,12 @@ pip install creduent
 
 **JavaScript / TypeScript:**
 ```bash
-npm install @creduent/sdk
+npm install @idevsec/creduent
+```
+
+**CLI Tool (Global):**
+```bash
+npm install -g @idevsec/creduent-cli
 ```
 
 ---
@@ -206,7 +211,7 @@ print("Attestation level:", result.attestation.get("level"))
 
 **Using the JavaScript SDK:**
 ```typescript
-import { registerAgent } from "@creduent/sdk";
+import { registerAgent } from "@idevsec/creduent";
 
 const result = await registerAgent({
   agent_id: "agent://example/mybot",
@@ -250,7 +255,7 @@ print("Level:", result.level)
 
 **From JavaScript:**
 ```typescript
-import { verifyAgent } from "@creduent/sdk";
+import { verifyAgent } from "@idevsec/creduent";
 
 const isVerified = await verifyAgent("agent://example/mybot");
 console.log("Verified:", isVerified); // true

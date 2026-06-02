@@ -2632,7 +2632,7 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
     </main>
 
     <footer>
-        Powered by <a href="https://github.com/creduent" target="_blank">Creduent Open Protocol</a> · v1.0
+        Powered by <a href="https://github.com/idevsec/creduent" target="_blank">Creduent Open Protocol</a> · v1.0
         &nbsp;·&nbsp;
         <a href="/.well-known/agent.json" target="_blank">agent.json</a>
         &nbsp;·&nbsp;

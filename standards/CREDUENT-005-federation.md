@@ -2,7 +2,7 @@
 
 **Status:** Draft  
 **Version:** 0.1  
-**Author:** Creduent Protocol Working Group  
+**Author:** IDevSec  
 **Date:** 2026-05-30  
 **Related:** [CREDUENT-002](CREDUENT-002-attestation.md), [CREDUENT-003](CREDUENT-003-registry-api.md)
 
@@ -89,10 +89,10 @@ This allows any verifier to:
 Federation requires at least one trust anchor. Proposed options:
 
 **Option A: Root Registry**  
-The Creduent Foundation operates a root registry that attests other registries. A verifier that trusts the root registry transitively trusts all attested registries.
+IDevSec operates a root registry that attests other registries. A verifier that trusts the root registry transitively trusts all attested registries.
 
 ```
-Root Registry (Creduent Foundation)
+Root Registry (IDevSec)
     |
     +-- Attests: Registry A (my-org.com)
     +-- Attests: Registry B (enterprise.com)
@@ -105,7 +105,7 @@ Registries mutually attest each other. Verifiers accumulate trusted keys over ti
 **Option C: Explicit Allowlist**  
 Verifiers maintain a local list of trusted registry public keys. Simpler to implement, less scalable.
 
-The v1.0 protocol does not mandate any of these options. CREDUENT-005 will be updated when the Working Group reaches consensus.
+The v1.0 protocol does not mandate any of these options. CREDUENT-005 will be updated when consensus is reached.
 
 ### 4.3 Cross-Registry Agent Lookup
 
@@ -134,7 +134,7 @@ The following items are not yet specified and must be resolved before federation
 | Key rotation protocol | No standard for announcing registry key rotation | Future CIP |
 | Namespace ownership | Namespace squatting is unresolved | Organization namespace registry or DNS-based namespace binding |
 | Cross-registry revocation | Revocation in one registry is not propagated | Revocation list publication or signed revocation events |
-| Trust anchor consensus | No agreement on root-of-trust model | Working Group vote required |
+| Trust anchor consensus | No agreement on root-of-trust model | Consensus required |
 
 ---
 
@@ -146,7 +146,7 @@ To enable discovery, registries SHOULD publish a metadata document at:
 https://<registry-domain>/.well-known/creduent-registry.json
 ```
 
-Proposed structure (subject to Working Group revision):
+Proposed structure (subject to revision):
 
 ```json
 {

@@ -10,7 +10,7 @@ Creduent is an open application-layer protocol for cryptographic identity and tr
 
 ### Who maintains Creduent?
 
-The Creduent Foundation, an independent open-standards body. The protocol specification is open-source and governed via the process described in [GOVERNANCE.md](GOVERNANCE.md). The reference registry runs at `api.idevsec.com`.
+IDevSec. The protocol specification is open-source, and the reference registry runs at `api.idevsec.com`.
 
 ### Is Creduent a SaaS product or an open protocol?
 
@@ -135,8 +135,9 @@ No. Creduent verifies identity and ownership, not intent or behavior. A `verifie
 
 | SDK | Install | Source |
 |:---|:---|:---|
-| Python | `pip install creduent` | [github.com/creduent/creduent-python](https://github.com/creduent/creduent-python) |
-| JavaScript / TypeScript | `npm install @creduent/sdk` | [github.com/creduent/creduent-js](https://github.com/creduent/creduent-js) |
+| Python | `pip install creduent` | [github.com/idevsec/creduent-python](https://github.com/idevsec/creduent-python) |
+| JavaScript / TypeScript | `npm install @idevsec/creduent` | [github.com/idevsec/creduent-js](https://github.com/idevsec/creduent-js) |
+| CLI Tool | `npm install -g @idevsec/creduent-cli` | [github.com/idevsec/creduent-cli](https://github.com/idevsec/creduent-cli) |
 
 ### What Python version is required?
 
@@ -184,6 +185,6 @@ No. Creduent uses standard web infrastructure: HTTPS, DNS, and Ed25519 cryptogra
 
 ### Where can I follow protocol development?
 
-- GitHub: [github.com/creduent](https://github.com/creduent)
-- Protocol Working Group discussions: GitHub Issues and Discussions on the main repository.
+- GitHub: [github.com/idevsec/creduent](https://github.com/idevsec/creduent)
+- Discussions & Contributions: GitHub Issues and Discussions on the repository.
 - Roadmap: [ROADMAP.md](ROADMAP.md)

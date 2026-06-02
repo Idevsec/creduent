@@ -3,7 +3,7 @@
 **Status:** Active  
 **Version:** 0.4  
 **Founder:** Kashish Kanojia  
-**Author:** Creduent Protocol Working Group  
+**Author:** IDevSec  
 **Date:** 2026-05-31  
 
 ---
@@ -18,7 +18,7 @@ Creduent sits above the existing web stack (HTTPS, DNS, APIs) rather than replac
 * **Identity resolution is decentralized:** Anyone can issue an agent ID and identity document without registering with a central gatekeeper or waiting for ICANN naming extensions.
 * **Trust is federated:** Verifiable trust is built via composable third-party attestations (e.g., identity verification by Creduent Registry, security verification by auditors, provider verification by LLM platforms) rather than a single monolithic authority.
 
-Originally designed and developed by Kashish Kanojia through IDevSec, the Creduent Protocol has transitioned to an open, community-driven standard stewarded by the Creduent Foundation. This transition ensures that the protocol remains a neutral, objective, and globally accessible standard for the broader artificial intelligence and agentic ecosystem.
+Originally designed and developed by Kashish Kanojia, the Creduent Protocol is maintained by IDevSec as an open, community-driven standard. This ensures that the protocol remains a neutral, objective, and globally accessible standard for the broader artificial intelligence and agentic ecosystem.
 
 ---
 
@@ -269,12 +269,18 @@ If the Creduent registry is offline or unreachable, the verify_agent tool MUST N
 pip install creduent
 ```
 Methods: `sign()`, `verify()`, `register()`, `attest()`  
-Source: https://github.com/creduent/creduent-python
+Source: https://github.com/idevsec/creduent-python
 
 ### 8.2 JavaScript / TypeScript SDK
 ```bash
-npm install @creduent/sdk
+npm install @idevsec/creduent
 ```
 Functions: `resolveAgent()`, `verifyAgent()`, `registerAgent()`  
 Types: `AgentRecord`, `RegisterPayload`, `ClientOptions`  
-Source: https://github.com/creduent/creduent-js
+Source: https://github.com/idevsec/creduent-js
+
+### 8.3 CLI Tool (JavaScript / TypeScript)
+```bash
+npm install -g @idevsec/creduent-cli
+```
+Source: https://github.com/idevsec/creduent-cli

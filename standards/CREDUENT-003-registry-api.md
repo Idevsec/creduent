@@ -2,7 +2,7 @@
 
 **Status:** Active  
 **Version:** 0.4  
-**Author:** Creduent Protocol Working Group  
+**Author:** IDevSec  
 **Date:** 2026-05-31  
 **Related:** [CREDUENT-001](../SPEC.md), [CREDUENT-002](CREDUENT-002-attestation.md)
 

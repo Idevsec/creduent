@@ -146,7 +146,7 @@ print("Expires at:", att.expires_at)
 ## Example 8: Resolve and Verify (JavaScript / TypeScript)
 
 ```typescript
-import { resolveAgent, verifyAgent, AgentNotFoundError, CreduentError } from "@creduent/sdk";
+import { resolveAgent, verifyAgent, AgentNotFoundError, CreduentError } from "@idevsec/creduent";
 
 async function checkAgent(uri: string) {
   try {
@@ -182,7 +182,7 @@ checkAgent("agent://creduent/reconbot");
 ## Example 9: Register Agent (JavaScript / TypeScript)
 
 ```typescript
-import { registerAgent } from "@creduent/sdk";
+import { registerAgent } from "@idevsec/creduent";
 
 const result = await registerAgent({
   agent_id: "agent://example/mybot",
@@ -202,7 +202,7 @@ console.log("Level:", result.level);
 ## Example 10: Custom Registry Endpoint (JavaScript)
 
 ```typescript
-import { resolveAgent } from "@creduent/sdk";
+import { resolveAgent } from "@idevsec/creduent";
 
 // Point to a private or alternative registry
 const record = await resolveAgent("agent://example/mybot", {

@@ -6,7 +6,7 @@ This document outlines the development phases, adoption targets, and infrastruct
 
 ## Protocol Origins
 
-Originally designed and developed by Kashish Kanojia through IDevSec, the Creduent Protocol reference registry, signing utilities, and SDKs were initially established to solve core agent identity challenges. To foster global adoption, federated trust, and vendor neutrality, the stewardship of the protocol and its future development roadmap have transitioned to the Creduent Foundation. Under this community-governed model, the roadmap represents a collaborative effort among autonomous system developers, security practitioners, and open standards organizations.
+Originally designed and developed by Kashish Kanojia through IDevSec, the Creduent Protocol reference registry, signing utilities, and SDKs were established to solve core agent identity challenges. The stewardship of the protocol and its future development roadmap are maintained by IDevSec. Under this model, the roadmap represents a collaborative effort among autonomous system developers, security practitioners, and open standards organizations.
 
 ---
 
@@ -27,7 +27,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 **Target:** 50 registered agents by end of August 2026.
 * [x] **`pip install creduent`**: Python SDK with `sign()`, `verify()`, `register()`, and `attest()` as first-class methods.
 * [x] **`agent://` URI public resolver**: Any client can resolve `agent://<namespace>/<name>` to a live `agent.json` without knowing the host domain.
-* [x] **JavaScript/TypeScript SDK**: `npm install @creduent/sdk` for MCP hosts running Node.
+* [x] **JavaScript/TypeScript SDK**: `npm install @idevsec/creduent` for MCP hosts running Node.
 * [x] **Auto-renewal daemon**: Lightweight background process for agents to automatically re-attest 30 days before expiry.
 * [x] **Webhook notifications**: POST notifications to a configured URL on registration, revocation, and expiry.
 * [x] **Developer dashboard**: Web UI at `api.idevsec.com/dashboard` to manage registered agents, view attestation status, and rotate keys.
@@ -67,7 +67,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [ ] Creduent becomes a standard requirement in enterprise AI procurement checklists.
 * [ ] LLM providers (Anthropic, OpenAI, Google) reference Creduent in their agent hosting documentation.
 * [ ] **Cross-chain attestation bridges**: On-chain verifiable agent identity for Web3/decentralized agent ecosystems.
-* [ ] **Creduent Foundation**: Establish an independent governance body, open membership, and transfer protocol stewardship from IDevSec to the community.
+* [ ] **Community Stewardship**: Establish an independent governance body, open membership, and transition protocol stewardship from IDevSec to the community.
 
 ---
 

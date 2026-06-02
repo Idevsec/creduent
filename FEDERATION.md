@@ -14,7 +14,7 @@ This document describes how the Creduent Protocol is designed to support multipl
 It is written for:
 - Protocol architects evaluating long-term design decisions.
 - Organizations considering running a private or enterprise Creduent registry.
-- Working Group Members contributing to [CREDUENT-005](standards/CREDUENT-005-federation.md).
+- Contributors to [CREDUENT-005](standards/CREDUENT-005-federation.md).
 
 **No current protocol behavior is changed by anything described here.** All existing `agent.json` documents, attestations, and registry deployments remain fully valid.
 
@@ -36,7 +36,7 @@ Every attestation object contains:
 }
 ```
 
-In v1.0, this is always the Creduent Foundation registry. In a federated world, this field identifies which registry issued the attestation. The field is already in the schema. No schema change is needed.
+In v1.0, this is always the Creduent reference registry. In a federated world, this field identifies which registry issued the attestation. The field is already in the schema. No schema change is needed.
 
 **2. The registry signs using Ed25519 over JCS**
 
@@ -69,7 +69,7 @@ The following items in v1.0 would need to be addressed to enable production fede
 ## The Target Architecture
 
 ```
-Creduent Foundation Root Registry
+IDevSec Root Registry
           |
           +-- Attests Registry A (my-org.com)
           |         |
@@ -84,7 +84,7 @@ Creduent Foundation Root Registry
                     +-- Attests agents: agent://community/*
 ```
 
-A verifier that trusts the Foundation root registry can transitively trust attestations from any registry the Foundation has attested. The verification chain is:
+A verifier that trusts the IDevSec root registry can transitively trust attestations from any registry IDevSec has attested. The verification chain is:
 
 ```
 agent.json (self-signed)
@@ -96,10 +96,10 @@ Registry attestation (signed by Registry A key)
 Registry A's own agent.json (signed by Registry A)
     |
     v
-Root attestation of Registry A (signed by Foundation key)
+Root attestation of Registry A (signed by IDevSec key)
     |
     v
-Foundation's own agent.json (self-verified trust anchor)
+IDevSec's own agent.json (self-verified trust anchor)
 ```
 
 ---
@@ -162,7 +162,7 @@ result = register(agent_id="agent://my-org/mybot", ...)
 
 **JavaScript:**
 ```typescript
-import { resolveAgent } from "@creduent/sdk";
+import { resolveAgent } from "@idevsec/creduent";
 const record = await resolveAgent("agent://my-org/mybot", {
   baseUrl: "https://registry.my-org.internal"
 });
@@ -187,5 +187,5 @@ Agents registered with a private registry are self-verifiable (CREDUENT-001) reg
 Federation design is actively being developed under [CREDUENT-005](standards/CREDUENT-005-federation.md). To contribute:
 
 1. Read the full draft in `standards/CREDUENT-005-federation.md`.
-2. Join the Protocol Working Group via a GitHub issue titled "Working Group Member Application".
-3. Propose changes via the CIP process described in [GOVERNANCE.md](GOVERNANCE.md).
+2. Join the discussions or open an issue on the repository.
+3. Propose changes via a pull request.

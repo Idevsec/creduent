@@ -8,3 +8,9 @@ scratch/
 __pycache__/
 *.pyc
 .vercel
+private_key.pem
+api/__pycache__/
+cli/__pycache__/
+creduent/__pycache__/
+mcp/__pycache__/
+registry/__pycache__/

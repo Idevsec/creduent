@@ -2,7 +2,7 @@
 
 **Status:** Active  
 **Version:** 0.3  
-**Author:** Creduent Protocol Working Group  
+**Author:** IDevSec  
 **Date:** 2026-05-30  
 **Supersedes:** N/A  
 **Related:** [CREDUENT-001](SPEC.md), [CREDUENT-003](standards/CREDUENT-003-registry-api.md)

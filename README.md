@@ -63,11 +63,21 @@ curl -X POST https://api.idevsec.com/register \
   -d '{"agent_id": "agent://example/reconbot", "domain": "example.com", "agent_json_url": "https://example.com/.well-known/agent.json"}'
 ```
 
-## SDKs
+## SDKs & Tooling
 
-### Python
+### Python SDK
 ```bash
 pip install creduent
+```
+
+### JavaScript / TypeScript SDK
+```bash
+npm install @idevsec/creduent
+```
+
+### CLI Tool
+```bash
+npm install -g @idevsec/creduent-cli
 ```
 
 ## MCP Integration
@@ -109,7 +119,7 @@ Call `verify_agent` with target agent ID or domain to receive structural, crypto
 
 ## Protocol Standards & Specification
 
-The Creduent Protocol is structured as a series of formal standards-track documents maintained by the Creduent Foundation:
+The Creduent Protocol is structured as a series of formal standards-track documents maintained by IDevSec:
 
 * **[Standards Index](standards/README.md)** - Main index of all protocol standards
 * **[CREDUENT-001: agent.json](standards/CREDUENT-001-agent-json.md)** (based on canonical **[SPEC.md](SPEC.md)**) - Base identity specification
@@ -122,15 +132,16 @@ The Creduent Protocol is structured as a series of formal standards-track docume
 
 The Creduent Protocol was originally designed and developed by Kashish Kanojia through IDevSec.
 
-Creduent is an open protocol intended for community adoption, interoperability, and federated trust. Long-term governance and stewardship are managed under the Creduent Foundation to ensure it remains a neutral, open standard for the entire AI agent ecosystem.
+Creduent is an open protocol intended for community adoption, interoperability, and federated trust. Long-term governance and stewardship are managed by IDevSec to ensure it remains a neutral, open standard for the entire AI agent ecosystem.
 
-For details on the project's history, governance model, and foundation structure, please see:
+For details on the project's history, please see:
 * [AUTHORS.md](AUTHORS.md) - Founding details and references
-* [GOVERNANCE.md](GOVERNANCE.md) - Open governance and standard-track processes
-* [FOUNDATION.md](FOUNDATION.md) - Creduent Foundation charter and working groups
 
 The reference registry, SDKs, and protocol tooling serve as the initial implementation of the protocol.
 
-## License
+## Licensing
 
-This project is licensed under the [MIT License](LICENSE).
+Creduent's licensing model is designed to maximize community adoption and interoperability:
+
+* **Protocol Specification:** The Creduent Protocol specifications (including standard documents `CREDUENT-001` through `CREDUENT-005` located in the `standards/` directory) are open, public-domain standards. Anyone is free to implement the protocol, build custom registries, or design compatible clients without any license restrictions or royalties.
+* **Reference Implementations & SDKs:** The software assets contained within this repository (including the Python SDK, JavaScript/TypeScript SDK, CLI Tool, MCP Server, and reference registry source code) are licensed under the permissive **[Apache License 2.0](LICENSE)**. This allows you to use, modify, and distribute the code in both open-source and commercial products.

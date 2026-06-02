@@ -2,7 +2,7 @@
 
 **Status:** Active  
 **Version:** 0.3  
-**Author:** Creduent Protocol Working Group  
+**Author:** IDevSec  
 **Date:** 2026-05-30  
 **Related:** [CREDUENT-001](../SPEC.md), [CREDUENT-003](CREDUENT-003-registry-api.md)
 
@@ -169,7 +169,7 @@ print(result.agent_id)    # "agent://creduent/reconbot"
 ## 8. JavaScript SDK Usage
 
 ```typescript
-import { resolveAgent } from "@creduent/sdk";
+import { resolveAgent } from "@idevsec/creduent";
 
 const record = await resolveAgent("agent://creduent/reconbot");
 console.log(record.agent_id);

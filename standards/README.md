@@ -1,6 +1,6 @@
 # Creduent Protocol: Standards Index
 
-This directory contains the formal standards-track documents for the Creduent Protocol, maintained by the Creduent Foundation under the governance process defined in [GOVERNANCE.md](../GOVERNANCE.md).
+This directory contains the formal standards-track documents for the Creduent Protocol, maintained by IDevSec.
 
 ---
 
@@ -20,18 +20,18 @@ This directory contains the formal standards-track documents for the Creduent Pr
 
 | Status | Meaning |
 |:---|:---|
-| Draft | Proposed. Under active Working Group discussion. Not yet stable. |
+| Draft | Proposed. Under active discussion. Not yet stable. |
 | Review | Formally under Reviewer evaluation. Feature-frozen. |
 | Last Call | Final comment period. Merging soon. |
 | Active | Published and normative. Implementations must comply. |
 | Superseded | Replaced by a later standard. Kept for historical reference. |
-| Rejected | Formally declined by the Working Group. |
+| Rejected | Formally declined or obsolete. |
 
 ---
 
 ## Proposing a New Standard
 
-To propose a new standard or change an existing one, open a Creduent Improvement Proposal (CIP) following the process in [GOVERNANCE.md](../GOVERNANCE.md).
+To propose a new standard or change an existing one, open a pull request or issue on the repository.
 
 ---
 

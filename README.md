@@ -144,4 +144,7 @@ The reference registry, SDKs, and protocol tooling serve as the initial implemen
 Creduent's licensing model is designed to maximize community adoption and interoperability:
 
 * **Protocol Specification:** The Creduent Protocol specifications (including standard documents `CREDUENT-001` through `CREDUENT-005` located in the `standards/` directory) are open, public-domain standards. Anyone is free to implement the protocol, build custom registries, or design compatible clients without any license restrictions or royalties.
-* **Reference Implementations & SDKs:** The software assets contained within this repository (including the Python SDK, JavaScript/TypeScript SDK, CLI Tool, MCP Server, and reference registry source code) are licensed under the permissive **[Apache License 2.0](LICENSE)**. This allows you to use, modify, and distribute the code in both open-source and commercial products.
+
+* **Reference Implementation:** The software assets contained within this repository (including the Python SDK, CLI Tool, MCP Server, and reference registry source code) are licensed under the **[Apache License 2.0](LICENSE)**.
+
+* **JavaScript/TypeScript SDK:** `@idevsec/creduent` and `@idevsec/creduent-cli` are available on npm under a **Dual License** — Apache 2.0 for open-source and non-commercial use, commercial license required for organizations with annual revenue exceeding USD $1,000,000. See [idevsec.com/creduent/licensing](https://idevsec.com/creduent/licensing) for details.

@@ -717,8 +717,8 @@ def serve_resolver_ui():
 
 @app.get("/agent:/{agent_id:path}")
 @app.get("/agent://{agent_id:path}")
-def resolve_agent_directly(agent_id: str):
-    return get_attest("agent://" + agent_id)
+def resolve_agent_directly(agent_id: str, request: Request):
+    return get_attest("agent://" + agent_id, request)
 
 @app.get("/registry")
 @app.get("/registry/")
@@ -742,7 +742,7 @@ def serve_dashboard_ui():
     return HTMLResponse(content=DASHBOARD_HTML, status_code=200)
 
 @app.get("/{uri_path:path}")
-def catch_all_uri_resolver(uri_path: str):
+def catch_all_uri_resolver(uri_path: str, request: Request):
     import urllib.parse
     decoded = urllib.parse.unquote(uri_path)
     # Check if this looks like an agent URI or starts with agent:
@@ -752,5 +752,5 @@ def catch_all_uri_resolver(uri_path: str):
             decoded = "agent://" + decoded[7:]
         elif decoded.startswith("agent:") and not decoded.startswith("agent://") and not decoded.startswith("agent:/"):
             decoded = "agent://" + decoded[6:]
-        return get_attest(decoded)
+        return get_attest(decoded, request)
     raise HTTPException(status_code=404, detail="Not Found")

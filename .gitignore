@@ -14,3 +14,7 @@ cli/__pycache__/
 creduent/__pycache__/
 mcp/__pycache__/
 registry/__pycache__/
+
+# Claude / Agent rules
+CLAUDE.md
+AGENTS.md

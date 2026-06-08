@@ -12,6 +12,18 @@ def is_private_ip(ip_str: str) -> bool:
     except ValueError:
         return False
 
+def resolve_ips(host: str) -> list[str]:
+    ips = []
+    try:
+        addr_infos = socket.getaddrinfo(host, None)
+        for info in addr_infos:
+            sockaddr = info[4]
+            if sockaddr and len(sockaddr) > 0:
+                ips.append(sockaddr[0])
+    except Exception:
+        pass
+    return list(set(ips))
+
 def safe_requests_get(url: str, timeout: int = 5, allow_private: bool = False, headers: dict = None) -> requests.Response:
     """
     Safe version of requests.get that prevents SSRF by blocking access
@@ -23,13 +35,10 @@ def safe_requests_get(url: str, timeout: int = 5, allow_private: bool = False, h
     for _ in range(5):  # Follow max 5 redirects
         parsed = urlparse(current_url)
         host = parsed.netloc.split(':')[0]
-        try:
-            ip = socket.gethostbyname(host)
+        ips = resolve_ips(host)
+        for ip in ips:
             if not allow_private and is_private_ip(ip):
                 raise HTTPException(status_code=400, detail="Access to private IP ranges is blocked.")
-        except socket.gaierror:
-            # If DNS resolution fails here, let requests handle the connection error
-            pass
             
         merged_headers = req_headers.copy()
         response = requests.get(current_url, headers=merged_headers, verify=True, timeout=timeout, allow_redirects=False)
@@ -47,12 +56,10 @@ def safe_requests_get(url: str, timeout: int = 5, allow_private: bool = False, h
     # Final request outside the loop
     parsed = urlparse(current_url)
     host = parsed.netloc.split(':')[0]
-    try:
-        ip = socket.gethostbyname(host)
+    ips = resolve_ips(host)
+    for ip in ips:
         if not allow_private and is_private_ip(ip):
             raise HTTPException(status_code=400, detail="Access to private IP ranges is blocked.")
-    except socket.gaierror:
-        pass
         
     merged_headers = req_headers.copy()
     response = requests.get(current_url, headers=merged_headers, verify=True, timeout=timeout, allow_redirects=False)
@@ -71,13 +78,10 @@ def safe_requests_post(url: str, json: dict = None, data: dict = None, timeout: 
     for _ in range(5):  # Follow max 5 redirects
         parsed = urlparse(current_url)
         host = parsed.netloc.split(':')[0]
-        try:
-            ip = socket.gethostbyname(host)
+        ips = resolve_ips(host)
+        for ip in ips:
             if not allow_private and is_private_ip(ip):
                 raise HTTPException(status_code=400, detail="Access to private IP ranges is blocked.")
-        except socket.gaierror:
-            # If DNS resolution fails here, let requests handle the connection error
-            pass
             
         merged_headers = req_headers.copy()
         response = requests.post(current_url, json=json, data=data, headers=merged_headers, verify=True, timeout=timeout, allow_redirects=False)
@@ -94,12 +98,10 @@ def safe_requests_post(url: str, json: dict = None, data: dict = None, timeout: 
     # Final request outside the loop
     parsed = urlparse(current_url)
     host = parsed.netloc.split(':')[0]
-    try:
-        ip = socket.gethostbyname(host)
+    ips = resolve_ips(host)
+    for ip in ips:
         if not allow_private and is_private_ip(ip):
             raise HTTPException(status_code=400, detail="Access to private IP ranges is blocked.")
-    except socket.gaierror:
-        pass
         
     merged_headers = req_headers.copy()
     response = requests.post(current_url, json=json, data=data, headers=merged_headers, verify=True, timeout=timeout, allow_redirects=False)

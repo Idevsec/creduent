@@ -209,7 +209,11 @@ def get_attest(agent_id: str, request: Request):
         except Exception as e:
             print(f"[-] Error parsing expires_at: {e}", file=sys.stderr)
             
-    if expired:
+    level = attestation.get("level", "verified").lower()
+    if level == "revoked":
+        attestation["expired"] = False
+        attestation["status"] = "revoked"
+    elif expired:
         attestation["expired"] = True
         attestation["status"] = "expired"
     else:
@@ -526,12 +530,13 @@ def get_stats():
 
     for agent in agents:
         level = agent.get("level", "verified").lower()
-        if level == "verified" or level == "active":
+        if level == "verified" or level == "trusted":
             verified += 1
         elif level == "revoked":
             revoked += 1
         else:
             unverified += 1
+
 
         expires_at_str = agent.get("expires_at")
         if expires_at_str and level != "revoked":

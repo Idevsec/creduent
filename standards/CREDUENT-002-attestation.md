@@ -36,7 +36,7 @@ A Creduent Attestation is a JSON document with the following fields:
 |:---|:---|:---|:---|
 | `agent_id` | String | ✅ | The agent's globally unique URI (`agent://namespace/name`). |
 | `issuer` | String | ✅ | The attestation issuer's identity URI. MUST be `"agent://creduent/registry"` for official attestations. |
-| `level` | String | ✅ | Verification status. One of: `"unverified"`, `"verified"`, `"trusted"`, `"revoked"`. |
+| `level` | String | ✅ | Trust level. One of: `"unverified"`, `"verified"`, `"trusted"`, `"revoked"`. |
 | `issued_at` | String | ✅ | RFC 3339 UTC timestamp of attestation issuance. |
 | `expires_at` | String | ✅ | RFC 3339 UTC timestamp when the attestation expires. |
 | `public_key` | String | ✅ | The agent's public key, matching its `agent.json`. Format: `ed25519:<base64>`. |
@@ -66,6 +66,16 @@ A Creduent Attestation is a JSON document with the following fields:
 | `verified` | All verification steps passed: schema valid, Ed25519 signature valid, DNS TXT record matches agent_id, endpoint reachable. |
 | `trusted` | Manually reviewed and escalated trust level assigned by registry administrators. |
 | `revoked` | Agent registration was explicitly revoked by an administrator. |
+
+### 2.3 Lifecycle Status
+
+While **Trust Level** (`level`) represents the cryptographic verification tier of an agent, its **Lifecycle Status** is a dynamically computed state indicating whether the credential is active or expired.
+
+Verifiers and dashboards resolve the lifecycle status as follows:
+* **active**: The attestation has not expired (current time is before `expires_at`) and its level is not `revoked`.
+* **expiring**: The attestation has not expired, but will expire within 30 days, and its level is not `revoked`.
+* **expired**: The current time has surpassed the attestation's `expires_at` timestamp.
+* **revoked**: The attestation's trust level is `revoked`, which supersedes all expiration-based status computations.
 
 ---
 
@@ -194,15 +204,22 @@ Content-Type: application/json
 }
 ```
 
-The `signature` field MUST be the Ed25519 signature computed over the pipe-delimited concatenation:
+The `signature` field MUST be an Ed25519 signature computed over one of the following payload formats:
 
-```
-agent_id|new_expires_at
-```
+1. **JCS Canonicalized Dictionary (Recommended)**: A JSON object containing the renewal fields, canonicalized using RFC 8785 JSON Canonicalization Scheme (JCS):
+   ```json
+   {
+     "agent_id": "agent://example/mybot",
+     "new_expires_at": "2028-05-30T00:00:00Z"
+   }
+   ```
+2. **Pipe-Delimited String (Alternative)**: The delimited concatenation UTF-8 bytes:
+   ```
+   agent_id|new_expires_at
+   ```
+   For example: `"agent://example/mybot|2028-05-30T00:00:00Z"`
 
-For example: `"agent://example/mybot|2028-05-30T00:00:00Z"`
-
-The registry verifies this signature against the agent's registered `public_key`, then re-issues and re-signs the attestation with the updated `expires_at`.
+The registry supports both formats during verification against the agent's registered `public_key`, then re-issues and re-signs the attestation with the updated `expires_at`.
 
 ---
 
@@ -223,7 +240,16 @@ Content-Type: application/json
 }
 ```
 
-The `signature` MUST be computed over: `agent_id|webhook_url`.
+The `signature` field MUST be computed over one of the following payload formats:
+
+1. **JCS Canonicalized Dictionary (Recommended)**: A JSON object containing the webhook registration fields, canonicalized using RFC 8785 (JCS):
+   ```json
+   {
+     "agent_id": "agent://example/mybot",
+     "webhook_url": "https://example.com/hooks/creduent"
+   }
+   ```
+2. **Pipe-Delimited String (Alternative)**: The delimited concatenation: `agent_id|webhook_url`.
 
 ### 8.2 Webhook Events
 

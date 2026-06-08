@@ -17,7 +17,7 @@ from urllib.parse import urlparse, urljoin
 # Add parent directory to path to allow importing from creduent package
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from creduent.crypto import canonicalize
-from creduent.utils import is_private_ip, safe_requests_get, load_dotenv
+from creduent.utils import is_private_ip, safe_requests_get, load_dotenv, resolve_ips
 
 # Load local environment variables if present
 load_dotenv()
@@ -136,11 +136,18 @@ def run_agent_scan(
     # 1. Execute capability logic
     if capability == "dns_lookup":
         try:
-            ip_address = socket.gethostbyname(domain)
+            ips = resolve_ips(domain)
+            if not ips:
+                raise Exception("No IP addresses resolved")
+            for ip in ips:
+                if is_private_ip(ip):
+                    raise HTTPException(status_code=400, detail="Access to private IP ranges is blocked.")
             results.update({
                 "status": "success",
-                "ip": ip_address
+                "ip": ips[0]
             })
+        except HTTPException:
+            raise
         except Exception as e:
             results.update({
                 "status": "failed",
@@ -151,7 +158,13 @@ def run_agent_scan(
     elif capability == "osint":
         # Get IP first
         try:
-            ip_address = socket.gethostbyname(domain)
+            ips = resolve_ips(domain)
+            for ip in ips:
+                if is_private_ip(ip):
+                    raise HTTPException(status_code=400, detail="Access to private IP ranges is blocked.")
+            ip_address = ips[0] if ips else None
+        except HTTPException:
+            raise
         except Exception:
             ip_address = None
 

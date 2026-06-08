@@ -323,6 +323,13 @@ def list_agents() -> list:
 
 CHALLENGE_DB = {}
 
+def _prune_expired_challenges():
+    """Removes expired challenges from the in-memory CHALLENGE_DB fallback to prevent memory leaks."""
+    now = time.time()
+    expired = [k for k, (_, expiry) in CHALLENGE_DB.items() if now >= expiry]
+    for k in expired:
+        CHALLENGE_DB.pop(k, None)
+
 def save_challenge(agent_id: str, nonce: str, challenge_obj: dict):
     """
     Saves a generated challenge object with a 5-minute TTL.
@@ -337,6 +344,7 @@ def save_challenge(agent_id: str, nonce: str, challenge_obj: dict):
             print(f"[-] Redis error in save_challenge: {e}", file=sys.stderr)
             
     # Fallback to local memory
+    _prune_expired_challenges()
     CHALLENGE_DB[key] = (challenge_obj, time.time() + 300)
 
 def get_challenge(agent_id: str, nonce: str) -> dict:
@@ -358,6 +366,7 @@ def get_challenge(agent_id: str, nonce: str) -> dict:
             print(f"[-] Redis error in get_challenge: {e}", file=sys.stderr)
             
     # Fallback to local memory
+    _prune_expired_challenges()
     if key in CHALLENGE_DB:
         val, expiry = CHALLENGE_DB[key]
         if time.time() < expiry:
@@ -380,5 +389,6 @@ def delete_challenge(agent_id: str, nonce: str):
             print(f"[-] Redis error in delete_challenge: {e}", file=sys.stderr)
             
     # Fallback to local memory
+    _prune_expired_challenges()
     if key in CHALLENGE_DB:
         del CHALLENGE_DB[key]

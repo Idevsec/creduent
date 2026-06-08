@@ -406,6 +406,13 @@ RESOLVER_HTML = """<!DOCTYPE html>
             color: #f59e0b;
         }
 
+        .status-trusted {
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid #8b5cf6;
+            color: #8b5cf6;
+            text-shadow: 0 0 6px rgba(139, 92, 246, 0.5);
+        }
+
         .status-revoked {
             background: rgba(255, 59, 48, 0.08);
             border: 1px solid var(--error-red);
@@ -765,7 +772,9 @@ RESOLVER_HTML = """<!DOCTYPE html>
                 badge.textContent = level;
                 badge.className = 'badge-status';
 
-                if (level === 'verified' || level === 'active') {
+                if (level === 'trusted') {
+                    badge.classList.add('status-trusted');
+                } else if (level === 'verified') {
                     badge.classList.add('status-verified');
                 } else if (level === 'revoked') {
                     badge.classList.add('status-revoked');
@@ -819,6 +828,8 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             --amber-dim: rgba(245, 158, 11, 0.1);
             --red: #ef4444;
             --red-dim: rgba(239, 68, 68, 0.1);
+            --violet: #8b5cf6;
+            --violet-dim: rgba(139, 92, 246, 0.1);
         }
 
         * {
@@ -1108,6 +1119,12 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             background-color: var(--red-dim);
             color: var(--red);
             border: 1px solid rgba(239, 68, 68, 0.15);
+        }
+
+        .badge-trusted {
+            background-color: var(--violet-dim);
+            color: var(--violet);
+            border: 1px solid rgba(139, 92, 246, 0.15);
         }
 
         .badge-warning {
@@ -1558,7 +1575,8 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                         // Badges
                         let badgeClass = 'badge-verified';
                         if (level === 'revoked') badgeClass = 'badge-revoked';
-                        else if (level !== 'verified' && level !== 'active') badgeClass = 'badge-unverified';
+                        else if (level === 'trusted') badgeClass = 'badge-trusted';
+                        else if (level !== 'verified') badgeClass = 'badge-unverified';
 
                         const warningBadge = isExpiringSoon ? `<span class="badge badge-warning">Expiring Soon</span>` : '';
 

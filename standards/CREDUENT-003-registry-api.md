@@ -240,7 +240,12 @@ Renew an attestation before it expires.
 }
 ```
 
-The `signature` is Ed25519 over the UTF-8 string: `agent_id|new_expires_at`
+The `signature` MUST be computed using one of the following formats:
+- **JCS Canonicalized Dictionary (Modern Standard)**: The request fields `agent_id` and `new_expires_at` formatted as a JSON object and canonicalized via RFC 8785:
+  ```json
+  {"agent_id":"agent://example/mybot","new_expires_at":"2028-05-30T00:00:00Z"}
+  ```
+- **Pipe-Delimited String (Deprecated Fallback)**: The UTF-8 string `agent_id|new_expires_at`.
 
 **Success Response (200):** Returns updated attestation object.
 
@@ -266,7 +271,12 @@ Register a webhook URL for lifecycle event notifications.
 }
 ```
 
-The `signature` is Ed25519 over: `agent_id|webhook_url`
+The `signature` MUST be computed using one of the following formats:
+- **JCS Canonicalized Dictionary (Modern Standard)**: The request fields `agent_id` and `webhook_url` formatted as a JSON object and canonicalized via RFC 8785:
+  ```json
+  {"agent_id":"agent://example/mybot","webhook_url":"https://example.com/hooks/creduent"}
+  ```
+- **Pipe-Delimited String (Deprecated Fallback)**: The UTF-8 string `agent_id|webhook_url` (e.g. `"agent://example/mybot|https://example.com/hooks/creduent"`).
 
 **Success Response (200):**
 ```json

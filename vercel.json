@@ -128,7 +128,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://api.idevsec.com"
+          "value": "*"
         },
         {
           "key": "Access-Control-Allow-Headers",

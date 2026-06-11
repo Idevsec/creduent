@@ -5,22 +5,32 @@ RESOLVER_HTML = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creduent Resolver - Biometric Agent Identity Verification</title>
+    <title>Creduent Resolver - Agent Identity Verification</title>
     <meta name="description" content="Decentralized agent:// URI cryptographic identity resolver and trust validator.">
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #080808;
-            --accent-cyan: #00FFD1;
-            --accent-glow: rgba(0, 255, 209, 0.45);
-            --accent-dim: rgba(0, 255, 209, 0.08);
-            --text-primary: #e6fffa;
-            --text-secondary: #8ab4ae;
-            --success-green: #00e5a0;
-            --success-glow: rgba(0, 229, 160, 0.35);
-            --error-red: #ff3b30;
-            --error-glow: rgba(255, 59, 48, 0.4);
-            --border-glow: rgba(0, 255, 209, 0.15);
+            --bg-base: #060913;
+            --bg-surface: rgba(13, 20, 38, 0.7);
+            --border-glow: rgba(99, 102, 241, 0.15);
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-glow: rgba(99, 102, 241, 0.3);
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.08);
+            --success-border: rgba(16, 185, 129, 0.2);
+            --trusted: #8b5cf6;
+            --trusted-bg: rgba(139, 92, 246, 0.08);
+            --trusted-border: rgba(139, 92, 246, 0.2);
+            --error: #ef4444;
+            --error-bg: rgba(239, 68, 68, 0.08);
+            --error-border: rgba(239, 68, 68, 0.2);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.08);
+            --warning-border: rgba(245, 158, 11, 0.2);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --text-dark: #6b7280;
         }
 
         * {
@@ -30,640 +40,586 @@ RESOLVER_HTML = """<!DOCTYPE html>
         }
 
         body {
-            background-color: var(--bg-deep);
-            color: var(--text-primary);
-            font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
             min-height: 100vh;
-            overflow-x: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-image: 
-                linear-gradient(var(--accent-dim) 1px, transparent 1px),
-                linear-gradient(90deg, var(--accent-dim) 1px, transparent 1px);
-            background-size: 24px 24px;
-            background-position: center;
             position: relative;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
         }
 
-        /* Scanline CRT simulation */
-        .scanline {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 4px;
-            background: rgba(0, 255, 209, 0.08);
-            opacity: 0.75;
-            pointer-events: none;
-            z-index: 9999;
-            animation: scan-move 8s linear infinite;
-        }
-
-        @keyframes scan-move {
-            0% { top: -10px; }
-            100% { top: 100%; }
-        }
-
-        .screen-glare {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 255, 209, 0.02) 100%);
-            pointer-events: none;
-            z-index: 9998;
-        }
-
-        /* Container Layout */
         .container {
             width: 95%;
-            max-width: 780px;
+            max-width: 800px;
             padding: 40px 20px;
             z-index: 10;
         }
 
-        /* Biometric HUD Terminal */
-        .hud-terminal {
-            background: rgba(8, 8, 8, 0.95);
-            border: 1px solid var(--accent-cyan);
-            box-shadow: 0 0 35px rgba(0, 255, 209, 0.15), inset 0 0 20px rgba(0, 255, 209, 0.05);
-            border-radius: 12px;
-            padding: 30px;
+        /* Glassmorphic Panel */
+        .glass-panel {
+            background: var(--bg-surface);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
             position: relative;
-            overflow: hidden;
         }
 
-        /* Top corners accent graphics */
-        .hud-corner {
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            border: 2px solid var(--accent-cyan);
-            pointer-events: none;
-        }
-        .corner-tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
-        .corner-tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
-        .corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
-        .corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
-
-        /* HUD Header */
-        .hud-header {
+        /* Header */
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-glow);
-            padding-bottom: 18px;
-            margin-bottom: 25px;
-        }
-
-        .hud-title h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--accent-cyan);
-            text-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        .hud-title p {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 4px;
-        }
-
-        .hud-status {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.72rem;
-            color: var(--accent-cyan);
-            border: 1px solid var(--border-glow);
-            padding: 4px 10px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .pulse-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: var(--accent-cyan);
-            animation: pulse-glow 1.5s infinite;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 0.3; box-shadow: 0 0 0px var(--accent-glow); }
-            50% { opacity: 1; box-shadow: 0 0 8px var(--accent-cyan); }
-        }
-
-        /* Biometric Input Scanner */
-        .scanner-input-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 24px;
             margin-bottom: 30px;
         }
 
-        .input-label {
-            font-size: 0.85rem;
+        .brand-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
+            letter-spacing: 1.5px;
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: inline-block;
         }
 
-        .scanner-input-group {
+        .title-area h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-area p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .status-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #a5b4fc;
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid var(--border-glow);
+            padding: 6px 12px;
+            border-radius: 30px;
             display: flex;
-            border: 1px solid var(--accent-cyan);
-            border-radius: 6px;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            box-shadow: 0 0 8px var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* Search Section */
+        .search-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .search-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .search-group {
+            display: flex;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 0 15px rgba(0, 255, 209, 0.05);
             transition: all 0.3s ease;
         }
 
-        .scanner-input-group:focus-within {
-            box-shadow: 0 0 25px rgba(0, 255, 209, 0.2);
-            border-color: #ffffff;
+        .search-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
         }
 
-        .input-prefix {
-            background: rgba(0, 255, 209, 0.05);
-            border-right: 1px solid var(--accent-cyan);
-            color: var(--accent-cyan);
+        .search-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 15px;
-            font-weight: bold;
+            padding: 0 16px;
+            color: var(--text-muted);
             font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-right: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         .uri-input {
             flex: 1;
             background: transparent;
             border: none;
-            color: var(--text-primary);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.1rem;
-            padding: 14px 18px;
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            padding: 16px;
             outline: none;
-            letter-spacing: 1px;
         }
 
         .uri-input::placeholder {
-            color: rgba(0, 255, 209, 0.3);
+            color: var(--text-dark);
         }
 
         .resolve-btn {
-            background: var(--accent-cyan);
-            color: var(--bg-deep);
+            background: var(--primary);
+            color: #ffffff;
             border: none;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
             padding: 0 28px;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
 
         .resolve-btn:hover {
-            background: #ffffff;
-            box-shadow: 0 0 20px var(--accent-glow);
+            background: var(--primary-hover);
         }
 
-        /* Pulsing Loading / Scanning HUD */
+        /* Loader Screen */
         .scanning-loader {
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px 0;
-            border: 1px dashed var(--accent-cyan);
-            border-radius: 8px;
-            background: rgba(0, 255, 209, 0.02);
+            padding: 30px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.01);
             margin-bottom: 25px;
-            animation: scanning-hud-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes scanning-hud-pulse {
-            0%, 100% { border-color: rgba(0, 255, 209, 0.4); background: rgba(0, 255, 209, 0.01); }
-            50% { border-color: rgba(0, 255, 209, 1); background: rgba(0, 255, 209, 0.05); }
         }
 
         .scanning-text {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: var(--accent-cyan);
-            letter-spacing: 3px;
-            margin-bottom: 12px;
-            text-shadow: 0 0 10px var(--accent-glow);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: 1px;
+            margin-bottom: 16px;
         }
 
-        /* Diagnostic Telemetry Logs */
+        .progress-bar-bg {
+            width: 240px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-fill {
+            position: absolute;
+            left: 0; top: 0; height: 100%; width: 50%;
+            background: linear-gradient(90deg, var(--primary), var(--trusted));
+            border-radius: 10px;
+            animation: progress-slide 1.5s ease-in-out infinite;
+        }
+
+        @keyframes progress-slide {
+            0% { left: -50%; }
+            100% { left: 100%; }
+        }
+
         .diagnostic-logs {
             width: 100%;
-            max-width: 480px;
-            background: #040404;
-            border: 1px solid rgba(0, 255, 209, 0.2);
-            border-radius: 4px;
-            padding: 12px 18px;
+            max-width: 500px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 14px 18px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             line-height: 1.6;
-            color: var(--text-secondary);
-            height: 110px;
+            color: var(--text-muted);
+            height: 120px;
             overflow-y: auto;
-            margin-top: 15px;
-            text-align: left;
         }
 
         .log-entry {
             display: flex;
             gap: 10px;
         }
-        .log-entry .timestamp { color: rgba(0, 255, 209, 0.4); }
-        .log-entry .action { color: var(--accent-cyan); }
 
-        /* The Identity Card Container */
-        .card-container {
-            display: none;
-            perspective: 1000px;
-            margin-top: 10px;
+        .log-entry .timestamp {
+            color: var(--text-dark);
         }
 
-        /* Materialization Scan Beam */
-        .materialization-box {
-            position: relative;
+        .log-entry .action {
+            color: var(--text-main);
+        }
+
+        /* Result Card Block */
+        .card-container {
+            display: none;
+            margin-top: 10px;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .identity-card {
             width: 100%;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
             overflow: hidden;
         }
 
-        .scan-beam {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 3px;
-            background: var(--accent-cyan);
-            box-shadow: 0 0 15px 4px var(--accent-cyan);
-            z-index: 100;
-            pointer-events: none;
-        }
-
-        .scan-sweep {
-            animation: sweep-beam 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        @keyframes sweep-beam {
-            0% { top: 0%; opacity: 1; }
-            85% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
-
-        /* High-tech Agent Identity Card */
-        .identity-card {
-            width: 100%;
-            background: linear-gradient(135deg, rgba(16, 22, 28, 0.95) 0%, rgba(8, 12, 16, 0.98) 100%);
-            border: 2px solid var(--accent-cyan);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 255, 209, 0.1);
-            display: grid;
-            grid-template-columns: 140px 1fr;
-            gap: 30px;
-            position: relative;
-        }
-
-        .identity-card::after {
-            content: "SECURE IDENTITY CREDENTIAL";
-            position: absolute;
-            bottom: 12px;
-            right: 20px;
-            font-size: 0.6rem;
-            color: rgba(0, 255, 209, 0.25);
-            letter-spacing: 2px;
-        }
-
-        /* Biometric Crest Column */
-        .biometric-column {
+        .identity-card-header {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            border-right: 1px solid rgba(0, 255, 209, 0.15);
-            padding-right: 10px;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
         }
 
-        .biometric-crest {
-            width: 100px;
-            height: 100px;
-            border: 1px solid var(--accent-cyan);
-            border-radius: 6px;
+        .identity-card-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .identity-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 255, 209, 0.02);
-            box-shadow: 0 0 10px rgba(0, 255, 209, 0.05);
-            position: relative;
+            color: var(--primary);
         }
 
-        .scanner-line-active {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background-color: var(--accent-cyan);
-            box-shadow: 0 0 4px var(--accent-cyan);
-            animation: vertical-scan 3s ease-in-out infinite;
+        .agent-info h2 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: -0.3px;
         }
 
-        @keyframes vertical-scan {
-            0%, 100% { top: 5%; }
-            50% { top: 95%; }
+        .agent-info p {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-top: 2px;
         }
 
         .badge-status {
-            font-size: 0.72rem;
-            letter-spacing: 1px;
+            font-size: 0.75rem;
+            font-weight: 600;
             text-transform: uppercase;
-            font-weight: 700;
-            padding: 5px 12px;
-            border-radius: 4px;
-            text-align: center;
-            width: 100%;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.5px;
+            padding: 6px 14px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-status::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
         }
 
         .status-verified {
-            background: rgba(0, 229, 160, 0.08);
-            border: 1px solid var(--success-green);
-            color: var(--success-green);
-            text-shadow: 0 0 6px var(--success-glow);
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success);
         }
-
-        .status-unverified {
-            background: rgba(245, 158, 11, 0.08);
-            border: 1px solid #f59e0b;
-            color: #f59e0b;
-        }
+        .status-verified::before { background-color: var(--success); }
 
         .status-trusted {
-            background: rgba(139, 92, 246, 0.08);
-            border: 1px solid #8b5cf6;
-            color: #8b5cf6;
-            text-shadow: 0 0 6px rgba(139, 92, 246, 0.5);
+            background: var(--trusted-bg);
+            border: 1px solid var(--trusted-border);
+            color: var(--trusted);
         }
+        .status-trusted::before { background-color: var(--trusted); }
 
         .status-revoked {
-            background: rgba(255, 59, 48, 0.08);
-            border: 1px solid var(--error-red);
-            color: var(--error-red);
-            text-shadow: 0 0 6px var(--error-glow);
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error);
         }
+        .status-revoked::before { background-color: var(--error); }
 
-        /* Identity Details Column */
-        .details-column {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        .status-unverified {
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            color: var(--warning);
         }
+        .status-unverified::before { background-color: var(--warning); }
 
-        .card-row-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            letter-spacing: 1.5px;
-            margin-bottom: 3px;
-        }
-
-        .card-value {
-            font-size: 1.05rem;
-            color: var(--text-primary);
-            word-break: break-all;
-            letter-spacing: 0.5px;
-        }
-
-        .agent-name-display {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ffffff;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border-bottom: 1px solid rgba(0, 255, 209, 0.15);
-            padding-bottom: 6px;
-            margin-bottom: 4px;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
-        }
-
+        /* Details Grid */
         .details-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px 20px;
+            gap: 20px 24px;
         }
 
-        .full-span {
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .grid-item.full-width {
             grid-column: span 2;
         }
 
-        .monospace-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
+        .detail-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
-        /* Custom error UI */
+        .detail-value {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            word-break: break-all;
+        }
+
+        .detail-value.monospace {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Error HUD Box */
         .error-hud-box {
             display: none;
-            border: 1px solid var(--error-red);
-            background: rgba(255, 59, 48, 0.03);
-            border-radius: 8px;
+            border: 1px solid var(--error-border);
+            background: var(--error-bg);
+            border-radius: 12px;
             padding: 24px;
             text-align: center;
-            position: relative;
-            box-shadow: 0 0 25px rgba(255, 59, 48, 0.1);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.05);
             margin-top: 10px;
+            animation: fadeIn 0.4s ease-out forwards;
         }
 
         .error-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--error-red);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            text-shadow: 0 0 8px var(--error-glow);
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--error);
+            margin-bottom: 8px;
         }
 
         .error-message {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.88rem;
-            color: var(--text-secondary);
+            font-size: 0.9rem;
+            color: var(--text-muted);
             line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
         /* Footer */
-        .hud-footer {
+        .footer {
             text-align: center;
             margin-top: 30px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            letter-spacing: 1px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
         }
 
-        .hud-footer a {
-            color: var(--accent-cyan);
+        .footer a {
+            color: var(--text-muted);
             text-decoration: none;
-            border-bottom: 1px dotted var(--accent-cyan);
+            border-bottom: 1px dotted var(--text-muted);
+            transition: color 0.2s;
         }
 
-        .hud-footer a:hover {
-            color: #ffffff;
-            border-color: #ffffff;
+        .footer a:hover {
+            color: var(--text-main);
         }
 
-        @media (max-width: 600px) {
-            .identity-card {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            .biometric-column {
-                border-right: none;
-                border-bottom: 1px dashed rgba(0, 255, 209, 0.2);
-                padding-right: 0;
-                padding-bottom: 20px;
-            }
+        @media (max-width: 640px) {
             .details-grid {
                 grid-template-columns: 1fr;
             }
-            .full-span {
+            .grid-item.full-width {
                 grid-column: span 1;
             }
-            .scanner-input-group {
+            .search-group {
                 flex-direction: column;
             }
-            .input-prefix {
-                border-right: none;
-                border-bottom: 1px solid var(--accent-cyan);
-                padding: 10px 0;
+            .search-icon {
+                display: none;
             }
             .resolve-btn {
-                padding: 15px 0;
+                padding: 16px;
+            }
+            .glass-panel {
+                padding: 24px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="scanline"></div>
-    <div class="screen-glare"></div>
-
     <main class="container">
-        <div class="hud-terminal">
-            <!-- HUD Corners decoration -->
-            <div class="hud-corner corner-tl"></div>
-            <div class="hud-corner corner-tr"></div>
-            <div class="hud-corner corner-bl"></div>
-            <div class="hud-corner corner-br"></div>
-
+        <div class="glass-panel">
             <!-- Header -->
-            <header class="hud-header">
-                <div class="hud-title">
+            <header class="header">
+                <div class="title-area">
+                    <span class="brand-badge">iDevSec Security Suite</span>
                     <h1>Creduent Resolver</h1>
                     <p>Cryptographic Agent Identity Discovery</p>
                 </div>
-                <div class="hud-status">
+                <div class="status-badge">
                     <span class="pulse-dot"></span>
-                    SYSTEM SECURE
+                    Registry Node Connected
                 </div>
             </header>
 
-            <!-- Input block -->
-            <section class="scanner-input-container">
-                <label for="uriInput" class="input-label">Biometric Scan Target (agent:// URI)</label>
-                <div class="scanner-input-group">
-                    <div class="input-prefix">&gt;</div>
-                    <input type="text" id="uriInput" class="uri-input" placeholder="agent://idevlabs.in/agents/scout" value="agent://creduent/reconbot" autocomplete="off" spellcheck="false">
-                    <button id="resolveBtn" class="resolve-btn" onclick="resolveIdentity()">Scan Identity</button>
+            <!-- Search Area -->
+            <section class="search-section">
+                <label for="uriInput" class="search-label">Verify Agent URI</label>
+                <div class="search-group">
+                    <div class="search-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </div>
+                    <input type="text" id="uriInput" class="uri-input" placeholder="agent://domain/name" value="agent://creduent/reconbot" autocomplete="off" spellcheck="false">
+                    <button id="resolveBtn" class="resolve-btn" onclick="resolveIdentity()">Resolve URI</button>
                 </div>
             </section>
 
-            <!-- Scanning load screen -->
+            <!-- Loader Screen -->
             <section id="scanningLoader" class="scanning-loader">
-                <div class="scanning-text">SCANNING INTEGRITY...</div>
-                <div style="width: 200px; height: 4px; background: rgba(0, 255, 209, 0.15); border-radius: 2px; overflow: hidden; position: relative;">
-                    <div style="position: absolute; left: 0; top: 0; height: 100%; width: 50%; background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan); animation: loader-slide 1.5s ease-in-out infinite;"></div>
+                <div class="scanning-text">Querying Cryptographic Registry</div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill"></div>
                 </div>
-                <style>
-                    @keyframes loader-slide {
-                        0% { left: -50%; }
-                        100% { left: 100%; }
-                    }
-                </style>
                 <div class="diagnostic-logs" id="diagnosticLogs"></div>
             </section>
 
             <!-- Result Card Block -->
             <section id="cardContainer" class="card-container">
-                <div class="materialization-box">
-                    <div id="scanBeam" class="scan-beam"></div>
-                    <div class="identity-card">
-                        
-                        <!-- Biometric Crest / Status -->
-                        <div class="biometric-column">
-                            <div class="biometric-crest">
-                                <div class="scanner-line-active"></div>
-                                <svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M50 10 L85 25 L85 55 C85 75 50 90 50 90 C50 90 15 75 15 55 L15 25 Z" stroke="#00FFD1" stroke-width="2" fill="rgba(0, 255, 209, 0.05)"/>
-                                    <circle cx="50" cy="45" r="18" stroke="#00FFD1" stroke-width="1.5" stroke-dasharray="4 2"/>
-                                    <path d="M50 30 L50 60 M35 45 L65 45" stroke="#00FFD1" stroke-width="1.5"/>
-                                </svg>
+                <div class="identity-card">
+                    <div class="identity-card-header">
+                        <div class="identity-card-title">
+                            <div class="identity-avatar">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                             </div>
-                            <div id="statusBadge" class="badge-status status-verified">Verified</div>
-                        </div>
-
-                        <!-- Identity details -->
-                        <div class="details-column">
-                            <div>
-                                <h2 class="agent-name-display" id="agentNameDisplay">AGENT IDENTIFIER</h2>
-                            </div>
-                            <div class="details-grid">
-                                <div class="full-span">
-                                    <div class="card-row-title">Agent URI</div>
-                                    <div class="card-value monospace-value" id="agentUriValue">agent://...</div>
-                                </div>
-                                <div class="full-span">
-                                    <div class="card-row-title">Public Key Certificate</div>
-                                    <div class="card-value monospace-value" id="agentKeyValue" style="font-size: 0.76rem;">ed25519:...</div>
-                                </div>
-                                <div>
-                                    <div class="card-row-title">Registered Domain</div>
-                                    <div class="card-value" id="agentDomainValue">-</div>
-                                </div>
-                                <div>
-                                    <div class="card-row-title">Issued Timestamp</div>
-                                    <div class="card-value monospace-value" id="agentIssuedValue">-</div>
-                                </div>
-                                <div class="full-span">
-                                    <div class="card-row-title">Authority / Issuer Namespace</div>
-                                    <div class="card-value monospace-value" id="agentIssuerValue">agent://creduent/registry</div>
-                                </div>
+                            <div class="agent-info">
+                                <h2 id="agentNameDisplay">AGENT IDENTIFIER</h2>
+                                <p>Creduent Cryptographic Attestation</p>
                             </div>
                         </div>
+                        <div id="statusBadge" class="badge-status status-verified">Verified</div>
+                    </div>
 
+                    <div class="details-grid">
+                        <div class="grid-item full-width">
+                            <div class="detail-label">Agent URI</div>
+                            <div class="detail-value monospace" id="agentUriValue">agent://...</div>
+                        </div>
+                        <div class="grid-item full-width">
+                            <div class="detail-label">Public Key (Ed25519)</div>
+                            <div class="detail-value monospace">
+                                <span id="agentKeyValue" style="font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 450px;">ed25519:...</span>
+                                <button class="copy-btn" onclick="copyKey()" title="Copy Public Key">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="grid-item">
+                            <div class="detail-label">Registered Domain</div>
+                            <div class="detail-value" id="agentDomainValue">-</div>
+                        </div>
+                        <div class="grid-item">
+                            <div class="detail-label">Issued Timestamp</div>
+                            <div class="detail-value monospace" id="agentIssuedValue">-</div>
+                        </div>
+                        <div class="grid-item full-width">
+                            <div class="detail-label">Attestation Authority</div>
+                            <div class="detail-value monospace" id="agentIssuerValue">agent://creduent/registry</div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Error hud box -->
+            <!-- Error Box -->
             <section id="errorBox" class="error-hud-box">
-                <div class="hud-corner corner-tl" style="border-color: var(--error-red);"></div>
-                <div class="hud-corner corner-tr" style="border-color: var(--error-red);"></div>
-                <div class="hud-corner corner-bl" style="border-color: var(--error-red);"></div>
-                <div class="hud-corner corner-br" style="border-color: var(--error-red);"></div>
                 <div class="error-title" id="errorTitle">AGENT NOT FOUND</div>
                 <div class="error-message" id="errorMessage">Identity document could not be resolved. Verification sequence aborted.</div>
             </section>
         </div>
 
-        <footer class="hud-footer">
-            Creduent Trust Infrastructure - Backed by <a href="/registry" target="_blank">Creduent Registry</a>
+        <footer class="footer">
+            Creduent Trust Protocol &bull; A Project of <a href="https://idevsec.com" target="_blank">iDevSec</a>
         </footer>
     </main>
 
@@ -672,86 +628,86 @@ RESOLVER_HTML = """<!DOCTYPE html>
         const loader = document.getElementById('scanningLoader');
         const cardBox = document.getElementById('cardContainer');
         const errorBox = document.getElementById('errorBox');
-        const scanBeam = document.getElementById('scanBeam');
 
         function appendLog(action, status) {
             const entry = document.createElement('div');
             entry.className = 'log-entry';
             const timeStr = new Date().toISOString().substring(11, 19);
-            entry.innerHTML = `<span class="timestamp">[${timeStr}]</span> <span class="action">${action.padEnd(30, '.')}</span> <span style="color: ${status === 'SUCCESS' || status === 'OK' ? 'var(--success-green)' : status === 'PENDING' ? 'var(--accent-cyan)' : 'var(--error-red)'};">${status}</span>`;
+            const statusColor = status === 'SUCCESS' || status === 'OK' ? 'var(--success)' : status === 'PENDING' ? 'var(--primary)' : 'var(--error)';
+            entry.innerHTML = `<span class="timestamp">[${timeStr}]</span> <span class="action">${action}...</span> <span style="color: ${statusColor}; font-weight: 500;">${status}</span>`;
             logsBox.appendChild(entry);
             logsBox.scrollTop = logsBox.scrollHeight;
+        }
+
+        function copyKey() {
+            const text = document.getElementById('agentKeyValue').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.style.color = 'var(--success)';
+                setTimeout(() => { btn.style.color = 'var(--text-dark)'; }, 1500);
+            });
         }
 
         async function resolveIdentity() {
             let uri = document.getElementById('uriInput').value.trim();
             if (!uri) return;
 
-            // Basic validation
             if (!uri.startsWith("agent://") && !uri.startsWith("agent:/")) {
                 alert("Please enter a valid agent:// URI.");
                 return;
             }
 
-            // Normalization
             if (uri.startsWith("agent:/") && !uri.startsWith("agent://")) {
                 uri = "agent://" + uri.substring(7);
             }
 
-            // Reset states
             cardBox.style.display = 'none';
             errorBox.style.display = 'none';
-            scanBeam.style.display = 'none';
-            scanBeam.classList.remove('scan-sweep');
             loader.style.display = 'flex';
             logsBox.innerHTML = '';
 
-            appendLog("INITIALIZING SCAN SEQUENCE", "OK");
-            appendLog("ESTABLISHING REGISTRY HANDSHAKE", "PENDING");
+            appendLog("Initializing resolution sequence", "OK");
+            appendLog("Establishing registry handshake", "PENDING");
 
-            // Format URL: use /attest/ prefix to avoid browser normalizing // in path
             const requestPath = "/attest/" + encodeURIComponent(uri);
 
             try {
-                // Delay slightly for dramatic biometric scanning effect
-                await new Promise(r => setTimeout(r, 600));
-                appendLog("ESTABLISHING REGISTRY HANDSHAKE", "OK");
-                appendLog("VERIFYING SECURITY TOKENS", "PENDING");
+                await new Promise(r => setTimeout(r, 400));
+                appendLog("Establishing registry handshake", "OK");
+                appendLog("Verifying attestation proofs", "PENDING");
                 
-                await new Promise(r => setTimeout(r, 450));
-                appendLog("VERIFYING SECURITY TOKENS", "OK");
-                appendLog("RESOLVING ENDPOINT ATTESTATION", "PENDING");
+                await new Promise(r => setTimeout(r, 300));
+                appendLog("Verifying attestation proofs", "OK");
+                appendLog("Fetching agent identity document", "PENDING");
 
                 const response = await fetch(requestPath);
                 
-                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, 300));
 
                 if (response.status === 404) {
-                    appendLog("RESOLVING ENDPOINT ATTESTATION", "FAIL");
+                    appendLog("Fetching agent identity document", "FAIL");
                     loader.style.display = 'none';
                     errorBox.style.display = 'block';
                     document.getElementById('errorTitle').textContent = "AGENT NOT FOUND";
-                    document.getElementById('errorMessage').textContent = `Agent URI '${uri}' is not registered or has no active cryptographic attestation record. Verification chain broken.`;
+                    document.getElementById('errorMessage').textContent = `Agent URI '${uri}' is not registered or has no active cryptographic attestation record in the registry database.`;
                     return;
                 } else if (!response.ok) {
-                    appendLog("RESOLVING ENDPOINT ATTESTATION", "FAIL");
+                    appendLog("Fetching agent identity document", "FAIL");
                     loader.style.display = 'none';
                     errorBox.style.display = 'block';
-                    document.getElementById('errorTitle').textContent = "REGISTRY ERROR";
-                    document.getElementById('errorMessage').textContent = `Database reported an unexpected error (${response.status} ${response.statusText}). Registry unreachable.`;
+                    document.getElementById('errorTitle').textContent = "REGISTRY QUERY ERROR";
+                    document.getElementById('errorMessage').textContent = `The registry node reported an unexpected error (${response.status} ${response.statusText}).`;
                     return;
                 }
 
                 const data = await response.json();
-                appendLog("RESOLVING ENDPOINT ATTESTATION", "OK");
-                appendLog("DECRYPTING CERTIFICATE DATA", "PENDING");
+                appendLog("Fetching agent identity document", "OK");
+                appendLog("Parsing cryptographic signature", "PENDING");
                 
-                await new Promise(r => setTimeout(r, 400));
-                appendLog("DECRYPTING CERTIFICATE DATA", "OK");
-                appendLog("VALIDATING ED25519 SIGNATURE", "OK");
+                await new Promise(r => setTimeout(r, 250));
+                appendLog("Parsing cryptographic signature", "OK");
+                appendLog("Validating identity signature", "OK");
                 
-                // Success! Fill details
-                // Parse namespace/name for Agent Name
                 let namePart = "AGENT IDENTIFIER";
                 try {
                     const parsed = uri.replace("agent://", "").split("/");
@@ -782,20 +738,15 @@ RESOLVER_HTML = """<!DOCTYPE html>
                     badge.classList.add('status-unverified');
                 }
 
-                // Hide loader, show card container
                 loader.style.display = 'none';
                 cardBox.style.display = 'block';
 
-                // Sweep animation
-                scanBeam.style.display = 'block';
-                scanBeam.classList.add('scan-sweep');
-
             } catch (err) {
-                appendLog("RESOLVING ENDPOINT ATTESTATION", "FAIL");
+                appendLog("Fetching agent identity document", "FAIL");
                 loader.style.display = 'none';
                 errorBox.style.display = 'block';
                 document.getElementById('errorTitle').textContent = "REGISTRY UNREACHABLE";
-                document.getElementById('errorMessage').textContent = "Failed to communicate with Creduent registry node. Check your network configuration and gateway status.";
+                document.getElementById('errorMessage').textContent = "Could not communicate with the registry node. Please check your network connection and try again.";
             }
         }
     </script>

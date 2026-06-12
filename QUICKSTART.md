@@ -153,7 +153,7 @@ When adding the _creduent TXT record in Cloudflare DNS:
 |-------|-------|-----|
 | Failed to fetch agent.json: HTTP 403 | Cloudflare WAF blocking registry server | Add the WAF rule above |
 | Failed to fetch agent.json: HTTP 403 (after adding rules) | Bot Fight Mode JS challenge | Disable JS Detections under Security → Bots |
-| Registration succeeds but resolver shows 403 | CSP blocking api.idevsec.com | Add api.idevsec.com to connect-src in your site's CSP headers |
+| Registration succeeds but resolver shows 403 | CSP blocking registry.idevsec.com | Add registry.idevsec.com to connect-src in your site's CSP headers |
 
 ---
 
@@ -186,7 +186,7 @@ Expected output:
 
 **Using curl:**
 ```bash
-curl -X POST https://api.idevsec.com/register \
+curl -X POST https://registry.idevsec.com/register \
   -H "Content-Type: application/json" \
   -d '{
     "agent_id": "agent://example/mybot",
@@ -306,7 +306,7 @@ To expose `verify_agent` as a tool in your agent host:
       "command": "python",
       "args": ["/path/to/creduent/mcp/creduent_mcp_server.py"],
       "env": {
-        "CREDUENT_REGISTRY_URL": "https://api.idevsec.com"
+        "CREDUENT_REGISTRY_URL": "https://registry.idevsec.com"
       }
     }
   }

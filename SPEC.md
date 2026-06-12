@@ -59,7 +59,7 @@ A v1.0 `agent.json` document consists of the following 8 fields:
 
 6. **`endpoint`** (String, Required)  
    The base HTTPS API url through which this agent receives instructions, handles communication, or delegates tasks.  
-   *Example:* `"https://api.idevsec.com/recon"`
+   *Example:* `"https://registry.idevsec.com/recon"`
 
 7. **`capabilities`** (Array of Strings, Required)  
    A list of semantic tags exposing what functions/tasks this agent is capable of performing.  
@@ -201,7 +201,7 @@ Owners may register a webhook URL via `POST /webhook/register`. The auto-renewal
   "domain": "example.com",
   "expires_at": "2027-05-30T00:00:00Z",
   "days_remaining": 28,
-  "action_url": "https://api.idevsec.com/renew"
+  "action_url": "https://registry.idevsec.com/renew"
 }
 ```
 

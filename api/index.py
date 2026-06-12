@@ -41,7 +41,7 @@ AGENT_METADATA_FALLBACK = {
   "agent_id": "agent://creduent/reconbot",
   "owner": "Creduent",
   "public_key": "ed25519:uMMQ6RfZB5RJuYcZPwzLoiv8b6EQfU7CUJ2oLragCHg=",
-  "endpoint": "https://api.idevsec.com",
+  "endpoint": "https://registry.idevsec.com",
   "capabilities": [
     "osint",
     "dns_lookup",

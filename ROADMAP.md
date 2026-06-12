@@ -17,7 +17,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [x] Attestation registry with signed attestations (Upstash Redis)
 * [x] MCP server integration (`verify_agent` tool)
 * [x] SSRF protection, rate limiting, and expiry enforcement
-* [x] Vercel production deployment (`api.idevsec.com`)
+* [x] Vercel production deployment (`registry.idevsec.com`)
 * [x] v1.0 security hardening + full regression test suite
 
 ---
@@ -30,7 +30,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [x] **JavaScript/TypeScript SDK**: `npm install @idevsec/creduent` for MCP hosts running Node.
 * [x] **Auto-renewal daemon**: Lightweight background process for agents to automatically re-attest 30 days before expiry.
 * [x] **Webhook notifications**: POST notifications to a configured URL on registration, revocation, and expiry.
-* [x] **Developer dashboard**: Web UI at `api.idevsec.com/dashboard` to manage registered agents, view attestation status, and rotate keys.
+* [x] **Developer dashboard**: Web UI at `registry.idevsec.com/dashboard` to manage registered agents, view attestation status, and rotate keys.
 * [x] **GitHub Action**: `creduent-attest` action to register/re-attest automatically on every deploy.
 
 ---

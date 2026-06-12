@@ -132,7 +132,7 @@ def verify_agent(target: str) -> dict:
     and query the Creduent Registry for attestation status.
     
     Args:
-        target: The agent's agent:// URI (e.g. agent://creduent/reconbot) or domain (e.g. api.idevsec.com).
+        target: The agent's agent:// URI (e.g. agent://creduent/reconbot) or domain (e.g. registry.idevsec.com).
         
     Returns:
         A dictionary with the verification details and attestation level.

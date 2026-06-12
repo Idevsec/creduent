@@ -236,7 +236,7 @@ Once `creduent_mcp_server.py` is configured in your MCP host, call the `verify_a
   "attestation_issued_at": "2026-05-29T00:00:00Z",
   "attestation_expires_at": "2027-05-29T00:00:00Z",
   "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
-  "endpoint": "https://api.idevsec.com",
+  "endpoint": "https://registry.idevsec.com",
   "capabilities": ["osint", "dns_lookup", "vulnerability_scan"],
   "checked_at": "2026-05-30T07:00:00Z"
 }
@@ -266,7 +266,7 @@ signature_bytes = private_key.sign(message)
 signature_b64 = base64.b64encode(signature_bytes).decode("utf-8")
 
 # Submit renewal
-resp = requests.post("https://api.idevsec.com/renew", json={
+resp = requests.post("https://registry.idevsec.com/renew", json={
     "agent_id": agent_id,
     "new_expires_at": new_expires_at,
     "signature": signature_b64
@@ -282,7 +282,7 @@ print(resp.json())
 # Compute signature over "agent_id|webhook_url" first
 # Then submit:
 
-curl -X POST https://api.idevsec.com/webhook/register \
+curl -X POST https://registry.idevsec.com/webhook/register \
   -H "Content-Type: application/json" \
   -d '{
     "agent_id": "agent://example/mybot",
@@ -299,7 +299,7 @@ curl -X POST https://api.idevsec.com/webhook/register \
   "domain": "example.com",
   "expires_at": "2027-05-30T00:00:00Z",
   "days_remaining": 28,
-  "action_url": "https://api.idevsec.com/renew"
+  "action_url": "https://registry.idevsec.com/renew"
 }
 ```
 
@@ -361,7 +361,7 @@ jobs:
           print('Attestation level:', result.attestation.get('level'))
           "
         env:
-          CREDUENT_REGISTRY_URL: https://api.idevsec.com
+          CREDUENT_REGISTRY_URL: https://registry.idevsec.com
 ```
 
 ---

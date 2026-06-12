@@ -102,12 +102,12 @@ def _load_json_file(file_path: str) -> dict:
 # ---------------------------------------------------------------------------
 
 def send_webhook(agent_id, webhook_url, domain, expires_at, days_remaining):
-    action_url = f"https://{domain}/renew" if domain else "https://api.idevsec.com/renew"
+    action_url = f"https://{domain}/renew" if domain else "https://registry.idevsec.com/renew"
 
     payload = {
         "event": "agent.expiry_warning",
         "agent_id": agent_id,
-        "domain": domain or "api.idevsec.com",
+        "domain": domain or "registry.idevsec.com",
         "expires_at": expires_at,
         "days_remaining": days_remaining,
         "action_url": action_url

@@ -53,7 +53,7 @@ A resolver MUST attempt the following steps in order, stopping at the first succ
 Query the Creduent registry for a known agent record:
 
 ```
-GET https://api.idevsec.com/attest/<uri-encoded-agent-id>
+GET https://registry.idevsec.com/attest/<uri-encoded-agent-id>
 ```
 
 If the registry returns a 200 response with a valid attestation, extract the `domain` field and proceed to Step 2 for document retrieval. If the registry returns 404, proceed to Step 2 with namespace-derived domain heuristics.
@@ -145,13 +145,13 @@ This step is performed by the registry during `/register`. Client-side verifiers
 
 ## 6. Resolver Reference Implementation
 
-The reference implementation is at `api.idevsec.com/resolver`. It accepts an `agent://` URI and returns:
+The reference implementation is at `registry.idevsec.com/resolver`. It accepts an `agent://` URI and returns:
 - The resolved `agent.json` document.
 - The resolution path taken (registry, well-known, or local).
 - Self-verification result.
 - Registry attestation status.
 
-The resolver UI is accessible in a browser at `api.idevsec.com/resolver`.
+The resolver UI is accessible in a browser at `registry.idevsec.com/resolver`.
 
 ---
 

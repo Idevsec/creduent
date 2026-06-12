@@ -48,7 +48,7 @@ An agent's identity (`agent://example/mybot`) is independent of which registry a
 
 **4. A registry's own identity is expressed as an `agent.json`**
 
-The reference registry at `api.idevsec.com` publishes its own identity at `/.well-known/agent.json`. A federated trust chain can verify registries using the exact same mechanism used to verify agents.
+The reference registry at `registry.idevsec.com` publishes its own identity at `/.well-known/agent.json`. A federated trust chain can verify registries using the exact same mechanism used to verify agents.
 
 ---
 
@@ -58,7 +58,7 @@ The following items in v1.0 would need to be addressed to enable production fede
 
 | Item | Current State | Federation Path |
 |:---|:---|:---|
-| Registry URL | Hardcoded to `api.idevsec.com` in SDKs | SDKs accept configurable `baseUrl` option (already supported) |
+| Registry URL | Hardcoded to `registry.idevsec.com` in SDKs | SDKs accept configurable `baseUrl` option (already supported) |
 | Registry public key | Provided via `CREDUENT_REGISTRY_PUBKEY` env var | Discoverable via `/.well-known/creduent-registry.json` |
 | `issuer` in attestations | Always `"agent://creduent/registry"` | Already a variable field; verifiers must check dynamically |
 | Namespace ownership | No enforcement | DNS-based namespace binding (future CIP) |

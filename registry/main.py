@@ -733,9 +733,9 @@ def serve_registry_landing():
         "version": "1.0",
         "status": "operational",
         "endpoints": {
-            "register": "https://api.idevsec.com/registry/register",
-            "attest": "https://api.idevsec.com/registry/attest/{agent_id}",
-            "revoke": "https://api.idevsec.com/registry/revoke"
+            "register": "https://registry.idevsec.com/registry/register",
+            "attest": "https://registry.idevsec.com/registry/attest/{agent_id}",
+            "revoke": "https://registry.idevsec.com/registry/revoke"
         }
     }
 

@@ -58,7 +58,7 @@ _creduent.example.com TXT "agent://example/reconbot"
 ### 3. Register with Creduent Registry
 Submit your agent's registration to the registry:
 ```bash
-curl -X POST https://api.idevsec.com/register \
+curl -X POST https://registry.idevsec.com/register \
   -H "Content-Type: application/json" \
   -d '{"agent_id": "agent://example/reconbot", "domain": "example.com", "agent_json_url": "https://example.com/.well-known/agent.json"}'
 ```
@@ -91,7 +91,7 @@ Creduent exposes a Model Context Protocol (MCP) server with the `verify_agent` t
       "command": "python",
       "args": ["/path/to/creduent/mcp/creduent_mcp_server.py"],
       "env": {
-        "CREDUENT_REGISTRY_URL": "https://api.idevsec.com"
+        "CREDUENT_REGISTRY_URL": "https://registry.idevsec.com"
       }
     }
   }
@@ -114,8 +114,8 @@ Call `verify_agent` with target agent ID or domain to receive structural, crypto
 - `GET /challenge/{agent_id}` - Generates a secure challenge and nonce for identity verification.
 - `POST /verify-challenge` - Verifies a signed challenge response and issues a short-lived proof token.
 - `GET /public-key` - Retrieves the registry public key used to verify proof tokens.
-- `GET /dashboard` - Developer dashboard UI at `api.idevsec.com/dashboard`.
-- `GET /resolver` - Agent:// URI resolver UI at `api.idevsec.com/resolver`.
+- `GET /dashboard` - Developer dashboard UI at `registry.idevsec.com/dashboard`.
+- `GET /resolver` - Agent:// URI resolver UI at `registry.idevsec.com/resolver`.
 
 ## Protocol Standards & Specification
 

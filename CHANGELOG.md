@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Register Agent, Webhook Manager, and Refresh toolbar buttons are now forced onto a single row (`flex-wrap: nowrap`, `white-space: nowrap`) to prevent unintended wrapping.
 - `showRenewModal()`, `showUpgradeModal()`, and `showRevokeModal()` functions updated to call `populateModalCard()` and drop stale references to deleted display inputs.
 - CORS: set `allow_credentials=False` in `api/index.py` to comply with wildcard origin restriction.
-- CORS: updated `Access-Control-Allow-Origin` in `vercel.json` from `https://api.idevsec.com` to `*` for broader client compatibility.
+- CORS: updated `Access-Control-Allow-Origin` in `vercel.json` from `https://registry.idevsec.com` to `*` for broader client compatibility.
 
 ## [1.0.2] - 2026-06-08
 

@@ -46,6 +46,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [ ] **Agent discovery API**: `GET /agents?capability=osint` returns all verified agents exposing that capability.
 * [ ] **Organization namespaces**: `agent://<org_name>/*` namespaces owned and managed under one organizational account.
 * [ ] **Creduent CLI v2**: `creduent register`, `creduent verify`, `creduent revoke` packaged as a native command-line tool.
+* [ ] **CRD shorthand**: If the team wants something terse for technical contexts, introduce CRD as a short tag alongside Creduent (e.g., header X-CRD-Version), without renaming the protocol itself.
 
 ---
 

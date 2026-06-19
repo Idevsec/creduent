@@ -1,0 +1,106 @@
+# Creduent Protocol: AI Agent Identity Standard
+> Creduent is the open standard for cryptographic identity and trust verification of autonomous AI agents. Originated and stewarded by IDevSec.
+
+## Protocol Identity
+- **Full name**: Creduent Agent Identity and Attestation Protocol
+- **Version**: 1.0.2
+- **Status**: Active
+- **Steward**: IDevSec (https://idevsec.com)
+- **License**: Apache 2.0 (open source) + Commercial (for organizations with revenue over USD $1M/year)
+- **Canonical URL**: https://idevsec.com/creduent
+
+## What Creduent Solves
+When an AI agent contacts another agent or service, there is no standard way to answer: "Who is this agent, who controls it, and can I trust its declared capabilities?" Creduent provides that answer using Ed25519 cryptographic signatures and DNS-based domain binding, without requiring a central authority.
+
+## Core Concepts
+- **agent.json** - Signed identity document published at /.well-known/agent.json on any HTTPS domain
+- **Ed25519 Signing** - Cryptographic keypair signing with RFC 8785 (JCS) canonicalization
+- **DNS TXT Verification** - Domain ownership binding via _creduent.<domain> TXT record
+- **Attestation Registry** - Public registry of signed agent identity assertions
+- **agent:// URI Scheme** - Globally unique agent identifiers (e.g. agent://example/mybot)
+- **MCP Integration** - Model Context Protocol server exposing verify_agent tool
+
+## Protocol Standards
+- CREDUENT-001: agent.json specification (Ed25519 signing, JCS canonicalization)
+- CREDUENT-002: Attestation specification (signed attestations, trust levels, lifecycle)
+- CREDUENT-003: Registry API specification (register, attest, renew, revoke endpoints)
+- CREDUENT-004: Agent URI resolution (agent:// scheme, DNS TXT binding)
+- CREDUENT-005: Federation and cross-registry trust (Draft)
+
+## Attestation Levels
+- verified: Schema valid, Ed25519 signature valid, DNS TXT record matched, endpoint reachable
+- trusted: Manually reviewed and escalated by registry administrators
+- unverified: Registered but DNS and endpoint checks were skipped
+- revoked: Agent registration was explicitly revoked
+
+## SDK Installation
+- Python: pip install creduent (Python 3.9+)
+- JavaScript/TypeScript: npm install @idevsec/creduent (Node.js 18+)
+- CLI Tool: npm install -g @idevsec/creduent-cli
+- MCP Server: npx -y @idevsec/creduent-mcp
+
+## Registry API Base URL
+https://registry.idevsec.com
+
+## Key Endpoints
+- POST /register - Register agent with DNS + signature verification
+- POST /attest - Direct attestation without DNS check
+- GET /attest/{agent_id} - Retrieve attestation
+- POST /revoke/{agent_id} - Revoke an agent
+- POST /renew - Renew expiring attestation
+- GET /resolver - Resolve agent:// URI to metadata
+- GET /stats - Registry telemetry
+
+## Example: Minimal agent.json
+```json
+{
+  "version": "1.0",
+  "issued_at": "2026-05-27T02:41:21Z",
+  "agent_id": "agent://example/mybot",
+  "owner": "Example Corp",
+  "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
+  "endpoint": "https://api.example.com/mybot",
+  "capabilities": ["query", "respond"],
+  "signature": "<ed25519-signature-over-jcs-canonicalized-payload>"
+}
+```
+
+## Example: Register via curl
+```bash
+curl -X POST https://registry.idevsec.com/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_id": "agent://example/mybot",
+    "domain": "example.com",
+    "agent_json_url": "https://example.com/.well-known/agent.json"
+  }'
+```
+
+## FAQ
+Q: Is Creduent a SaaS product?
+A: No. Creduent is an open protocol. The spec is free to implement. Anyone can run a compatible registry.
+
+Q: Does Creduent replace TLS or OAuth?
+A: No. Creduent operates above TLS. It handles agent-level identity and capability attestation, not transport security or user authorization.
+
+Q: Is Creduent related to blockchain or Web3?
+A: No. Creduent uses standard HTTPS, DNS, and Ed25519 cryptography. No blockchain required.
+
+Q: Can I run my own Creduent registry?
+A: Yes. Implement CREDUENT-003 and you have a compatible registry.
+
+Q: What happens if the registry is offline?
+A: Self-signed verification (CREDUENT-001) works with no registry. The MCP tool returns attestation_level: "registry_offline" and self_verified: true.
+
+## Links
+- Protocol showcase: https://idevsec.com/creduent
+- Technical documentation: https://idevsec.com/creduent/docs
+- Licensing: https://idevsec.com/creduent/licensing
+- Reference registry: https://registry.idevsec.com
+- GitHub (main): https://github.com/idevsec/creduent
+- Python SDK: https://pypi.org/project/creduent/
+- JavaScript SDK: https://www.npmjs.com/package/@idevsec/creduent
+- CLI Tool: https://www.npmjs.com/package/@idevsec/creduent-cli
+
+---
+Steward: IDevSec | Contact: contact@idevsec.com | X: @idevsec

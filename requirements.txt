@@ -1,9 +1,5 @@
 fastapi
-cryptography
-requests
-jsonschema
+creduent>=0.5.1
 mcp
-jcs
 dnspython
 upstash-redis
-

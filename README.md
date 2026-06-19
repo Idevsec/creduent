@@ -116,6 +116,14 @@ Creduent exposes a Model Context Protocol (MCP) server with the `verify_agent` t
 
 Call `verify_agent` with target agent ID or domain to receive structural, cryptographic signature, and registry-attested status.
 
+## Agent Framework Integrations
+
+Creduent provides native verification middleware and plugins for the leading AI agent frameworks:
+
+- **CrewAI**: Use `creduent.integrations.crewai.verify_crew_agents()` to strictly verify every agent in your Crew. Unverified agents will be blocked from execution.
+- **LangGraph**: Add the `CreduentLangGraphValidator` node to your state graph to enforce identity checks before sensitive pipeline steps.
+- **AutoGen**: Register the `CreduentAutoGenHook` to verify remote peers before allowing message exchanges.
+
 ## Registry API
 
 - `POST /register` - Verifies the agent's identity via signature and DNS TXT checks, then issues a signed attestation.

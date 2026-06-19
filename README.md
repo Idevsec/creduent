@@ -1,6 +1,22 @@
-# Creduent: Agent Identity & Trust Protocol
+# Creduent: Open Standard for AI Agent Identity & Trust
 
-Creduent is an open application-layer protocol that enables cryptographic identity verification and federated attestation for autonomous AI agents.
+[![Protocol Version](https://img.shields.io/badge/protocol-v1.0.2-cyan)](https://idevsec.com/creduent)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://idevsec.com/creduent/licensing)
+[![Registry](https://img.shields.io/badge/registry-live-brightgreen)](https://registry.idevsec.com)
+[![Python SDK](https://img.shields.io/pypi/v/creduent.svg?label=pip%20install%20creduent&color=blue)](https://pypi.org/project/creduent/)
+[![JS SDK](https://img.shields.io/npm/v/@idevsec/creduent.svg?label=npm%20install%20%40idevsec%2Fcreduent&color=blue)](https://www.npmjs.com/package/@idevsec/creduent)
+
+**Creduent** is the open standard for cryptographic identity and trust verification of autonomous AI agents.
+It defines how agents publish signed identity documents (`agent.json`), bind them to internet domains via DNS TXT records, and register with a public attestation registry.
+
+Originated and stewarded by [IDevSec](https://idevsec.com). Open source under Apache 2.0.
+
+- **Protocol overview**: [idevsec.com/creduent](https://idevsec.com/creduent)
+- **Technical docs**: [idevsec.com/creduent/docs](https://idevsec.com/creduent/docs)
+- **Reference registry**: [registry.idevsec.com](https://registry.idevsec.com)
+- **Licensing**: [idevsec.com/creduent/licensing](https://idevsec.com/creduent/licensing)
+
+> **GitHub Topics**: `ai-agent` `agent-identity` `ed25519` `open-standard` `mcp` `attestation` `agent-trust` `cryptographic-signing` `dns-verification` `autonomous-agent`
 
 ## The Problem
 
@@ -130,7 +146,7 @@ The Creduent Protocol is structured as a series of formal standards-track docume
 
 ## Origin and Stewardship
 
-The Creduent Protocol was originally designed and developed by Kashish Kanojia through IDevSec.
+The Creduent Protocol was originally designed and developed by Kashish Kanojia through [IDevSec](https://idevsec.com).
 
 Creduent is an open protocol intended for community adoption, interoperability, and federated trust. Long-term governance and stewardship are managed by IDevSec to ensure it remains a neutral, open standard for the entire AI agent ecosystem.
 
@@ -138,6 +154,26 @@ For details on the project's history, please see:
 * [AUTHORS.md](AUTHORS.md) - Founding details and references
 
 The reference registry, SDKs, and protocol tooling serve as the initial implementation of the protocol.
+
+## Contributing
+
+Contributions to the Creduent Protocol standards and reference implementations are welcome.
+- Open an issue or discussion on GitHub to propose protocol changes
+- All specification changes follow the CIP (Creduent Improvement Proposal) process defined in [CREDUENT-005](standards/CREDUENT-005-federation.md)
+- Join the consortium: [idevsec.com/creduent](https://idevsec.com/creduent)
+
+## Useful Links
+
+| Resource | URL |
+|---|---|
+| Protocol Showcase | https://idevsec.com/creduent |
+| Technical Documentation | https://idevsec.com/creduent/docs |
+| Licensing Details | https://idevsec.com/creduent/licensing |
+| Reference Registry | https://registry.idevsec.com |
+| Registry Dashboard | https://registry.idevsec.com/dashboard |
+| Python SDK (PyPI) | https://pypi.org/project/creduent/ |
+| JavaScript SDK (npm) | https://www.npmjs.com/package/@idevsec/creduent |
+| CLI Tool (npm) | https://www.npmjs.com/package/@idevsec/creduent-cli |
 
 ## Licensing
 

@@ -47,6 +47,8 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [x] **Organization namespaces**: `agent://<org_name>/*` namespaces owned and managed under one organizational account.
 * [x] **Creduent CLI v2**: `creduent register`, `creduent verify`, `creduent revoke` packaged as a native command-line tool.
 * [x] **CRD shorthand**: If the team wants something terse for technical contexts, introduce CRD as a short tag alongside Creduent (e.g., header X-CRD-Version), without renaming the protocol itself.
+* [x] **Native Ed25519 JS SDK**: Zero-dependency cryptographic verification via `globalThis.crypto.subtle` and RFC 8785 JCS canonicalization — compatible with Vercel Edge, Cloudflare Workers, Deno, and Node.js 18+.
+* [x] **CLI native verification**: `creduent verify` now performs local Ed25519 signature validation using the native SDK instead of querying the registry API.
 
 ---
 

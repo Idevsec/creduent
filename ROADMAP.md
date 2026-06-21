@@ -52,7 +52,18 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 
 ---
 
-## Phase 4 - Standard 🔴 January -> June 2027
+## Phase 4 - Expansion & Hardening 🛠️ July -> December 2026
+**Goal:** Expand framework coverage, introduce local developer tooling, and harden core cryptography/revocation infrastructure.  
+**Target:** 1,000+ registered agents, 5 framework integrations, security audit completed.
+* [ ] **More Framework Integrations**: Native integrations for LlamaIndex, LangChain (Python & JS), and Semantic Kernel.
+* [ ] **Creduent Playground**: Interactive sandbox on the developer dashboard to cryptographically sign, verify, and debug `agent.json` files live in-browser.
+* [ ] **Key Revocation Lists (CRLs) & Cache Tuning**: High-performance cached endpoints and local SDK cache hooks to instantly detect compromised/revoked agent keys.
+* [ ] **DID Interoperability**: Resolve `agent://` URIs as Decentralized Identifiers (e.g., standardizing `did:creduent` or integrating with `did:web`).
+* [ ] **Formal Security Audit**: Perform third-party cryptographic and SSRF audit of the core registry and SDKs.
+
+---
+
+## Phase 5 - Standard 🔴 January -> June 2027
 **Goal:** Creduent becomes the RFC. Establishing universal infrastructure.  
 **Target:** RFC submitted, 5,000+ registered agents, 1 enterprise customer.
 * [ ] **Federated attestation**: Support third-party attesters (e.g., security auditors, compliance bodies, LLM providers) issuing custom attestations.
@@ -65,7 +76,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 
 ---
 
-## Phase 5 - Infrastructure 🌐 2027 and beyond
+## Phase 6 - Infrastructure 🌐 2027 and beyond
 **Goal:** Creduent is to agents what TLS is to HTTPS, invisible, universal, assumed.
 * [ ] Creduent becomes a standard requirement in enterprise AI procurement checklists.
 * [ ] LLM providers (Anthropic, OpenAI, Google) reference Creduent in their agent hosting documentation.
@@ -80,6 +91,6 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 | :--- | :--- | :--- |
 | **Today** | 1+ | Protocol works, ecosystem live |
 | **August 2026** | 50 | Developers will adopt |
-| **December 2026** | 500 | Frameworks will integrate |
+| **December 2026** | 1,000 | Frameworks will integrate & ecosystem expansion |
 | **June 2027** | 5,000 | Standard in the making |
 | **2028+** | 50,000+ | Infrastructure |

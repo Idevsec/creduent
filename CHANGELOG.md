@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-06-19
+
+### Added
+- **Multi-key Support**: Support for rotating signing keys via `keys` array in `agent.json` without losing historical attestation data.
+- **Capability-level Attestations**: Support for `capabilities` defined as complex objects (`name` and `schema` properties).
+- **Organization Namespaces**: Namespace validation allowing organizations to claim `agent://<org_name>/*` scopes.
+- **Discovery API**: Native `discover()` API with support for authenticated, private capability sharing.
+- **Creduent CLI v2**: Revamped CLI with `init`, `keygen`, `build`, and `discover` tools.
+- **CRD Shorthand**: Support for declarative Kubernetes-style `agent.yaml` for generating `agent.json` documents.
+- **Integrations**: Native verification tools/nodes for CrewAI, LangGraph, and AutoGen in `creduent.integrations`.
+
 ## [1.0.4] - 2026-06-13
 
 ### Changed

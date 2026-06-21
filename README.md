@@ -118,11 +118,11 @@ Call `verify_agent` with target agent ID or domain to receive structural, crypto
 
 ## Agent Framework Integrations
 
-Creduent provides native verification middleware and plugins for the leading AI agent frameworks:
+Creduent provides native verification tools and classes for the leading AI agent frameworks:
 
-- **CrewAI**: Use `creduent.integrations.crewai.verify_crew_agents()` to strictly verify every agent in your Crew. Unverified agents will be blocked from execution.
-- **LangGraph**: Add the `CreduentLangGraphValidator` node to your state graph to enforce identity checks before sensitive pipeline steps.
-- **AutoGen**: Register the `CreduentAutoGenHook` to verify remote peers before allowing message exchanges.
+- **CrewAI**: Import `CreduentVerifyTool` from `creduent.integrations.crewai` to verify external agents within your Crew definitions dynamically.
+- **LangGraph**: Add the `verify_agent_node` node function from `creduent.integrations.langgraph` to your state graph to validate agent identities before executing next nodes.
+- **AutoGen**: Subclass your agents using `CreduentConversableAgent` from `creduent.integrations.autogen` to enforce cryptographic sender identity checks on incoming messages.
 
 ## Registry API
 

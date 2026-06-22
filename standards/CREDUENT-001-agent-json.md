@@ -33,7 +33,7 @@ CREDUENT-001 defines the `agent.json` identity document format for autonomous AI
 https://<domain>/.well-known/agent.json
 ```
 
-### Required Fields
+### Required Fields (v1.0)
 
 | Field | Type | Description |
 |:---|:---|:---|
@@ -44,6 +44,21 @@ https://<domain>/.well-known/agent.json
 | `endpoint` | String | HTTPS URL of the agent's API endpoint. |
 | `capabilities` | Array of Strings | Semantic capability tags. |
 | `signature` | String | Ed25519 signature over JCS-canonicalized payload. |
+
+### Decoupled Structure (v2.0)
+
+Creduent v2.0 separates identity attributes from transient policies:
+
+- **`version`**: MUST be `"2.0"`.
+- **`identity`**: Sub-object containing core cryptographic identifiers:
+  - `agent_id`: Globally unique agent URI (`agent://namespace/name`).
+  - `owner`: Identifier of the agent operator.
+  - `keys`: List of active/revoked public keys.
+  - `endpoint`: HTTPS endpoint base URL.
+  - `delegated_from`: Placeholder for delegation chains.
+- **`policy`**: Sub-object containing policies:
+  - `capabilities`: Array of semantic functionality tags.
+- **`signature`**: Ed25519 signature over JCS-canonicalized document (excluding `signature`).
 
 ### Optional Fields
 

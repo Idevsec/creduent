@@ -41,11 +41,12 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [x] **CrewAI integration**: Native `creduent_verify` step in Crew definitions.
 * [x] **LangGraph integration**: Creduent verification node in graph pipelines.
 * [x] **AutoGen integration**: Agent identity verification middleware.
+* [x] **JavaScript integrations**: Native Vercel AI SDK tool wrapper and LangGraph JS node.
 * [x] **Multi-key support**: Rotate signing keys without losing historical attestation data.
 * [x] **Capability-level attestations**: Attest specific capabilities separately (e.g. `osint: verified`, `code_execution: unverified`).
 * [x] **Agent discovery API**: `GET /agents?capability=osint` returns all verified agents exposing that capability.
 * [x] **Organization namespaces**: `agent://<org_name>/*` namespaces owned and managed under one organizational account.
-* [x] **Creduent CLI v2**: `creduent register`, `creduent verify`, `creduent revoke` packaged as a native command-line tool.
+* [x] **Creduent CLI v2**: `creduent register`, `creduent verify`, `creduent revoke`, `creduent renew`, `creduent webhook`, and `creduent discover` packaged as a native command-line tool.
 * [x] **CRD shorthand**: If the team wants something terse for technical contexts, introduce CRD as a short tag alongside Creduent (e.g., header X-CRD-Version), without renaming the protocol itself.
 * [x] **Native Ed25519 JS SDK**: Zero-dependency cryptographic verification via `globalThis.crypto.subtle` and RFC 8785 JCS canonicalization — compatible with Vercel Edge, Cloudflare Workers, Deno, and Node.js 18+.
 * [x] **CLI native verification**: `creduent verify` now performs local Ed25519 signature validation using the native SDK instead of querying the registry API.
@@ -57,19 +58,26 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 **Target:** 1,000+ registered agents, 5 framework integrations, security audit completed.
 * [ ] **More Framework Integrations**: Native integrations for LlamaIndex, LangChain (Python & JS), and Semantic Kernel.
 * [ ] **Creduent Playground**: Interactive sandbox on the developer dashboard to cryptographically sign, verify, and debug `agent.json` files live in-browser.
-* [ ] **Key Revocation Lists (CRLs) & Cache Tuning**: High-performance cached endpoints and local SDK cache hooks to instantly detect compromised/revoked agent keys.
+* [ ] **Key Revocation & Cache Tuning**: Implement edge-native cached endpoints (Vercel/Cloudflare KV) and local SDK LRU cache hooks (5-min TTL) to protect registry origin under live check workloads.
+* [x] **Short-Lived Attestation Windows**: Transition the default attestation TTL from 1 year to 30 days, supported by background SDK auto-renewal workers that refresh keys 7 days before expiry.
+* [x] **DNS-Based Emergency Recovery Flow**: Build an out-of-band recovery path that bypasses compromised-key signatures by allowing owners to overwrite public keys via temporary DNS TXT records (`creduent-override:<hash>`).
+* [x] **Multisig Admin Quorum**: Deprecate the symmetric `CREDUENT_ADMIN_KEY` for the `trusted` tier, replacing it with an asymmetric multisig threshold verification (e.g., 2-of-3 signatures from admin public keys).
+* [ ] **HMAC Webhook Signatures**: Add HMAC-SHA256 signing headers (`X-Creduent-Signature256`) to the daemon’s alert notifications so endpoints can verify webhook authenticity.
+* [x] **Schema Decoupling (v2.0)**: Release the v2.0 schema structure separating cryptographic identity (version, keys, owner) from transient policy declarations (endpoint, capabilities), introducing incremental version parsing to avoid breaking v1.x flat documents.
 * [ ] **DID Interoperability**: Resolve `agent://` URIs as Decentralized Identifiers (e.g., standardizing `did:creduent` or integrating with `did:web`).
 * [ ] **Formal Security Audit**: Perform third-party cryptographic and SSRF audit of the core registry and SDKs.
 
 ---
 
-## Phase 5 - Standard 🔴 January -> June 2027
-**Goal:** Creduent becomes the RFC. Establishing universal infrastructure.  
-**Target:** RFC submitted, 5,000+ registered agents, 1 enterprise customer.
+## Phase 5 - Cryptographic Delegation & Gateway Integration 🛠️ January -> June 2027
+**Goal:** Build verifiable provenance and delegation capabilities directly solving the inter-agent security boundaries.  
+**Target:** 3 gateway integrations, 5,000+ registered agents, 1 enterprise POC.
+* [ ] **Creduent Delegation Token (CDT) Specification (CREDUENT-006)**: Draft the formal specification defining attenuated capability delegation payload structure.
+* [ ] **SDK Cryptographic Delegation Verification**: Implement recursive client-side delegation verification (`sign_delegation` and `verify_delegation_chain`) in both JS/TS and Python SDKs.
+* [ ] **Zero-Trust Gateway Integration**: Implement reference middlewares for LLM Gateways (Bifrost, CyberArk) and MCP Gateways to dynamically scope API keys and policies based on CDTs.
 * [ ] **Federated attestation**: Support third-party attesters (e.g., security auditors, compliance bodies, LLM providers) issuing custom attestations.
 * [ ] **Cross-registry trust**: Multiple registries recognize each other's attestations.
-* [ ] **Formal RFC**: Submit CREDUENT-001 as a formal open RFC to the IETF or equivalent standard bodies.
-* [ ] **Creduent Verification Badge**: Embeddable trust badge for agent dashboards and landing pages.
+* [ ] **Formal RFC**: Submit CREDUENT-001/006 as formal open RFCs to the IETF or equivalent standard bodies.
 * [ ] **Enterprise registry**: Private hosted Creduent registry for internal enterprise agent fleets (SOC2 compliant).
 * [ ] **`agent://` IANA registration**: Formal IANA registration of the `agent://` URI scheme.
 * [ ] **MCP marketplace integration**: Verification requirement integration with major MCP marketplaces.
@@ -79,6 +87,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 ## Phase 6 - Infrastructure 🌐 2027 and beyond
 **Goal:** Creduent is to agents what TLS is to HTTPS, invisible, universal, assumed.
 * [ ] Creduent becomes a standard requirement in enterprise AI procurement checklists.
+* [ ] **Cyber Insurance Compliance Standard**: Partner with security underwriters to validate compliance boundaries, reducing liability premiums for Creduent-certified agent deployments.
 * [ ] LLM providers (Anthropic, OpenAI, Google) reference Creduent in their agent hosting documentation.
 * [ ] **Cross-chain attestation bridges**: On-chain verifiable agent identity for Web3/decentralized agent ecosystems.
 * [ ] **Community Stewardship**: Establish an independent governance body, open membership, and transition protocol stewardship from IDevSec to the community.

@@ -29,7 +29,7 @@ Every participating AI system exposes a machine-readable metadata file at a well
 
 This file establishes a public cryptographic identity tied directly to a web endpoint and ownership structure.
 
-### 2.1 Core Fields
+### 2.1 Core Fields (v1.0)
 
 A v1.0 `agent.json` document consists of the following 8 fields:
 
@@ -68,7 +68,34 @@ A v1.0 `agent.json` document consists of the following 8 fields:
 8. **`signature`** (String, Required)  
    The cryptographic signature verifying the integrity and authenticity of the identity document. The signature is computed over the JCS-canonicalized representation of the document *excluding* the `signature` field itself.
 
----
+### 2.2 Decoupled Structure (v2.0)
+
+Creduent v2.0 introduces a decoupled structure separating cryptographic identity attributes from transient policies:
+
+1. **`version`** (String, Required)  
+   The version of the specification. MUST be `"2.0"`.
+   
+2. **`identity`** (Object, Required)  
+   A sub-object containing core cryptographic identity identifiers:
+   - **`agent_id`** (String, Required): Globally unique agent URI (`agent://namespace/name`).
+   - **`owner`** (String, Required): Identifier of the agent operator.
+   - **`keys`** (Array, Required): List of active/revoked public keys. Each entry has:
+     - `id` (String): Key identifier.
+     - `type` (String): Key type (`"ed25519"`).
+     - `public_key` (String): Base64 public key with `ed25519:` prefix.
+     - `status` (String): Key status (`"active"` or `"revoked"`).
+     - `expires_at` (String, Optional): Key expiration timestamp.
+   - **`endpoint`** (String, Required): HTTPS endpoint base URL.
+   - **`delegated_from`** (String, Optional): Placeholder for delegation chains.
+   
+3. **`policy`** (Object, Required)  
+   A sub-object containing transient policy details:
+   - **`capabilities`** (Array of Strings, Required): Verifiable tags of semantic functionality.
+   
+4. **`signature`** (String, Required)  
+   The Base64 Ed25519 signature computed over the JCS-canonicalized representation of the document *excluding* the `signature` field itself.
+
+-----
 
 ## 3. Cryptographic Signing & Canonicalization
 
@@ -168,7 +195,7 @@ To register an agent, the owner submits the agent's URI, domain, and agent.json 
 > **Note:** Developers may also register directly via `POST /attest` using Agent ID, Domain, and Public Key without providing `agent_json_url`. This is intended for dashboard and programmatic use.
 
 ### 6.4 Revocation Model
-Administrators can revoke an agent's registration by submitting a request to the `/revoke/{agent_id}` endpoint containing a valid admin credential (`CREDUENT-ADMIN-KEY` header). Revoked agents have their attestation level set to `revoked`, and subsequent queries to `/attest/{agent_id}` will return `level: revoked`.
+Administrators can revoke an agent's registration by submitting a request to the `/revoke/{agent_id}` endpoint. This requires admin authorization (either via multisig headers `CREDUENT-ADMIN-KEYS`, `CREDUENT-ADMIN-SIGNATURES`, `CREDUENT-ADMIN-TIMESTAMP`, or legacy symmetric `CREDUENT-ADMIN-KEY`). Revoked agents have their attestation level set to `revoked`, and subsequent queries to `/attest/{agent_id}` will return `level: revoked` (returning a `410 Gone` HTTP status code).
 
 ### 6.5 DNS TXT Record Format
 To bind a web domain to a Creduent identity, the domain owner MUST configure a DNS TXT record under the `_creduent` subdomain.
@@ -252,7 +279,7 @@ If the Creduent registry is offline or unreachable, the verify_agent tool MUST N
   "creduent_attested": true,
   "attestation_level": "verified",
   "attestation_issued_at": "2026-05-29T00:00:00Z",
-  "attestation_expires_at": "2027-05-29T00:00:00Z",
+  "attestation_expires_at": "2026-06-28T00:00:00Z",
   "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
   "endpoint": "https://api.example.com",
   "capabilities": ["scan"],

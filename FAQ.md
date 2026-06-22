@@ -139,6 +139,10 @@ No. Creduent verifies identity and ownership, not intent or behavior. A `verifie
 | JavaScript / TypeScript | `npm install @idevsec/creduent` | [github.com/idevsec/creduent-js](https://github.com/idevsec/creduent-js) |
 | CLI Tool | `npm install -g @idevsec/creduent-cli` | [github.com/idevsec/creduent-cli](https://github.com/idevsec/creduent-cli) |
 
+### Does Creduent integrate with agent frameworks?
+
+Yes. Creduent offers native integrations and helper modules for major agentic frameworks out-of-the-box: CrewAI, LangGraph, and AutoGen in Python; and Vercel AI SDK and LangGraph JS in JavaScript/TypeScript.
+
 ### What Python version is required?
 
 Python 3.9 or higher.

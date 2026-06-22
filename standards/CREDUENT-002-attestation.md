@@ -51,7 +51,7 @@ A Creduent Attestation is a JSON document with the following fields:
   "issuer": "agent://creduent/registry",
   "level": "verified",
   "issued_at": "2026-05-30T00:00:00Z",
-  "expires_at": "2027-05-30T00:00:00Z",
+  "expires_at": "2026-06-29T00:00:00Z",
   "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
   "domain": "example.com",
   "signature": "base64_registry_signature_here"
@@ -122,7 +122,7 @@ POST /register
     "issuer": "agent://creduent/registry",
     "level": "verified",
     "issued_at": "2026-05-30T00:00:00Z",
-    "expires_at": "2027-05-30T00:00:00Z",
+    "expires_at": "2026-06-29T00:00:00Z",
     "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
     "domain": "example.com",
     "signature": "..."
@@ -177,12 +177,16 @@ The registry's public key MUST be obtained out-of-band (environment variable, pi
 ```http
 DELETE /revoke/{agent_id}
 Headers:
-  CREDUENT-ADMIN-KEY: <admin_secret>
+  CREDUENT-ADMIN-KEYS: <comma-separated-admin-keys>
+  CREDUENT-ADMIN-SIGNATURES: <comma-separated-signatures>
+  CREDUENT-ADMIN-TIMESTAMP: <iso8601-timestamp>
+  # Fallback for legacy administrative keys:
+  # CREDUENT-ADMIN-KEY: <admin_secret>
 ```
 
 On successful revocation:
 - The attestation `level` is set to `"revoked"`.
-- Subsequent `GET /attest/{agent_id}` calls return the attestation with `level: "revoked"`.
+- Subsequent `GET /attest/{agent_id}` calls return the attestation with `level: "revoked"`, returning a `410 Gone` HTTP status code.
 - The attestation object is not deleted; it serves as a public revocation notice.
 
 **Clients MUST treat a `revoked` attestation as a failed verification.** A `revoked` status MUST be surfaced to the consumer; it MUST NOT be silently treated as `unregistered`.
@@ -277,9 +281,9 @@ The `signature` field MUST be computed over one of the following payload formats
 
 ## 9. Security Considerations
 
-- **Short-lived attestations**: The default attestation TTL is 1 year. Implementations SHOULD allow operators to configure shorter TTLs.
+- **Short-lived attestations**: The default attestation TTL is 30 days. Implementations SHOULD allow operators to configure shorter TTLs.
 - **Registry key compromise**: If the registry's signing key is compromised, all existing attestations must be reissued. A key rotation event MUST be announced via the registry's `agent.json` and `/.well-known/creduent-registry.json`.
-- **Admin key protection**: The `CREDUENT-ADMIN-KEY` used for revocation must be treated as a high-value secret. It MUST NOT be exposed in client-side code or public repositories.
+- **Admin key protection**: Administrative endpoints require multisig signature threshold verification to mitigate symmetric key exposure risks.
 - **DNS propagation delay**: DNS TXT records may take up to 48 hours to propagate globally. The registry MUST NOT cache negative DNS results longer than 5 minutes.
 
 ---

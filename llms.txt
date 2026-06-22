@@ -3,7 +3,7 @@
 
 ## Protocol Identity
 - **Full name**: Creduent Agent Identity and Attestation Protocol
-- **Version**: 1.0.2
+- **Version**: 2.0.0
 - **Status**: Active
 - **Steward**: IDevSec (https://idevsec.com)
 - **License**: Apache 2.0 (open source) + Commercial (for organizations with revenue over USD $1M/year)

@@ -122,7 +122,7 @@ Retrieve the active attestation for an agent.
   "issuer": "agent://creduent/registry",
   "level": "verified",
   "issued_at": "2026-05-30T00:00:00Z",
-  "expires_at": "2027-05-30T00:00:00Z",
+  "expires_at": "2026-06-29T00:00:00Z",
   "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
   "domain": "example.com",
   "signature": "..."
@@ -166,7 +166,11 @@ List all registered agents.
 
 Revoke an agent's attestation.
 
-**Required Header:** `CREDUENT-ADMIN-KEY: <admin_secret>`
+**Required Headers (Multisig Quorum):**
+- `CREDUENT-ADMIN-KEYS`: Comma-separated list of administrative public keys
+- `CREDUENT-ADMIN-SIGNATURES`: Comma-separated list of signatures computed over `METHOD|PATH|TIMESTAMP`
+- `CREDUENT-ADMIN-TIMESTAMP`: ISO 8601 UTC timestamp of the request
+- **Legacy Fallback Header**: `CREDUENT-ADMIN-KEY: <admin_secret>`
 
 **Success Response (200):**
 ```json
@@ -190,7 +194,7 @@ Revoke an agent's attestation.
 
 Upgrade the attestation level of an existing agent.
 
-**Required Header:** `CREDUENT-ADMIN-KEY: <admin_secret>`
+**Required Headers (Multisig Quorum):** Same as `DELETE /revoke` (Multisig headers or legacy fallback).
 
 **Request:**
 ```json
@@ -393,6 +397,41 @@ Retrieve the registry's public key for signature verification.
 
 ---
 
+### 3.15 POST /recovery/override
+
+Emergency key rotation/recovery via out-of-band DNS verification.
+
+**Request:**
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "domain": "example.com",
+  "new_public_key": "ed25519:new_public_key_base64"
+}
+```
+
+**Validation steps performed:**
+1. Checks that the agent exists in the registry and its registered domain matches `domain`.
+2. Performs a live DNS TXT lookup at `_creduent_recovery.{domain}` and checks if it contains `new_public_key`.
+3. If verified, overwrites the agent's public key with `new_public_key`, resets the attestation level to `unverified`, re-signs the attestation, and persists it.
+
+**Success Response (200 OK):**
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "issuer": "agent://creduent/registry",
+  "level": "unverified",
+  "issued_at": "2026-06-23T00:00:00Z",
+  "expires_at": "2026-07-23T00:00:00Z",
+  "public_key": "ed25519:new_public_key_base64",
+  "domain": "example.com",
+  "signature": "...",
+  "status": "recovered"
+}
+```
+
+---
+
 ## 4. Authentication
 
 The registry uses admin-key authentication only for destructive operations (revocation). All read and registration endpoints are unauthenticated by design to support open, decentralized verification.
@@ -403,8 +442,9 @@ The registry uses admin-key authentication only for destructive operations (revo
 | POST /attest | No |
 | GET /attest/{id} | No |
 | GET /agents | No |
-| POST /admin/attest | Yes (CREDUENT-ADMIN-KEY header) |
-| DELETE /revoke | Yes (CREDUENT-ADMIN-KEY header) |
+| POST /admin/attest | Yes (Multisig headers / symmetric key fallback) |
+| DELETE /revoke | Yes (Multisig headers / symmetric key fallback) |
+| POST /recovery/override | DNS validation proof required |
 | POST /renew | Signature required |
 | POST /webhook/register | Signature required |
 | GET /challenge/{id} | No |
@@ -424,6 +464,7 @@ Implementations SHOULD apply rate limiting to prevent abuse.
 | GET /attest/{id} | 300 requests/minute per IP |
 | GET /agents | 60 requests/minute per IP |
 | DELETE /revoke | 30 requests/hour per admin key |
+| POST /recovery/override | 60 requests/minute per IP |
 | GET /challenge/{id} | 10 requests/minute per IP |
 | POST /verify-challenge | 60 requests/minute per IP |
 | GET /public-key | 300 requests/minute per IP |

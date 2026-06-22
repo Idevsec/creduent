@@ -1,6 +1,6 @@
 # Creduent: Open Standard for AI Agent Identity & Trust
 
-[![Protocol Version](https://img.shields.io/badge/protocol-v1.0.2-cyan)](https://idevsec.com/creduent)
+[![Protocol Version](https://img.shields.io/badge/protocol-v2.0.0-cyan)](https://idevsec.com/creduent)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://idevsec.com/creduent/licensing)
 [![Registry](https://img.shields.io/badge/registry-live-brightgreen)](https://registry.idevsec.com)
 [![Python SDK](https://img.shields.io/pypi/v/creduent.svg?label=pip%20install%20creduent&color=blue)](https://pypi.org/project/creduent/)
@@ -130,7 +130,8 @@ Creduent provides native verification tools and classes for the leading AI agent
 - `POST /attest` - Developer direct agent registration (no agent_json_url required).
 - `GET /attest/{agent_id}` - Retrieves the active Creduent-signed attestation for the specified agent.
 - `GET /agents` - Lists all registered agent metadata and attestations in the registry.
-- `DELETE /revoke/{agent_id}` - Revokes an agent attestation from the registry (requires `CREDUENT-ADMIN-KEY` header).
+- `DELETE /revoke/{agent_id}` - Revokes an agent attestation from the registry (requires multisig headers or legacy `CREDUENT-ADMIN-KEY`).
+- `POST /recovery/override` - Key override using domain DNS TXT record checks.
 - `POST /renew` - Renew agent attestation with a new expiry date.
 - `POST /webhook/register` - Register a webhook URL for expiry notifications.
 - `GET /webhook/{agent_id}` - Retrieve the registered webhook URL for an agent.

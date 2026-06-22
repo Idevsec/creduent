@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-06-23
+
+### Added
+- **v2.0 Schema Split Support**: Added dynamic parsing and version-gating for the v2.0 schema structure separating `identity`, `policy`, and `signature` blocks.
+- **DNS Recovery Override Endpoint**: Implemented the `/recovery/override` route for out-of-band identity recovery using DNS TXT record checks.
+- **Multisig Quorum Authorization**: Implemented threshold signature verification over administrative routes utilizing multiple admin public keys in `CREDUENT_ADMIN_KEYS`.
+- **Database Expiry Migration Script**: Included `migrate_attestations.py` to cap existing active expirations to 30 days.
+
+### Changed
+- **Attestation Expiration Window**: Shortened default attestation TTL from 365 days to 30 days, enforcing the 30-day cap on all new registrations and renewals.
+- **Keys Array Extraction**: Enabled robust lookup from the `keys` array in `agent.json` when the root-level `public_key` is not present.
+- **Distinct Revocation Status Response**: Configured `/attest/{agent_id}` to yield `HTTP 410 Gone` if the attestation is revoked.
+
+## [1.2.0] - 2026-06-21
+
+### Added
+- **Attestation Renewal**: Added `creduent renew` command to the CLI and native `renew` methods to the Node.js and Python SDKs.
+- **Webhook Management**: Added `creduent webhook register` and `creduent webhook query` commands to the CLI, alongside `register_webhook` and `query_webhook` SDK methods.
+- **Feature Parity**: Full parity of `discover`, `renew`, and `webhook` commands between Node.js and Python implementations.
+- **Framework Integrations**: Web/SDK documentation updated with Vercel AI SDK and LangGraph JS integration guides.
+
 ## [1.1.0] - 2026-06-19
 
 ### Added

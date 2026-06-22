@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AgentIdentityV2",
+  "description": "Schema for verifying the identity profile of an AI agent (agent.json v2.0)",
+  "type": "object",
+  "required": [
+    "version",
+    "identity",
+    "policy",
+    "signature"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "enum": ["2.0"],
+      "description": "Protocol specification version"
+    },
+    "identity": {
+      "type": "object",
+      "required": [
+        "agent_id",
+        "owner",
+        "keys",
+        "endpoint"
+      ],
+      "properties": {
+        "agent_id": {
+          "type": "string",
+          "pattern": "^agent:\\/\\/[a-zA-Z0-9_-]+\\/[a-zA-Z0-9_-]+$",
+          "description": "Global agent URI following agent://<namespace>/<agent_name>"
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Operator/Owner identifier of the agent"
+        },
+        "keys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "public_key", "status"],
+            "properties": {
+              "id": { "type": "string" },
+              "type": { "type": "string", "enum": ["ed25519"] },
+              "public_key": { "type": "string", "pattern": "^ed25519:[a-zA-Z0-9+/=]+$" },
+              "status": { "type": "string", "enum": ["active", "revoked"] },
+              "expires_at": { "type": "string", "format": "date-time" }
+            }
+          },
+          "description": "Verifiable public keys associated with the agent"
+        },
+        "endpoint": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https:\\/\\/.*",
+          "description": "The main HTTPS base URL of the agent"
+        },
+        "delegated_from": {
+          "type": "string",
+          "description": "Placeholder property for forward compatibility with delegation chains in v2"
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "capabilities"
+      ],
+      "properties": {
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "description": "Exposed semantic tags of agent functionality"
+        }
+      }
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9+/=]+$",
+      "description": "Base64-encoded Ed25519 signature of RFC 8785 JCS canonicalized payload of version 2.0 agent document"
+    }
+  },
+  "additionalProperties": true
+}

@@ -10,11 +10,11 @@ Creduent is an open application-layer protocol for cryptographic identity and tr
 
 ### Who maintains Creduent?
 
-IDevSec. The protocol specification is open-source, and the reference registry runs at `registry.idevsec.com`.
+IDevSec. The protocol specification is open-source, and the reference registry runs at `creduent.idevsec.com`.
 
 ### Is Creduent a SaaS product or an open protocol?
 
-It is an open protocol. The specification documents (CREDUENT-001 through CREDUENT-005) are free to implement. Anyone can run a Creduent-compatible registry. The reference registry at `registry.idevsec.com` is one implementation, not the only one.
+It is an open protocol. The specification documents (CREDUENT-001 through CREDUENT-005) are free to implement. Anyone can run a Creduent-compatible registry. The reference registry at `creduent.idevsec.com` is one implementation, not the only one.
 
 ### What problem does Creduent solve?
 
@@ -153,7 +153,7 @@ Node.js 18 or higher. The SDK uses the native `fetch()` API.
 
 ### Can I use the JavaScript SDK in the browser?
 
-Yes. The SDK uses native `fetch()` which is supported in all modern browsers. Be aware that CORS headers must be enabled on the registry API, which they are on `registry.idevsec.com`.
+Yes. The SDK uses native `fetch()` which is supported in all modern browsers. Be aware that CORS headers must be enabled on the registry API, which they are on `creduent.idevsec.com`.
 
 ### What is the MCP server?
 

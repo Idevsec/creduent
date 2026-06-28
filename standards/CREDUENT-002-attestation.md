@@ -273,7 +273,7 @@ The `signature` field MUST be computed over one of the following payload formats
   "domain": "example.com",
   "expires_at": "2027-05-30T00:00:00Z",
   "days_remaining": 28,
-  "action_url": "https://registry.idevsec.com/renew"
+  "action_url": "https://creduent.idevsec.com/renew"
 }
 ```
 

@@ -17,7 +17,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [x] Attestation registry with signed attestations (Upstash Redis)
 * [x] MCP server integration (`verify_agent` tool)
 * [x] SSRF protection, rate limiting, and expiry enforcement
-* [x] Vercel production deployment (`registry.idevsec.com`)
+* [x] Vercel production deployment (`creduent.idevsec.com`)
 * [x] v1.0 security hardening + full regression test suite
 
 ---
@@ -30,7 +30,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [x] **JavaScript/TypeScript SDK**: `npm install @idevsec/creduent` for MCP hosts running Node.
 * [x] **Auto-renewal daemon**: Lightweight background process for agents to automatically re-attest 30 days before expiry.
 * [x] **Webhook notifications**: POST notifications to a configured URL on registration, revocation, and expiry.
-* [x] **Developer dashboard**: Web UI at `registry.idevsec.com/dashboard` to manage registered agents, view attestation status, and rotate keys.
+* [x] **Developer dashboard**: Web UI at `creduent.idevsec.com/dashboard` to manage registered agents, view attestation status, and rotate keys.
 * [x] **GitHub Action**: `creduent-attest` action to register/re-attest automatically on every deploy.
 
 ---
@@ -64,8 +64,8 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [x] **Multisig Admin Quorum**: Deprecate the symmetric `CREDUENT_ADMIN_KEY` for the `trusted` tier, replacing it with an asymmetric multisig threshold verification (e.g., 2-of-3 signatures from admin public keys).
 * [ ] **HMAC Webhook Signatures**: Add HMAC-SHA256 signing headers (`X-Creduent-Signature256`) to the daemon’s alert notifications so endpoints can verify webhook authenticity.
 * [x] **Schema Decoupling (v2.0)**: Release the v2.0 schema structure separating cryptographic identity (version, keys, owner) from transient policy declarations (endpoint, capabilities), introducing incremental version parsing to avoid breaking v1.x flat documents.
+* [x] **Formal Security Audit**: Completed thorough cryptographic, SSRF, file permission, and dependency audit of the core registry, CLI, and SDKs (June 2026).
 * [ ] **DID Interoperability**: Resolve `agent://` URIs as Decentralized Identifiers (e.g., standardizing `did:creduent` or integrating with `did:web`).
-* [ ] **Formal Security Audit**: Perform third-party cryptographic and SSRF audit of the core registry and SDKs.
 
 ---
 

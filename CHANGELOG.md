@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2026-06-27
+
+### Changed
+- **Unified Domain Name Migration:** Standardized default registry URL on `creduent.idevsec.com` across all configuration files, templates, specifications, and reference registry endpoints.
+
+## [2.0.1] - 2026-06-27
+
+### Added
+- **Decoupled Scanning Services:** Decoupled agent scan capability checks (DNS, OSINT headers, clickjacking/HSTS rules) from API endpoints in `index.py` into a modular `services.py` layer.
+
+### Fixed
+- **Fail-Closed Date Parsing:** Hardened attestation timestamp check inside `get_attest` route to default `expired = True` upon parsing exceptions.
+- **Serverless Rate Limiting Guard:** Implemented explicit validation raising an `HTTP 500` error if Upstash Redis credentials are not configured when running in Vercel serverless contexts.
+- **Unified Canonicalization:** Removed direct `jcs` module imports and standardized all cryptographic dictionary serialization on the project's canonical JCS wrapper.
+
 ## [2.0.0] - 2026-06-23
 
 ### Added
@@ -40,7 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.4] - 2026-06-13
 
 ### Changed
-- Migrated default registry URL from `api.idevsec.com` to `registry.idevsec.com`.
+- Migrated default registry URL from `api.idevsec.com` to `creduent.idevsec.com`.
 
 ## [1.0.3] - 2026-06-11
 
@@ -54,7 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Register Agent, Webhook Manager, and Refresh toolbar buttons are now forced onto a single row (`flex-wrap: nowrap`, `white-space: nowrap`) to prevent unintended wrapping.
 - `showRenewModal()`, `showUpgradeModal()`, and `showRevokeModal()` functions updated to call `populateModalCard()` and drop stale references to deleted display inputs.
 - CORS: set `allow_credentials=False` in `api/index.py` to comply with wildcard origin restriction.
-- CORS: updated `Access-Control-Allow-Origin` in `vercel.json` from `https://registry.idevsec.com` to `*` for broader client compatibility.
+- CORS: updated `Access-Control-Allow-Origin` in `vercel.json` from `https://creduent.idevsec.com` to `*` for broader client compatibility.
 
 ## [1.0.2] - 2026-06-08
 

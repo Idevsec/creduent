@@ -74,6 +74,12 @@ def check_register_rate_limit(request: Request):
     if client_ip == "unknown":
         return
 
+    if os.environ.get("VERCEL") == "1" and not is_redis_configured():
+        raise HTTPException(
+            status_code=500,
+            detail="Registry persistent storage / rate limiter is not configured."
+        )
+
     now = int(time.time())
     key = f"reg_limit:{client_ip}"
 
@@ -115,6 +121,12 @@ def check_challenge_rate_limit(request: Request):
     client_ip = get_client_ip(request)
     if client_ip == "unknown":
         return
+
+    if os.environ.get("VERCEL") == "1" and not is_redis_configured():
+        raise HTTPException(
+            status_code=500,
+            detail="Registry persistent storage / rate limiter is not configured."
+        )
 
     now = int(time.time())
     key = f"chal_limit:{client_ip}"
@@ -208,6 +220,7 @@ def get_attest(agent_id: str, request: Request):
                 expired = True
         except Exception as e:
             print(f"[-] Error parsing expires_at: {e}", file=sys.stderr)
+            expired = True # Safe default fallback
             
     level = attestation.get("level", "verified").lower()
     if level == "revoked":
@@ -257,8 +270,6 @@ def health():
 def renew(req: RenewRequest, request: Request):
     check_rate_limit(request)
     import base64
-    import jcs
-
     from cryptography.hazmat.primitives.asymmetric import ed25519
     from registry.signer import get_registry_private_key
     from creduent.crypto import canonicalize
@@ -287,7 +298,7 @@ def renew(req: RenewRequest, request: Request):
             "agent_id": req.agent_id,
             "new_expires_at": req.new_expires_at
         }
-        canonical_bytes = jcs.canonicalize(payload_dict)
+        canonical_bytes = canonicalize(payload_dict).encode('utf-8')
 
         verified = False
         try:
@@ -348,8 +359,8 @@ def renew(req: RenewRequest, request: Request):
 @router.post("/webhook/register")
 def register_webhook(req: WebhookRegisterRequest):
     import base64
-    import jcs
     from cryptography.hazmat.primitives.asymmetric import ed25519
+    from creduent.crypto import canonicalize
 
     agent_id = req.agent_id
     if agent_id.startswith("agent:/") and not agent_id.startswith("agent://"):
@@ -378,7 +389,7 @@ def register_webhook(req: WebhookRegisterRequest):
             "webhook_url": req.webhook_url
         }
         try:
-            canonical_bytes = jcs.canonicalize(payload_dict)
+            canonical_bytes = canonicalize(payload_dict).encode('utf-8')
             public_key.verify(signature_bytes, canonical_bytes)
             verified = True
         except Exception:
@@ -733,9 +744,9 @@ def serve_registry_landing():
         "version": "1.0",
         "status": "operational",
         "endpoints": {
-            "register": "https://registry.idevsec.com/registry/register",
-            "attest": "https://registry.idevsec.com/registry/attest/{agent_id}",
-            "revoke": "https://registry.idevsec.com/registry/revoke"
+            "register": "https://creduent.idevsec.com/registry/register",
+            "attest": "https://creduent.idevsec.com/registry/attest/{agent_id}",
+            "revoke": "https://creduent.idevsec.com/registry/revoke"
         }
     }
 

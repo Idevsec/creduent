@@ -18,3 +18,6 @@ registry/__pycache__/
 # Claude / Agent rules
 CLAUDE.md
 AGENTS.md
+
+# Test caches
+.pytest_cache/

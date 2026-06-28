@@ -16,6 +16,30 @@
       "use": "@vercel/python"
     }
   ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "api.idevsec.com"
+        }
+      ],
+      "destination": "https://creduent.idevsec.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "registry.idevsec.com"
+        }
+      ],
+      "destination": "https://creduent.idevsec.com/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/resolver",

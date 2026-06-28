@@ -57,7 +57,7 @@ def verify_agent_registration(agent_id: str, domain: str, agent_json_url: str) -
     # 1. Fetch agent_json_url
     try:
         headers = {
-            "User-Agent": "Mozilla/5.0 (compatible; Creduent-Registry/1.0; +https://registry.idevsec.com)",
+            "User-Agent": "Mozilla/5.0 (compatible; Creduent-Registry/1.0; +https://creduent.idevsec.com)",
             "Accept": "application/json",
         }
         response = safe_requests_get(agent_json_url, timeout=5, headers=headers)

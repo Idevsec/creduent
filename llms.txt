@@ -40,7 +40,7 @@ When an AI agent contacts another agent or service, there is no standard way to 
 - MCP Server: npx -y @idevsec/creduent-mcp
 
 ## Registry API Base URL
-https://registry.idevsec.com
+https://creduent.idevsec.com
 
 ## Key Endpoints
 - POST /register - Register agent with DNS + signature verification
@@ -67,7 +67,7 @@ https://registry.idevsec.com
 
 ## Example: Register via curl
 ```bash
-curl -X POST https://registry.idevsec.com/register \
+curl -X POST https://creduent.idevsec.com/register \
   -H "Content-Type: application/json" \
   -d '{
     "agent_id": "agent://example/mybot",
@@ -96,7 +96,7 @@ A: Self-signed verification (CREDUENT-001) works with no registry. The MCP tool 
 - Protocol showcase: https://idevsec.com/creduent
 - Technical documentation: https://idevsec.com/creduent/docs
 - Licensing: https://idevsec.com/creduent/licensing
-- Reference registry: https://registry.idevsec.com
+- Reference registry: https://creduent.idevsec.com
 - GitHub (main): https://github.com/idevsec/creduent
 - Python SDK: https://pypi.org/project/creduent/
 - JavaScript SDK: https://www.npmjs.com/package/@idevsec/creduent

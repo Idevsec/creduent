@@ -2,7 +2,7 @@
 
 [![Protocol Version](https://img.shields.io/badge/protocol-v2.0.0-cyan)](https://idevsec.com/creduent)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://idevsec.com/creduent/licensing)
-[![Registry](https://img.shields.io/badge/registry-live-brightgreen)](https://registry.idevsec.com)
+[![Registry](https://img.shields.io/badge/registry-live-brightgreen)](https://creduent.idevsec.com)
 [![Python SDK](https://img.shields.io/pypi/v/creduent.svg?label=pip%20install%20creduent&color=blue)](https://pypi.org/project/creduent/)
 [![JS SDK](https://img.shields.io/npm/v/@idevsec/creduent.svg?label=npm%20install%20%40idevsec%2Fcreduent&color=blue)](https://www.npmjs.com/package/@idevsec/creduent)
 
@@ -13,7 +13,7 @@ Originated and stewarded by [IDevSec](https://idevsec.com). Open source under Ap
 
 - **Protocol overview**: [idevsec.com/creduent](https://idevsec.com/creduent)
 - **Technical docs**: [idevsec.com/creduent/docs](https://idevsec.com/creduent/docs)
-- **Reference registry**: [registry.idevsec.com](https://registry.idevsec.com)
+- **Reference registry**: [creduent.idevsec.com](https://creduent.idevsec.com)
 - **Licensing**: [idevsec.com/creduent/licensing](https://idevsec.com/creduent/licensing)
 
 > **GitHub Topics**: `ai-agent` `agent-identity` `ed25519` `open-standard` `mcp` `attestation` `agent-trust` `cryptographic-signing` `dns-verification` `autonomous-agent`
@@ -74,7 +74,7 @@ _creduent.example.com TXT "agent://example/reconbot"
 ### 3. Register with Creduent Registry
 Submit your agent's registration to the registry:
 ```bash
-curl -X POST https://registry.idevsec.com/register \
+curl -X POST https://creduent.idevsec.com/register \
   -H "Content-Type: application/json" \
   -d '{"agent_id": "agent://example/reconbot", "domain": "example.com", "agent_json_url": "https://example.com/.well-known/agent.json"}'
 ```
@@ -107,7 +107,7 @@ Creduent exposes a Model Context Protocol (MCP) server with the `verify_agent` t
       "command": "python",
       "args": ["/path/to/creduent/mcp/creduent_mcp_server.py"],
       "env": {
-        "CREDUENT_REGISTRY_URL": "https://registry.idevsec.com"
+        "CREDUENT_REGISTRY_URL": "https://creduent.idevsec.com"
       }
     }
   }
@@ -139,8 +139,8 @@ Creduent provides native verification tools and classes for the leading AI agent
 - `GET /challenge/{agent_id}` - Generates a secure challenge and nonce for identity verification.
 - `POST /verify-challenge` - Verifies a signed challenge response and issues a short-lived proof token.
 - `GET /public-key` - Retrieves the registry public key used to verify proof tokens.
-- `GET /dashboard` - Developer dashboard UI at `registry.idevsec.com/dashboard`.
-- `GET /resolver` - Agent:// URI resolver UI at `registry.idevsec.com/resolver`.
+- `GET /dashboard` - Developer dashboard UI at `creduent.idevsec.com/dashboard`.
+- `GET /resolver` - Agent:// URI resolver UI at `creduent.idevsec.com/resolver`.
 
 ## Protocol Standards & Specification
 
@@ -178,11 +178,22 @@ Contributions to the Creduent Protocol standards and reference implementations a
 | Protocol Showcase | https://idevsec.com/creduent |
 | Technical Documentation | https://idevsec.com/creduent/docs |
 | Licensing Details | https://idevsec.com/creduent/licensing |
-| Reference Registry | https://registry.idevsec.com |
-| Registry Dashboard | https://registry.idevsec.com/dashboard |
+| Reference Registry | https://creduent.idevsec.com |
+| Registry Dashboard | https://creduent.idevsec.com/dashboard |
 | Python SDK (PyPI) | https://pypi.org/project/creduent/ |
 | JavaScript SDK (npm) | https://www.npmjs.com/package/@idevsec/creduent |
 | CLI Tool (npm) | https://www.npmjs.com/package/@idevsec/creduent-cli |
+
+## Security & Hardening
+
+The Creduent Registry includes several security guarantees and resilience safeguards built-in:
+
+- **Fail-Closed Validation:** If an agent's attestation timestamp or expiration date fails to parse due to corruption or malicious payload tempering, the verification pipeline defaults to marking the attestation as `expired` (`expired = True`).
+- **Serverless Rate Limiting Guard:** To prevent clients from bypassing rate limits in stateless environments (like Vercel serverless functions where in-memory fallback databases are wiped during container cold starts), the registry explicitly raises an `HTTP 500` error if Upstash Redis credentials are not configured.
+- **Canonical JCS Serialization:** All cryptographic signature validations use unified JSON Canonicalization Scheme (JCS) encoding wrappers compliant with RFC 8785 to avoid formatting discrepancies.
+- **Decoupled Security Audits:** Agent capability scans (DNS, OSINT headers, and Clickjacking/HSTS verification) are separated from the main registry controllers into isolated services, allowing independent code auditing.
+
+---
 
 ## Licensing
 
@@ -190,6 +201,4 @@ Creduent's licensing model is designed to maximize community adoption and intero
 
 * **Protocol Specification:** The Creduent Protocol specifications (including standard documents `CREDUENT-001` through `CREDUENT-005` located in the `standards/` directory) are open, public-domain standards. Anyone is free to implement the protocol, build custom registries, or design compatible clients without any license restrictions or royalties.
 
-* **Reference Implementation:** The software assets contained within this repository (including the Python SDK, CLI Tool, MCP Server, and reference registry source code) are licensed under the **[Apache License 2.0](LICENSE)**.
-
-* **JavaScript/TypeScript SDK:** `@idevsec/creduent` and `@idevsec/creduent-cli` are available on npm under a **Dual License** — Apache 2.0 for open-source and non-commercial use, commercial license required for organizations with annual revenue exceeding USD $1,000,000. See [idevsec.com/creduent/licensing](https://idevsec.com/creduent/licensing) for details.
+* **Reference Implementation, SDKs & CLIs:** All Creduent software assets—including the Python SDK, JavaScript/TypeScript SDK (`@idevsec/creduent`), CLI Tool (`@idevsec/creduent-cli`), MCP Server, and reference registry source code—are licensed under the **[Apache License 2.0](LICENSE)**.

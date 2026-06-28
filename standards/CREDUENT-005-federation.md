@@ -12,7 +12,7 @@
 
 This document defines the architecture for federated Creduent registries. It is a **Draft** standard describing the intended future-compatible design. No current protocol behavior is changed by this document.
 
-The core protocol (CREDUENT-001 through CREDUENT-004) is deliberately designed around a single reference registry (`registry.idevsec.com`). This simplifies initial adoption and reduces operational complexity for early implementers. However, the protocol's architecture must not permanently entrench this single point of trust.
+The core protocol (CREDUENT-001 through CREDUENT-004) is deliberately designed around a single reference registry (`creduent.idevsec.com`). This simplifies initial adoption and reduces operational complexity for early implementers. However, the protocol's architecture must not permanently entrench this single point of trust.
 
 This document describes:
 - The trust model required for federation.
@@ -30,7 +30,7 @@ In v1.0, the trust chain is:
 Agent (self-signed agent.json)
    |
    v
-Creduent Registry (registry.idevsec.com)
+Creduent Registry (creduent.idevsec.com)
    |  verifies: schema, signature, DNS, endpoint
    v
 Attestation (signed by registry private key)
@@ -43,7 +43,7 @@ Client (verifies attestation against CREDUENT_REGISTRY_PUBKEY)
 
 | Item | Risk |
 |:---|:---|
-| `registry.idevsec.com` is the only registry | If it goes offline, all verification fails unless clients hold attestation cache |
+| `creduent.idevsec.com` is the only registry | If it goes offline, all verification fails unless clients hold attestation cache |
 | `CREDUENT_REGISTRY_PUBKEY` is pinned by env var | Clients must be reconfigured when registry key rotates |
 | `issuer` field is hardcoded to `"agent://creduent/registry"` | No structural space for multiple issuers in the current schema |
 | Namespace squatting is unresolved | `agent://myorg/*` can be claimed by anyone |

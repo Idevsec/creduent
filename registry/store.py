@@ -89,11 +89,16 @@ def diagnose_redis():
         file=sys.stderr
     )
 
+_redis_client_cache = None
+
 def get_redis_client():
-    url = os.environ.get("UPSTASH_REDIS_REST_URL")
-    token = os.environ.get("UPSTASH_REDIS_REST_TOKEN")
-    from upstash_redis import Redis  # type: ignore
-    return Redis(url=url, token=token)
+    global _redis_client_cache
+    if _redis_client_cache is None:
+        url = os.environ.get("UPSTASH_REDIS_REST_URL")
+        token = os.environ.get("UPSTASH_REDIS_REST_TOKEN")
+        from upstash_redis import Redis  # type: ignore
+        _redis_client_cache = Redis(url=url, token=token)
+    return _redis_client_cache
 
 def save_attestation(agent_id: str, attestation_obj: dict):
     """

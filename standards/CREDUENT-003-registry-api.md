@@ -18,7 +18,7 @@ This document specifies the HTTP API exposed by a Creduent-compatible registry. 
 
 Any registry implementation that exposes this API surface is considered a Creduent-compatible registry.
 
-Base URL for the reference implementation: `https://registry.idevsec.com`
+Base URL for the reference implementation: `https://creduent.idevsec.com`
 
 ---
 
@@ -326,13 +326,13 @@ Registry telemetry.
 
 ### 3.10 GET /dashboard
 
-Returns the developer dashboard HTML UI. Available at `registry.idevsec.com/dashboard`.
+Returns the developer dashboard HTML UI. Available at `creduent.idevsec.com/dashboard`.
 
 ---
 
 ### 3.11 GET /resolver
 
-Returns the `agent://` URI resolver UI. Available at `registry.idevsec.com/resolver`.
+Returns the `agent://` URI resolver UI. Available at `creduent.idevsec.com/resolver`.
 
 ---
 

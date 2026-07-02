@@ -1,7 +1,7 @@
 # CREDUENT-001: agent.json Specification
 
-**Status:** Active  
-**Version:** 0.4  
+**Status:** Active RFC draft  
+**Version:** 1.1.0  
 **Founder:** Kashish Kanojia  
 **Author:** IDevSec  
 **Date:** 2026-05-31  

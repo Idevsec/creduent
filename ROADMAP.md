@@ -66,6 +66,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [x] **Schema Decoupling (v2.0)**: Release the v2.0 schema structure separating cryptographic identity (version, keys, owner) from transient policy declarations (endpoint, capabilities), introducing incremental version parsing to avoid breaking v1.x flat documents.
 * [x] **Formal Security Audit**: Completed thorough cryptographic, SSRF, file permission, and dependency audit of the core registry, CLI, and SDKs (June 2026).
 * [ ] **DID Interoperability**: Resolve `agent://` URIs as Decentralized Identifiers (e.g., standardizing `did:creduent` or integrating with `did:web`).
+* [ ] **Identity-Based Rate Limiting (IBRL)**: Standardize and implement middleware that rate-limits and blocks request flows by verified `agent_id` (rather than transient IPs), preventing rapid API scanning/probing.
 
 ---
 
@@ -73,6 +74,9 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 **Goal:** Build verifiable provenance and delegation capabilities directly solving the inter-agent security boundaries.  
 **Target:** 3 gateway integrations, 5,000+ registered agents, 1 enterprise POC.
 * [ ] **Creduent Delegation Token (CDT) Specification (CREDUENT-006)**: Draft the formal specification defining attenuated capability delegation payload structure.
+* [ ] **Verifiable Audit Logging Standard**: Draft specification for linking agent-to-agent call chains and identities into cryptographically signed trace logs, enabling machine-speed correlation for compliance audits.
+* [ ] **Instruction & Prompt Integrity Attestation (CREDUENT-007)**: Draft specification for hashing and cryptographically signing active system prompts, model versions, and tool boundaries to prevent mid-session prompt hijacking.
+* [ ] **Confidential Computing & TPM Attestation**: Design registry workflows to verify virtual Trusted Platform Module (vTPM) quotes and Intel SGX/AWS Nitro enclave measurements, introducing a "Hardware-Attested" trust level.
 * [ ] **SDK Cryptographic Delegation Verification**: Implement recursive client-side delegation verification (`sign_delegation` and `verify_delegation_chain`) in both JS/TS and Python SDKs.
 * [ ] **Zero-Trust Gateway Integration**: Implement reference middlewares for LLM Gateways (Bifrost, CyberArk) and MCP Gateways to dynamically scope API keys and policies based on CDTs.
 * [ ] **Federated attestation**: Support third-party attesters (e.g., security auditors, compliance bodies, LLM providers) issuing custom attestations.
@@ -91,15 +95,3 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [ ] LLM providers (Anthropic, OpenAI, Google) reference Creduent in their agent hosting documentation.
 * [ ] **Cross-chain attestation bridges**: On-chain verifiable agent identity for Web3/decentralized agent ecosystems.
 * [ ] **Community Stewardship**: Establish an independent governance body, open membership, and transition protocol stewardship from IDevSec to the community.
-
----
-
-## The Number That Matters
-
-| Milestone | Agents | What it proves |
-| :--- | :--- | :--- |
-| **Today** | 1+ | Protocol works, ecosystem live |
-| **August 2026** | 50 | Developers will adopt |
-| **December 2026** | 1,000 | Frameworks will integrate & ecosystem expansion |
-| **June 2027** | 5,000 | Standard in the making |
-| **2028+** | 50,000+ | Infrastructure |

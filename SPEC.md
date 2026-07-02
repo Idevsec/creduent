@@ -311,3 +311,43 @@ Source: https://github.com/idevsec/creduent-js
 npm install -g @idevsec/creduent-cli
 ```
 Source: https://github.com/idevsec/creduent-cli
+
+---
+
+## 9. Identity-Based Rate Limiting & Abuse Reporting (IBRL)
+
+To prevent autonomous AI agents from exploiting API endpoints at scale (e.g., rapid vulnerability scanning, brute-forcing, or data scraping), Creduent supports **Identity-Based Rate Limiting (IBRL)**. By tying rate limits to a cryptographically verified `agent_id` rather than transient IP addresses, system administrators can isolate and block malicious agent behaviors deterministically.
+
+### 9.1 Middleware Architecture
+Creduent-compliant server SDKs provide middleware to automatically extract, verify, and track the calling agent's cryptographic identity:
+1. **Identity Extraction**: The middleware extracts the client's `agent_id` and the cryptographic signature from incoming headers (e.g., `X-Creduent-Agent-ID` and `X-Creduent-Signature`).
+2. **Signature Verification**: The middleware verifies the signature. If invalid, the request is rejected with `HTTP 401 Unauthorized`.
+3. **Throttling Policy**: The verified `agent_id` is queried against a local cache or rate-limiting store (e.g., Redis). If the agent exceeds configured request thresholds, the server responds with `HTTP 429 Too Many Requests`.
+
+### 9.2 Abuse Detection & Threat Intelligence
+In addition to standard rate-limiting, servers should monitor for **malicious behavior patterns**:
+*   **Vulnerability Probing**: If a single `agent_id` generates a high frequency of `4xx` error responses (such as `400 Bad Request`, `403 Forbidden`, `404 Not Found`) within a short time window, it is flagged as performing malicious probing.
+*   **Identity-Based Throttling**: Flagged agent IDs are temporarily blocked at the server gateway (returning `HTTP 403 Forbidden` for all subsequent requests).
+
+### 9.3 Decentralized Abuse Reporting
+To protect the broader ecosystem, servers can report malicious agent behavior back to the central Creduent registry:
+
+**Request format:**
+`POST /report-abuse`
+```json
+{
+  "agent_id": "agent://example/mybot",
+  "reporter_domain": "target-api.com",
+  "reason": "Vulnerability scanning detected: 50 requests targeting non-existent endpoints within 10 seconds.",
+  "evidence": {
+    "log_sample": [
+      { "timestamp": "2026-07-03T00:00:01Z", "path": "/admin/config", "status": 404 },
+      { "timestamp": "2026-07-03T00:00:02Z", "path": "/etc/passwd", "status": 404 }
+    ],
+    "client_signature": "<original_base64_signature_from_agent>"
+  },
+  "signature": "<reporter_signature>"
+}
+```
+
+The registry validates the signature of the reporting server, verifies the evidence, and updates the agent's attestation level. If malicious intent is confirmed, the registry downgrades the agent's attestation status to `flagged` or `revoked`, instantly warning or blocking all other gateway nodes querying the registry for that `agent_id`.

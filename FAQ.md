@@ -127,6 +127,12 @@ Read operations and registration are unauthenticated by design. Revocation requi
 
 No. Creduent verifies identity and ownership, not intent or behavior. A `verified` attestation means the agent's cryptographic identity is authentic. It does not guarantee the agent is safe, non-malicious, or compliant with any policy. Higher-level attestation layers (auditor attestations, compliance bodies) are planned in CREDUENT-005.
 
+### What if an agent evolves to override its guidelines, or is misused by a human user?
+
+Creduent cannot control an AI model's internal cognitive alignment or human user behavior. Instead, it provides the **cryptographic leverage** to mitigate the fallout. 
+
+If an agent behaves unexpectedly, overrides its system controls, or is hijacked by a human pushing boundaries, the owner can instantly trigger a key revocation. Because downstream APIs verify the agent's signature at runtime, revoking the agent's cryptographic identity acts as a protocol-level "kill switch"—instantly severing its access to APIs, tools, and other systems before it can cause further damage.
+
 ---
 
 ## SDK and Tooling

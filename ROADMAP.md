@@ -56,7 +56,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 ## Phase 4 - Expansion & Hardening 🛠️ July -> December 2026
 **Goal:** Expand framework coverage, introduce local developer tooling, and harden core cryptography/revocation infrastructure.  
 **Target:** 1,000+ registered agents, 5 framework integrations, security audit completed.
-* [ ] **More Framework Integrations**: Native integrations for LlamaIndex, LangChain (Python & JS), and Semantic Kernel.
+* [ ] **More Framework Integrations**: Native integrations for LlamaIndex, LangChain (Python & JS), Semantic Kernel, and Google ADK (Agent Development Kit).
 * [ ] **Creduent Playground**: Interactive sandbox on the developer dashboard to cryptographically sign, verify, and debug `agent.json` files live in-browser.
 * [ ] **Key Revocation & Cache Tuning**: Implement edge-native cached endpoints (Vercel/Cloudflare KV) and local SDK LRU cache hooks (5-min TTL) to protect registry origin under live check workloads.
 * [x] **Short-Lived Attestation Windows**: Transition the default attestation TTL from 1 year to 30 days, supported by background SDK auto-renewal workers that refresh keys 7 days before expiry.

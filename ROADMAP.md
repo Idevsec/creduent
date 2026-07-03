@@ -2,6 +2,10 @@
 
 This document outlines the development phases, adoption targets, and infrastructure path for the Creduent Protocol.
 
+> [!NOTE]
+> **Status:** Early Developer Preview / Public Beta (Active Development).
+> In preparation for the launch on July 11, 2026, the core protocol components are in dynamic beta. We continuously refine the specifications, CLI, and SDKs based on community feedback, issues, and security reviews.
+
 ---
 
 ## Protocol Origins
@@ -10,7 +14,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 
 ---
 
-## Phase 1 - Foundation ✅ Complete
+## Phase 1 - Foundation - Complete
 **Timeline:** May 2026
 * [x] `agent.json` schema + Ed25519 + JCS signing standard
 * [x] DNS TXT domain ownership verification
@@ -22,7 +26,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 
 ---
 
-## Phase 2 - Ecosystem ✅ Complete
+## Phase 2 - Ecosystem - Complete
 **Goal:** Drop integration friction to zero. Make adoption a 3-minute decision.  
 **Target:** 50 registered agents by end of August 2026.
 * [x] **`pip install creduent`**: Python SDK with `sign()`, `verify()`, `register()`, and `attest()` as first-class methods.
@@ -35,7 +39,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 
 ---
 
-## Phase 3 - Scale ✅ Complete
+## Phase 3 - Scale - Complete
 **Goal:** Make Creduent the default trust layer in major agent frameworks.  
 **Target:** 500 registered agents, 3 framework integrations.
 * [x] **CrewAI integration**: Native `creduent_verify` step in Crew definitions.
@@ -53,7 +57,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 
 ---
 
-## Phase 4 - Expansion & Hardening 🛠️ July -> December 2026
+## Phase 4 - Expansion & Hardening - July -> December 2026
 **Goal:** Expand framework coverage, introduce local developer tooling, and harden core cryptography/revocation infrastructure.  
 **Target:** 1,000+ registered agents, 5 framework integrations, security audit completed.
 * [ ] **More Framework Integrations**: Native integrations for LlamaIndex, LangChain (Python & JS), Semantic Kernel, and Google ADK (Agent Development Kit).
@@ -70,11 +74,12 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 
 ---
 
-## Phase 5 - Cryptographic Delegation & Gateway Integration 🛠️ January -> June 2027
+## Phase 5 - Cryptographic Delegation & Gateway Integration - January -> June 2027
 **Goal:** Build verifiable provenance and delegation capabilities directly solving the inter-agent security boundaries.  
 **Target:** 3 gateway integrations, 5,000+ registered agents, 1 enterprise POC.
 * [ ] **Creduent Delegation Token (CDT) Specification (CREDUENT-006)**: Draft the formal specification defining attenuated capability delegation payload structure.
 * [ ] **Verifiable Audit Logging Standard**: Draft specification for linking agent-to-agent call chains and identities into cryptographically signed trace logs, enabling machine-speed correlation for compliance audits.
+* [ ] **Intent-to-Action Cryptographic Binding**: Bind delegation policies (CDT) directly to historical execution trace hashes, enabling downstream gateways to verify that the agent's behavior did not deviate from its authorized intent.
 * [ ] **Instruction & Prompt Integrity Attestation (CREDUENT-007)**: Draft specification for hashing and cryptographically signing active system prompts, model versions, and tool boundaries to prevent mid-session prompt hijacking.
 * [ ] **Confidential Computing & TPM Attestation**: Design registry workflows to verify virtual Trusted Platform Module (vTPM) quotes and Intel SGX/AWS Nitro enclave measurements, introducing a "Hardware-Attested" trust level.
 * [ ] **SDK Cryptographic Delegation Verification**: Implement recursive client-side delegation verification (`sign_delegation` and `verify_delegation_chain`) in both JS/TS and Python SDKs.
@@ -88,7 +93,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 
 ---
 
-## Phase 6 - Infrastructure 🌐 2027 and beyond
+## Phase 6 - Infrastructure - 2027 and beyond
 **Goal:** Creduent is to agents what TLS is to HTTPS, invisible, universal, assumed.
 * [ ] Creduent becomes a standard requirement in enterprise AI procurement checklists.
 * [ ] **Cyber Insurance Compliance Standard**: Partner with security underwriters to validate compliance boundaries, reducing liability premiums for Creduent-certified agent deployments.

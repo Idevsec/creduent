@@ -1,10 +1,10 @@
 # CREDUENT-002: Attestation Specification
 
-**Status:** Active  
-**Version:** 0.3  
-**Author:** IDevSec  
-**Date:** 2026-05-30  
-**Supersedes:** N/A  
+**Status:** Active 
+**Version:** 0.3 
+**Author:** IDevSec 
+**Date:** 2026-05-30 
+**Supersedes:** N/A 
 **Related:** [CREDUENT-001](SPEC.md), [CREDUENT-003](standards/CREDUENT-003-registry-api.md)
 
 ---
@@ -34,27 +34,27 @@ A Creduent Attestation is a JSON document with the following fields:
 
 | Field | Type | Required | Description |
 |:---|:---|:---|:---|
-| `agent_id` | String | ✅ | The agent's globally unique URI (`agent://namespace/name`). |
-| `issuer` | String | ✅ | The attestation issuer's identity URI. MUST be `"agent://creduent/registry"` for official attestations. |
-| `level` | String | ✅ | Trust level. One of: `"unverified"`, `"verified"`, `"trusted"`, `"revoked"`. |
-| `issued_at` | String | ✅ | RFC 3339 UTC timestamp of attestation issuance. |
-| `expires_at` | String | ✅ | RFC 3339 UTC timestamp when the attestation expires. |
-| `public_key` | String | ✅ | The agent's public key, matching its `agent.json`. Format: `ed25519:<base64>`. |
-| `domain` | String | ✅ | The domain under which the agent operates (e.g. `"example.com"`). |
-| `signature` | String | ✅ | Ed25519 signature by the registry over the JCS-canonicalized attestation (excluding `signature`). |
+| `agent_id` | String | | The agent's globally unique URI (`agent://namespace/name`). |
+| `issuer` | String | | The attestation issuer's identity URI. MUST be `"agent://creduent/registry"` for official attestations. |
+| `level` | String | | Trust level. One of: `"unverified"`, `"verified"`, `"trusted"`, `"revoked"`. |
+| `issued_at` | String | | RFC 3339 UTC timestamp of attestation issuance. |
+| `expires_at` | String | | RFC 3339 UTC timestamp when the attestation expires. |
+| `public_key` | String | | The agent's public key, matching its `agent.json`. Format: `ed25519:<base64>`. |
+| `domain` | String | | The domain under which the agent operates (e.g. `"example.com"`). |
+| `signature` | String | | Ed25519 signature by the registry over the JCS-canonicalized attestation (excluding `signature`). |
 
 ### 2.1 Example Attestation Object
 
 ```json
 {
-  "agent_id": "agent://example/mybot",
-  "issuer": "agent://creduent/registry",
-  "level": "verified",
-  "issued_at": "2026-05-30T00:00:00Z",
-  "expires_at": "2026-06-29T00:00:00Z",
-  "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
-  "domain": "example.com",
-  "signature": "base64_registry_signature_here"
+ "agent_id": "agent://example/mybot",
+ "issuer": "agent://creduent/registry",
+ "level": "verified",
+ "issued_at": "2026-05-30T00:00:00Z",
+ "expires_at": "2026-06-29T00:00:00Z",
+ "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
+ "domain": "example.com",
+ "signature": "base64_registry_signature_here"
 }
 ```
 
@@ -85,29 +85,29 @@ To obtain a `verified` attestation, an agent owner submits a `POST /register` re
 
 ```
 POST /register
-  │
-  ├── 1. SSRF Guard ─── Block private/loopback IPs
-  │
-  ├── 2. Fetch agent.json ─── from agent_json_url
-  │
-  ├── 3. Schema Validation ─── against CREDUENT-001 schema
-  │
-  ├── 4. Signature Verification ─── Ed25519 over JCS payload
-  │
-  ├── 5. DNS TXT Check ─── _creduent.{domain} == agent_id
-  │
-  ├── 6. Endpoint Healthcheck ─── HTTP GET to declared endpoint
-  │
-  └── 7. Issue Attestation ─── Sign and store in registry
+ │
+ ├── 1. SSRF Guard ─── Block private/loopback IPs
+ │
+ ├── 2. Fetch agent.json ─── from agent_json_url
+ │
+ ├── 3. Schema Validation ─── against CREDUENT-001 schema
+ │
+ ├── 4. Signature Verification ─── Ed25519 over JCS payload
+ │
+ ├── 5. DNS TXT Check ─── _creduent.{domain} == agent_id
+ │
+ ├── 6. Endpoint Healthcheck ─── HTTP GET to declared endpoint
+ │
+ └── 7. Issue Attestation ─── Sign and store in registry
 ```
 
 ### 3.1 Request Body
 
 ```json
 {
-  "agent_id": "agent://example/mybot",
-  "domain": "example.com",
-  "agent_json_url": "https://example.com/.well-known/agent.json"
+ "agent_id": "agent://example/mybot",
+ "domain": "example.com",
+ "agent_json_url": "https://example.com/.well-known/agent.json"
 }
 ```
 
@@ -115,18 +115,18 @@ POST /register
 
 ```json
 {
-  "success": true,
-  "agent_id": "agent://example/mybot",
-  "attestation": {
-    "agent_id": "agent://example/mybot",
-    "issuer": "agent://creduent/registry",
-    "level": "verified",
-    "issued_at": "2026-05-30T00:00:00Z",
-    "expires_at": "2026-06-29T00:00:00Z",
-    "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
-    "domain": "example.com",
-    "signature": "..."
-  }
+ "success": true,
+ "agent_id": "agent://example/mybot",
+ "attestation": {
+ "agent_id": "agent://example/mybot",
+ "issuer": "agent://creduent/registry",
+ "level": "verified",
+ "issued_at": "2026-05-30T00:00:00Z",
+ "expires_at": "2026-06-29T00:00:00Z",
+ "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
+ "domain": "example.com",
+ "signature": "..."
+ }
 }
 ```
 
@@ -137,9 +137,9 @@ For programmatic and dashboard use, agents may register directly without providi
 **Request body:**
 ```json
 {
-  "agent_id": "agent://example/mybot",
-  "domain": "example.com",
-  "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg="
+ "agent_id": "agent://example/mybot",
+ "domain": "example.com",
+ "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg="
 }
 ```
 
@@ -177,11 +177,11 @@ The registry's public key MUST be obtained out-of-band (environment variable, pi
 ```http
 DELETE /revoke/{agent_id}
 Headers:
-  CREDUENT-ADMIN-KEYS: <comma-separated-admin-keys>
-  CREDUENT-ADMIN-SIGNATURES: <comma-separated-signatures>
-  CREDUENT-ADMIN-TIMESTAMP: <iso8601-timestamp>
-  # Fallback for legacy administrative keys:
-  # CREDUENT-ADMIN-KEY: <admin_secret>
+ CREDUENT-ADMIN-KEYS: <comma-separated-admin-keys>
+ CREDUENT-ADMIN-SIGNATURES: <comma-separated-signatures>
+ CREDUENT-ADMIN-TIMESTAMP: <iso8601-timestamp>
+ # Fallback for legacy administrative keys:
+ # CREDUENT-ADMIN-KEY: <admin_secret>
 ```
 
 On successful revocation:
@@ -202,26 +202,26 @@ POST /renew
 Content-Type: application/json
 
 {
-  "agent_id": "agent://example/mybot",
-  "new_expires_at": "2028-05-30T00:00:00Z",
-  "signature": "<base64_signature>"
+ "agent_id": "agent://example/mybot",
+ "new_expires_at": "2028-05-30T00:00:00Z",
+ "signature": "<base64_signature>"
 }
 ```
 
 The `signature` field MUST be an Ed25519 signature computed over one of the following payload formats:
 
 1. **JCS Canonicalized Dictionary (Recommended)**: A JSON object containing the renewal fields, canonicalized using RFC 8785 JSON Canonicalization Scheme (JCS):
-   ```json
-   {
-     "agent_id": "agent://example/mybot",
-     "new_expires_at": "2028-05-30T00:00:00Z"
-   }
-   ```
+ ```json
+ {
+ "agent_id": "agent://example/mybot",
+ "new_expires_at": "2028-05-30T00:00:00Z"
+ }
+ ```
 2. **Pipe-Delimited String (Alternative)**: The delimited concatenation UTF-8 bytes:
-   ```
-   agent_id|new_expires_at
-   ```
-   For example: `"agent://example/mybot|2028-05-30T00:00:00Z"`
+ ```
+ agent_id|new_expires_at
+ ```
+ For example: `"agent://example/mybot|2028-05-30T00:00:00Z"`
 
 The registry supports both formats during verification against the agent's registered `public_key`, then re-issues and re-signs the attestation with the updated `expires_at`.
 
@@ -238,21 +238,21 @@ POST /webhook/register
 Content-Type: application/json
 
 {
-  "agent_id": "agent://example/mybot",
-  "webhook_url": "https://example.com/hooks/creduent",
-  "signature": "<base64_signature>"
+ "agent_id": "agent://example/mybot",
+ "webhook_url": "https://example.com/hooks/creduent",
+ "signature": "<base64_signature>"
 }
 ```
 
 The `signature` field MUST be computed over one of the following payload formats:
 
 1. **JCS Canonicalized Dictionary (Recommended)**: A JSON object containing the webhook registration fields, canonicalized using RFC 8785 (JCS):
-   ```json
-   {
-     "agent_id": "agent://example/mybot",
-     "webhook_url": "https://example.com/hooks/creduent"
-   }
-   ```
+ ```json
+ {
+ "agent_id": "agent://example/mybot",
+ "webhook_url": "https://example.com/hooks/creduent"
+ }
+ ```
 2. **Pipe-Delimited String (Alternative)**: The delimited concatenation: `agent_id|webhook_url`.
 
 ### 8.2 Webhook Events
@@ -268,12 +268,12 @@ The `signature` field MUST be computed over one of the following payload formats
 
 ```json
 {
-  "event": "agent.expiry_warning",
-  "agent_id": "agent://example/mybot",
-  "domain": "example.com",
-  "expires_at": "2027-05-30T00:00:00Z",
-  "days_remaining": 28,
-  "action_url": "https://creduent.idevsec.com/renew"
+ "event": "agent.expiry_warning",
+ "agent_id": "agent://example/mybot",
+ "domain": "example.com",
+ "expires_at": "2027-05-30T00:00:00Z",
+ "days_remaining": 28,
+ "action_url": "https://creduent.idevsec.com/renew"
 }
 ```
 

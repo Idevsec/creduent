@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.4] - 2026-07-05
+
+### Changed
+- **Documentation & Examples:** Updated the canonical example agent identity in all documentation and docstrings. Replaced the `reconbot` test agent with `agent://idevsec/steward` to align with the authoritative registry.
+
 ## [2.0.2] - 2026-06-27
 
 ### Changed

@@ -39,7 +39,7 @@ app.add_middleware(
 # NOTE: Keep this in sync with .well-known/agent.json whenever keys are rotated.
 AGENT_METADATA_FALLBACK = {
     "version": "1.0",
-    "agent_id": "agent://creduent/reconbot",
+    "agent_id": "agent://idevsec/steward",
     "owner": "Creduent",
     "public_key": "ed25519:uMMQ6RfZB5RJuYcZPwzLoiv8b6EQfU7CUJ2oLragCHg=",
     "endpoint": "https://creduent.idevsec.com",
@@ -424,7 +424,7 @@ def serve_dashboard():
             <div class="info-grid">
                 <div class="info-item">
                     <label>Agent URI</label>
-                    <span id="agentIdDisplay">agent://creduent/reconbot</span>
+                    <span id="agentIdDisplay">agent://idevsec/steward</span>
                 </div>
                 <div class="info-item">
                     <label>Owner</label>
@@ -480,7 +480,7 @@ def serve_dashboard():
                 const response = await fetch('/.well-known/agent.json');
                 if (response.ok) {
                     const data = await response.json();
-                    document.getElementById('agentIdDisplay').textContent = data.agent_id || 'agent://creduent/reconbot';
+                    document.getElementById('agentIdDisplay').textContent = data.agent_id || 'agent://idevsec/steward';
                     document.getElementById('ownerDisplay').textContent = data.owner || 'Creduent Protocol Group';
                     document.getElementById('publicKeyDisplay').textContent = data.public_key || '';
                 }

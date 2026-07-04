@@ -551,7 +551,7 @@ RESOLVER_HTML = """<!DOCTYPE html>
                     <div class="search-icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </div>
-                    <input type="text" id="uriInput" class="uri-input" placeholder="agent://domain/name" value="agent://creduent/reconbot" autocomplete="off" spellcheck="false">
+                    <input type="text" id="uriInput" class="uri-input" placeholder="agent://domain/name" value="agent://idevsec/steward" autocomplete="off" spellcheck="false">
                     <button id="resolveBtn" class="resolve-btn" onclick="resolveIdentity()">Resolve URI</button>
                 </div>
             </section>
@@ -2524,7 +2524,7 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
                 <div class="identity-inner">
                     <div class="identity-badge">⬡</div>
                     <div class="identity-name" id="ownerDisplay">Creduent</div>
-                    <div class="identity-uri" id="agentIdDisplay">agent://creduent/reconbot</div>
+                    <div class="identity-uri" id="agentIdDisplay">agent://idevsec/steward</div>
                     <div class="fields">
                         <div class="field">
                             <div class="field-label">Public Key · Ed25519</div>

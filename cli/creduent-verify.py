@@ -55,7 +55,7 @@ def resolve_agent_id(agent_id, local_registry_path="examples/registry.json"):
             print(f"[!] Warning reading registry file: {e}")
 
     # 2. Hardcoded fallback mappings for demo/test purposes
-    fallback_mappings = {"agent://creduent/reconbot": "examples/reconbot.agent.json"}
+    fallback_mappings = {"agent://idevsec/steward": "examples/reconbot.agent.json"}
     if agent_id in fallback_mappings:
         print(
             f"[+] Found fallback mapping: {agent_id} -> {fallback_mappings[agent_id]}"

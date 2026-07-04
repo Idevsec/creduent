@@ -30,7 +30,7 @@ agent://<namespace>/<agent-name>
 
 **Valid examples:**
 ```
-agent://creduent/reconbot
+agent://idevsec/steward
 agent://my-org/data-processor
 agent://acme_corp/support_agent
 ```
@@ -84,7 +84,7 @@ Check for a local `examples/registry.json` file mapping agent URIs to local file
 
 ```json
 {
-  "agent://creduent/reconbot": "examples/reconbot.agent.json"
+  "agent://idevsec/steward": "examples/reconbot.agent.json"
 }
 ```
 
@@ -161,9 +161,9 @@ The resolver UI is accessible in a browser at `creduent.idevsec.com/resolver`.
 from creduent import verify
 
 # Resolve and verify by agent:// URI
-result = verify("agent://creduent/reconbot")
+result = verify("agent://idevsec/steward")
 print(result.valid)       # True/False
-print(result.agent_id)    # "agent://creduent/reconbot"
+print(result.agent_id)    # "agent://idevsec/steward"
 ```
 
 ## 8. JavaScript SDK Usage
@@ -171,7 +171,7 @@ print(result.agent_id)    # "agent://creduent/reconbot"
 ```typescript
 import { resolveAgent } from "@idevsec/creduent";
 
-const record = await resolveAgent("agent://creduent/reconbot");
+const record = await resolveAgent("agent://idevsec/steward");
 console.log(record.agent_id);
 console.log(record.level); // "verified" | "unverified" | "revoked"
 ```

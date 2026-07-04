@@ -44,7 +44,7 @@ A v1.0 `agent.json` document consists of the following 8 fields:
 3. **`agent_id`** (String, Required)  
    The globally unique URI identifier for the agent, following the scheme:  
    `agent://<namespace>/<agent-name>`  
-   *Example:* `"agent://creduent/reconbot"`  
+   *Example:* `"agent://idevsec/steward"`  
    *Note on Constraints:* To comply with schema validation, both `<namespace>` and `<agent-name>` MUST consist solely of alphanumeric characters, hyphens (`-`), and underscores (`_`). Sub-namespaces (additional subpaths with `/`), dots (`.`), and other symbols are not supported.
    *Note:* Namespace squatting and ownership validation are resolved at the registry resolution layer.
 

@@ -19,6 +19,7 @@ When an AI agent contacts another agent or service, there is no standard way to 
 - **Attestation Registry** - Public registry of signed agent identity assertions
 - **agent:// URI Scheme** - Globally unique agent identifiers (e.g. agent://example/mybot)
 - **MCP Integration** - Model Context Protocol server exposing verify_agent tool
+- **Observability Binding** - Linking identity to LLM telemetry traces (e.g., Langfuse) for end-to-end intent auditing
 
 ## Protocol Standards
 - CREDUENT-001: agent.json specification (Ed25519 signing, JCS canonicalization)

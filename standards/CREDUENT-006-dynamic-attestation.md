@@ -163,6 +163,11 @@ This receipt allows auditors to prove retroactively that a specific version of a
   "agent_id": "agent://example/mybot",
   "agent_public_key": "ed25519:hArTvbITJ2jirL...",
   "aph": "sha256:d8b2d184...",
+  "observability": {
+    "provider": "langfuse",
+    "trace_id": "trace_b7c2d9a1-...",
+    "trace_hash": "sha256:a1b2c3d4..."
+  },
   "host_attestation": {
     "node_id": "node://atlas-grid/us-east-1",
     "pcrs": {

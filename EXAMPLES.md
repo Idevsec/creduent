@@ -174,7 +174,7 @@ async function checkAgent(uri: string) {
   }
 }
 
-checkAgent("agent://creduent/reconbot");
+checkAgent("agent://idevsec/steward");
 ```
 
 ---
@@ -222,14 +222,14 @@ Once `creduent_mcp_server.py` is configured in your MCP host, call the `verify_a
 **Input:**
 ```json
 {
-  "target": "agent://creduent/reconbot"
+  "target": "agent://idevsec/steward"
 }
 ```
 
 **Output:**
 ```json
 {
-  "agent_id": "agent://creduent/reconbot",
+  "agent_id": "agent://idevsec/steward",
   "self_verified": true,
   "creduent_attested": true,
   "attestation_level": "verified",

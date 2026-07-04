@@ -65,6 +65,8 @@ Creduent v2.0 separates identity attributes from transient policies:
 | Field | Type | Description |
 |:---|:---|:---|
 | `issued_at` | String | RFC 3339 UTC timestamp of document creation. |
+| `observability_provider` | String | (Optional) The observability platform the agent uses (e.g., `"langfuse"`). |
+| `trace_url` | String | (Optional) Public URL to view the agent's trace logs (e.g., Langfuse session URL). |
 
 ### Signing Algorithm Summary
 

@@ -1,3 +1,3 @@
 {
-  "agent://creduent/reconbot": "examples/reconbot.agent.json"
+  "agent://idevsec/steward": "examples/reconbot.agent.json"
 }

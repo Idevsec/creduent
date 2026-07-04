@@ -6,7 +6,7 @@ import sys
 import traceback
 
 # Add parent directory to path to allow importing from creduent package
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, BASE_DIR)
 from creduent.utils import load_dotenv
 
@@ -14,6 +14,7 @@ from creduent.utils import load_dotenv
 load_dotenv()
 
 DB_PATH = "registry_db.json"
+
 
 @contextlib.contextmanager
 def file_lock(file_path):
@@ -24,8 +25,9 @@ def file_lock(file_path):
         # Cross-platform file locking:
         # On Windows: msvcrt.locking
         # On Unix: fcntl.flock
-        if os.name == 'nt':
+        if os.name == "nt":
             import msvcrt
+
             locked = False
             for _ in range(50):  # Retry for 5 seconds (50 * 0.1s)
                 try:
@@ -39,6 +41,7 @@ def file_lock(file_path):
                 raise IOError("Could not acquire registry file lock on Windows")
         else:
             import fcntl
+
             locked = False
             for _ in range(50):  # Retry for 5 seconds
                 try:
@@ -49,16 +52,18 @@ def file_lock(file_path):
                     time.sleep(0.1)
             if not locked:
                 raise IOError("Could not acquire registry file lock on Unix")
-        
+
         yield f
     finally:
         try:
-            if os.name == 'nt':
+            if os.name == "nt":
                 import msvcrt
+
                 f.seek(0)
                 msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
             else:
                 import fcntl
+
                 fcntl.flock(f, fcntl.LOCK_UN)
         except Exception:
             pass
@@ -67,6 +72,7 @@ def file_lock(file_path):
             os.remove(lock_path)
         except Exception:
             pass
+
 
 def is_redis_configured() -> bool:
     url = os.environ.get("UPSTASH_REDIS_REST_URL")
@@ -77,6 +83,7 @@ def is_redis_configured() -> bool:
         return False
     return True
 
+
 def diagnose_redis():
     """Logs Redis environment variable status to stderr for debugging."""
     url = os.environ.get("UPSTASH_REDIS_REST_URL", "")
@@ -86,10 +93,12 @@ def diagnose_redis():
     print(
         f"[REDIS DIAG] URL set={bool(url)} url_preview={url_preview!r} "
         f"token_set={token_set} VERCEL={os.environ.get('VERCEL')}",
-        file=sys.stderr
+        file=sys.stderr,
     )
 
+
 _redis_client_cache = None
+
 
 def get_redis_client():
     global _redis_client_cache
@@ -97,8 +106,10 @@ def get_redis_client():
         url = os.environ.get("UPSTASH_REDIS_REST_URL")
         token = os.environ.get("UPSTASH_REDIS_REST_TOKEN")
         from upstash_redis import Redis  # type: ignore
+
         _redis_client_cache = Redis(url=url, token=token)
     return _redis_client_cache
+
 
 def save_attestation(agent_id: str, attestation_obj: dict):
     """
@@ -124,6 +135,7 @@ def save_attestation(agent_id: str, attestation_obj: dict):
             db[agent_id] = attestation_obj
             with open(DB_PATH, "w", encoding="utf-8") as f:
                 json.dump(db, f, indent=2, ensure_ascii=False)
+
 
 def get_attestation(agent_id: str) -> dict:
     """
@@ -155,6 +167,7 @@ def get_attestation(agent_id: str) -> dict:
                 except Exception:
                     return None
 
+
 def revoke_agent(agent_id: str):
     """
     Revokes (removes) an agent's attestation.
@@ -180,6 +193,7 @@ def revoke_agent(agent_id: str):
                 del db[agent_id]
                 with open(DB_PATH, "w", encoding="utf-8") as f:
                     json.dump(db, f, indent=2, ensure_ascii=False)
+
 
 # ---------------------------------------------------------------------------
 # Webhook storage — Redis hash "creduent:webhooks" or local webhooks_db.json
@@ -289,6 +303,7 @@ def delete_webhook(agent_id: str):
                 with open(WEBHOOKS_DB_PATH, "w", encoding="utf-8") as f:
                     json.dump(db, f, indent=2, ensure_ascii=False)
 
+
 def list_agents() -> list:
     """
     Lists all registered agents and their attestations.
@@ -328,12 +343,14 @@ def list_agents() -> list:
 
 CHALLENGE_DB = {}
 
+
 def _prune_expired_challenges():
     """Removes expired challenges from the in-memory CHALLENGE_DB fallback to prevent memory leaks."""
     now = time.time()
     expired = [k for k, (_, expiry) in CHALLENGE_DB.items() if now >= expiry]
     for k in expired:
         CHALLENGE_DB.pop(k, None)
+
 
 def save_challenge(agent_id: str, nonce: str, challenge_obj: dict):
     """
@@ -347,10 +364,11 @@ def save_challenge(agent_id: str, nonce: str, challenge_obj: dict):
             return
         except Exception as e:
             print(f"[-] Redis error in save_challenge: {e}", file=sys.stderr)
-            
+
     # Fallback to local memory
     _prune_expired_challenges()
     CHALLENGE_DB[key] = (challenge_obj, time.time() + 300)
+
 
 def get_challenge(agent_id: str, nonce: str) -> dict:
     """
@@ -369,7 +387,7 @@ def get_challenge(agent_id: str, nonce: str) -> dict:
             return None
         except Exception as e:
             print(f"[-] Redis error in get_challenge: {e}", file=sys.stderr)
-            
+
     # Fallback to local memory
     _prune_expired_challenges()
     if key in CHALLENGE_DB:
@@ -379,6 +397,7 @@ def get_challenge(agent_id: str, nonce: str) -> dict:
         else:
             del CHALLENGE_DB[key]
     return None
+
 
 def delete_challenge(agent_id: str, nonce: str):
     """
@@ -392,7 +411,7 @@ def delete_challenge(agent_id: str, nonce: str):
             return
         except Exception as e:
             print(f"[-] Redis error in delete_challenge: {e}", file=sys.stderr)
-            
+
     # Fallback to local memory
     _prune_expired_challenges()
     if key in CHALLENGE_DB:

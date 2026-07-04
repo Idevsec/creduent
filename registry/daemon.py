@@ -12,14 +12,19 @@ sys.path.insert(0, BASE_DIR)
 
 REGISTRY_DB_PATH = os.path.join(BASE_DIR, "registry_db.json")
 WEBHOOKS_DB_PATH = os.path.join(BASE_DIR, "registry", "webhooks_db.json")
+
+
 # Set up logging to stdout instead of daemon.log
 class CustomStdoutLogger:
     def info(self, msg):
         print(f"{datetime.now().isoformat()} [INFO] {msg}", file=sys.stdout)
+
     def warning(self, msg):
         print(f"{datetime.now().isoformat()} [WARNING] {msg}", file=sys.stdout)
+
     def error(self, msg):
         print(f"{datetime.now().isoformat()} [ERROR] {msg}", file=sys.stdout)
+
 
 logging = CustomStdoutLogger()
 
@@ -27,6 +32,7 @@ logging = CustomStdoutLogger()
 # ---------------------------------------------------------------------------
 # Storage helpers — Redis-first, local JSON fallback
 # ---------------------------------------------------------------------------
+
 
 def _is_redis_configured() -> bool:
     url = os.environ.get("UPSTASH_REDIS_REST_URL", "")
@@ -36,6 +42,7 @@ def _is_redis_configured() -> bool:
 
 def _get_redis_client():
     from upstash_redis import Redis  # type: ignore
+
     return Redis(
         url=os.environ["UPSTASH_REDIS_REST_URL"],
         token=os.environ["UPSTASH_REDIS_REST_TOKEN"],
@@ -97,12 +104,16 @@ def _load_json_file(file_path: str) -> dict:
         logging.error(f"Failed to load JSON file at {file_path}: {e}")
         return {}
 
+
 # ---------------------------------------------------------------------------
 # Webhook fire
 # ---------------------------------------------------------------------------
 
+
 def send_webhook(agent_id, webhook_url, domain, expires_at, days_remaining):
-    action_url = f"https://{domain}/renew" if domain else "https://creduent.idevsec.com/renew"
+    action_url = (
+        f"https://{domain}/renew" if domain else "https://creduent.idevsec.com/renew"
+    )
 
     payload = {
         "event": "agent.expiry_warning",
@@ -110,7 +121,7 @@ def send_webhook(agent_id, webhook_url, domain, expires_at, days_remaining):
         "domain": domain or "creduent.idevsec.com",
         "expires_at": expires_at,
         "days_remaining": days_remaining,
-        "action_url": action_url
+        "action_url": action_url,
     }
 
     headers = {"Content-Type": "application/json"}
@@ -118,7 +129,7 @@ def send_webhook(agent_id, webhook_url, domain, expires_at, days_remaining):
         webhook_url,
         data=json.dumps(payload).encode("utf-8"),
         headers=headers,
-        method="POST"
+        method="POST",
     )
 
     try:
@@ -127,22 +138,27 @@ def send_webhook(agent_id, webhook_url, domain, expires_at, days_remaining):
             logging.info(f"Webhook fired for '{agent_id}' → {webhook_url} [{status}]")
             return True
     except urllib.error.HTTPError as e:
-        logging.error(f"HTTP error for '{agent_id}' → {webhook_url}: {e.code} {e.reason}")
+        logging.error(
+            f"HTTP error for '{agent_id}' → {webhook_url}: {e.code} {e.reason}"
+        )
     except urllib.error.URLError as e:
         logging.error(f"Network error for '{agent_id}' → {webhook_url}: {e.reason}")
     except Exception as e:
         logging.error(f"Unexpected error for '{agent_id}' → {webhook_url}: {e}")
     return False
 
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+
 
 def main():
     # Load local .env when not running inside Vercel
     if os.environ.get("VERCEL") != "1":
         try:
             from creduent.utils import load_dotenv
+
             load_dotenv()
         except Exception:
             pass
@@ -174,7 +190,9 @@ def main():
             continue
 
         try:
-            expires_at_dt = datetime.fromisoformat(expires_at_str.replace("Z", "+00:00"))
+            expires_at_dt = datetime.fromisoformat(
+                expires_at_str.replace("Z", "+00:00")
+            )
         except Exception as e:
             logging.error(f"Bad 'expires_at' for '{agent_id}': {e}")
             continue
@@ -184,21 +202,33 @@ def main():
 
         if 0 <= days_remaining <= 30:
             expiring_count += 1
-            logging.warning(f"Agent '{agent_id}' expires in {days_remaining} days ({expires_at_str})")
+            logging.warning(
+                f"Agent '{agent_id}' expires in {days_remaining} days ({expires_at_str})"
+            )
 
             webhook_url = webhooks.get(agent_id)
             if webhook_url:
                 logging.info(f"Firing warning webhook for '{agent_id}' → {webhook_url}")
-                if send_webhook(agent_id, webhook_url, record.get("domain"), expires_at_str, days_remaining):
+                if send_webhook(
+                    agent_id,
+                    webhook_url,
+                    record.get("domain"),
+                    expires_at_str,
+                    days_remaining,
+                ):
                     webhook_sent_count += 1
             else:
                 logging.info(f"No webhook for expiring agent '{agent_id}'.")
         elif days_remaining < 0:
-            logging.warning(f"Agent '{agent_id}' already EXPIRED {abs(days_remaining)} days ago.")
+            logging.warning(
+                f"Agent '{agent_id}' already EXPIRED {abs(days_remaining)} days ago."
+            )
         else:
             logging.info(f"Agent '{agent_id}' active, {days_remaining} days remaining.")
 
-    logging.info(f"Scan complete. Expiring: {expiring_count}, Webhooks sent: {webhook_sent_count}")
+    logging.info(
+        f"Scan complete. Expiring: {expiring_count}, Webhooks sent: {webhook_sent_count}"
+    )
     logging.info("--- Daemon execution finished successfully ---")
 
 

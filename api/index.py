@@ -15,7 +15,7 @@ from cryptography.hazmat.primitives import serialization
 from urllib.parse import urlparse, urljoin
 
 # Add parent directory to path to allow importing from creduent package
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from creduent.crypto import canonicalize
 from creduent.utils import load_dotenv
 from api.services import execute_agent_capabilities
@@ -38,34 +38,38 @@ app.add_middleware(
 # Core agent metadata fallback (corresponds to our signed agent.json)
 # NOTE: Keep this in sync with .well-known/agent.json whenever keys are rotated.
 AGENT_METADATA_FALLBACK = {
-  "version": "1.0",
-  "agent_id": "agent://creduent/reconbot",
-  "owner": "Creduent",
-  "public_key": "ed25519:uMMQ6RfZB5RJuYcZPwzLoiv8b6EQfU7CUJ2oLragCHg=",
-  "endpoint": "https://creduent.idevsec.com",
-  "capabilities": [
-    "osint",
-    "dns_lookup",
-    "vulnerability_scan"
-  ],
-  "issued_at": "2026-05-28T22:29:03Z",
-  "signature": "pWxvJRnW9bhtqSsehW7I//8/kBgV/GZsnZo7IccxUDv5ethFZJWZZdDv5qxuIZ3sI4iaw49bxHtDy6b3BrSRAA=="
+    "version": "1.0",
+    "agent_id": "agent://creduent/reconbot",
+    "owner": "Creduent",
+    "public_key": "ed25519:uMMQ6RfZB5RJuYcZPwzLoiv8b6EQfU7CUJ2oLragCHg=",
+    "endpoint": "https://creduent.idevsec.com",
+    "capabilities": ["osint", "dns_lookup", "vulnerability_scan"],
+    "issued_at": "2026-05-28T22:29:03Z",
+    "signature": "pWxvJRnW9bhtqSsehW7I//8/kBgV/GZsnZo7IccxUDv5ethFZJWZZdDv5qxuIZ3sI4iaw49bxHtDy6b3BrSRAA==",
 }
 
 AGENT_METADATA = AGENT_METADATA_FALLBACK
 
 # Resolve path relative to this file to be robust on Vercel
-AGENT_JSON_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".well-known", "agent.json"))
+AGENT_JSON_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", ".well-known", "agent.json")
+)
 
 try:
     if os.path.exists(AGENT_JSON_PATH):
         with open(AGENT_JSON_PATH, "r", encoding="utf-8") as f:
             AGENT_METADATA = json.load(f)
-            print(f"[+] Successfully loaded AGENT_METADATA dynamically from {AGENT_JSON_PATH}")
+            print(
+                f"[+] Successfully loaded AGENT_METADATA dynamically from {AGENT_JSON_PATH}"
+            )
     else:
-        print(f"[!] Warning: agent.json not found at {AGENT_JSON_PATH}. Serving hardcoded fallback metadata.")
+        print(
+            f"[!] Warning: agent.json not found at {AGENT_JSON_PATH}. Serving hardcoded fallback metadata."
+        )
 except Exception as e:
-    print(f"[!] Warning: Failed to load agent.json from {AGENT_JSON_PATH} ({e}). Serving hardcoded fallback metadata.")
+    print(
+        f"[!] Warning: Failed to load agent.json from {AGENT_JSON_PATH} ({e}). Serving hardcoded fallback metadata."
+    )
 
 
 # is_private_ip and safe_requests_get imported from creduent.utils
@@ -83,11 +87,11 @@ def get_private_key():
                 # Decoded if it's base64 encoded
                 pkey_bytes = base64.b64decode(pkey_env)
             else:
-                pkey_bytes = pkey_env.encode('utf-8')
+                pkey_bytes = pkey_env.encode("utf-8")
             return serialization.load_pem_private_key(pkey_bytes, password=None)
         except Exception as e:
             print(f"[-] Error loading private key from env: {e}")
-            
+
     # Fallback to local file
     key_file = "private_key.pem"
     if os.path.exists(key_file):
@@ -96,8 +100,9 @@ def get_private_key():
                 return serialization.load_pem_private_key(f.read(), password=None)
         except Exception as e:
             print(f"[-] Error loading private key from file: {e}")
-            
+
     return None
+
 
 @app.get("/.well-known/agent.json")
 def serve_agent_json():
@@ -106,11 +111,15 @@ def serve_agent_json():
     """
     return JSONResponse(content=AGENT_METADATA)
 
+
 @app.get("/api/scan")
 @app.post("/api/scan")
 def run_agent_scan(
     domain: str = Query(..., description="Target domain to scan"),
-    capability: str = Query("dns_lookup", description="Capability to run: dns_lookup, osint, vulnerability_scan")
+    capability: str = Query(
+        "dns_lookup",
+        description="Capability to run: dns_lookup, osint, vulnerability_scan",
+    ),
 ):
     """
     Executes a real agent task based on capability, canonicalizes results, signs
@@ -123,7 +132,7 @@ def run_agent_scan(
     response_payload = {
         "version": "1.0",
         "agent_id": AGENT_METADATA["agent_id"],
-        "results": results
+        "results": results,
     }
 
     private_key = get_private_key()
@@ -131,16 +140,18 @@ def run_agent_scan(
         try:
             # JCS canonicalization
             canonical_str = canonicalize(response_payload)
-            canonical_bytes = canonical_str.encode('utf-8')
+            canonical_bytes = canonical_str.encode("utf-8")
             # Cryptographic signature
             signature_bytes = private_key.sign(canonical_bytes)
-            signature_b64 = base64.b64encode(signature_bytes).decode('utf-8')
+            signature_b64 = base64.b64encode(signature_bytes).decode("utf-8")
             response_payload["signature"] = signature_b64
             response_payload["verification_state"] = "signed"
         except Exception as e:
             response_payload["verification_state"] = f"signing_error: {e}"
     else:
-        response_payload["verification_state"] = "unsigned (private key missing on server)"
+        response_payload["verification_state"] = (
+            "unsigned (private key missing on server)"
+        )
 
     return JSONResponse(content=response_payload)
 

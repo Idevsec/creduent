@@ -2722,4 +2722,3 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
 </script>
 </body>
 </html>"""
-

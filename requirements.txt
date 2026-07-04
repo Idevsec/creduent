@@ -1,5 +1,5 @@
 fastapi
-creduent>=0.5.1
+creduent>=2.0.2
 mcp
 dnspython
 upstash-redis

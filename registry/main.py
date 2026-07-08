@@ -36,7 +36,7 @@ load_dotenv()
 # Emit Redis diagnostics to Vercel function logs on cold start
 diagnose_redis()
 
-app = FastAPI(title="Creduent Attestation Registry", version="1.0")
+app = FastAPI(title="Creduent Attestation Registry", version="2.0.5")
 router = APIRouter()
 
 
@@ -73,6 +73,12 @@ class VerifyChallengeRequest(BaseModel):
     agent_id: str
     nonce: str
     signature: str
+
+
+class RecoveryOverrideRequest(BaseModel):
+    agent_id: str
+    domain: str
+    new_public_key: str
 
 
 CHALLENGE_RATE_LIMIT_WINDOW = 60  # 1 minute
@@ -216,9 +222,41 @@ def register(req: RegisterRequest, request: Request):
     )
     if not success:
         raise HTTPException(status_code=400, detail=f"Verification failed: {reason}")
+    version = doc.get("version", "1.0")
+    if version == "2.0":
+        identity = doc.get("identity", {})
+        doc_agent_id = identity.get("agent_id")
+        keys = identity.get("keys", [])
+    else:
+        doc_agent_id = doc.get("agent_id")
+        keys = doc.get("keys", [])
+        if not keys and "public_key" in doc:
+            keys = [
+                {
+                    "id": "legacy",
+                    "type": "ed25519",
+                    "public_key": doc.get("public_key"),
+                    "status": "active",
+                }
+            ]
+
+    # Extract public key from active keys array
+    public_key = None
+    if isinstance(keys, list):
+        for k in keys:
+            if isinstance(k, dict) and k.get("status") == "active":
+                public_key = k.get("public_key")
+                break
+
+    if not public_key:
+        raise HTTPException(
+            status_code=400,
+            detail="Verification failed: No active public_key found in agent.json",
+        )
+
     agent_data = {
-        "agent_id": doc["agent_id"],
-        "public_key": doc["public_key"],
+        "agent_id": doc_agent_id,
+        "public_key": public_key,
         "domain": req.domain,
     }
     try:
@@ -228,7 +266,7 @@ def register(req: RegisterRequest, request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Signing failed: {str(e)}")
     try:
-        save_attestation(doc["agent_id"], attestation)
+        save_attestation(doc_agent_id, attestation)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database write failed: {str(e)}")
     return {**attestation, "status": "registered"}
@@ -800,6 +838,91 @@ def verify_challenge(req: VerifyChallengeRequest, request: Request):
     }
 
 
+@router.post("/recovery/override")
+def recovery_override(req: RecoveryOverrideRequest, request: Request):
+    """
+    DNS-based emergency override:
+    Verifies that the TXT record at _creduent_recovery.{domain} matches the new public key.
+    If verified, updates the agent's public key in the registry and invalidates old ones.
+    """
+    check_rate_limit(request)
+
+    agent_id = req.agent_id
+    if agent_id.startswith("agent:/") and not agent_id.startswith("agent://"):
+        agent_id = "agent://" + agent_id[7:]
+
+    # 1. Fetch existing attestation to confirm agent exists
+    existing = get_attestation(agent_id)
+    if not existing:
+        raise HTTPException(
+            status_code=404, detail="Agent attestation not found in registry"
+        )
+
+    # Check that domain matches the registered domain
+    if existing.get("domain") != req.domain:
+        raise HTTPException(
+            status_code=400,
+            detail="Domain mismatch: target agent is registered under a different domain",
+        )
+
+    # 2. Check DNS TXT record at _creduent_recovery.{domain}
+    import dns.resolver
+
+    recovery_record_name = f"_creduent_recovery.{req.domain}"
+    verified = False
+    try:
+        answers = dns.resolver.resolve(recovery_record_name, "TXT")
+        for rdata in answers:
+            txt_content = "".join([s.decode("utf-8") for s in rdata.strings])
+            if req.new_public_key in txt_content:
+                verified = True
+                break
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"DNS TXT lookup failed at {recovery_record_name}: {str(e)}",
+        )
+
+    if not verified:
+        raise HTTPException(
+            status_code=400,
+            detail=f"DNS TXT recovery verification failed. The TXT record at {recovery_record_name} must contain the new public key '{req.new_public_key}'.",
+        )
+
+    # 3. Update the public key and sign the new attestation
+    # Set level back to unverified since keys were compromised/changed
+    agent_data = {
+        "agent_id": agent_id,
+        "public_key": req.new_public_key,
+        "domain": req.domain,
+    }
+
+    # Preserve other optional metadata keys
+    for key in ["capabilities", "owner", "endpoint"]:
+        if key in existing:
+            agent_data[key] = existing[key]
+
+    from registry.signer import get_registry_private_key
+
+    private_key = get_registry_private_key()
+    if not private_key:
+        raise HTTPException(
+            status_code=500, detail="Registry private key not configured"
+        )
+
+    try:
+        attestation = sign_attestation(agent_data, level="unverified")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Signing failed: {str(e)}")
+
+    try:
+        save_attestation(agent_id, attestation)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database write failed: {str(e)}")
+
+    return {**attestation, "status": "recovered"}
+
+
 @router.get("/public-key")
 def get_public_key():
     import base64
@@ -845,6 +968,7 @@ def serve_registry_landing():
             "register": "https://creduent.idevsec.com/registry/register",
             "attest": "https://creduent.idevsec.com/registry/attest/{agent_id}",
             "revoke": "https://creduent.idevsec.com/registry/revoke",
+            "recovery_override": "https://creduent.idevsec.com/registry/recovery/override",
         },
     }
 

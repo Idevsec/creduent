@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.5] - 2026-07-08
+
+### Added
+- **DNS Recovery Override Endpoint:** Added the `/recovery/override` API route in the reference registry implementation for out-of-band key rotation overrides.
+
+### Fixed
+- **Version 2.0/1.1 Schema Key Array Validation:** Fixed registration pipeline to correctly extract active public keys from keys arrays in version 2.0 (nested `identity.keys`) and version 1.1 (top-level `keys`) agent documents.
+
 ## [2.0.4] - 2026-07-05
 
 ### Changed
@@ -35,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Attestation Expiration Window**: Shortened default attestation TTL from 365 days to 30 days, enforcing the 30-day cap on all new registrations and renewals.
-- **Keys Array Extraction**: Enabled robust lookup from the `keys` array in `agent.json` when the root-level `public_key` is not present.
+- **Keys Array Extraction**: Enabled fallback lookup from the `keys` array in `agent.json` when the root-level `public_key` is not present.
 - **Distinct Revocation Status Response**: Configured `/attest/{agent_id}` to yield `HTTP 410 Gone` if the attestation is revoked.
 
 ## [1.2.0] - 2026-06-21

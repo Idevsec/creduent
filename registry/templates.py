@@ -2492,7 +2492,7 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
 
     <nav>
         <a href="/" class="nav-logo">
-            <div class="nav-logo-icon" style="color: white; font-weight: bold;">C</div>
+            <div class="nav-logo-icon"></div>
             Creduent
         </a>
         <div class="nav-right">
@@ -2522,7 +2522,7 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
                     </div>
                 </div>
                 <div class="identity-inner">
-                    <div class="identity-badge" style="color: white; font-weight: bold;">A</div>
+                    <div class="identity-badge"></div>
                     <div class="identity-name" id="ownerDisplay">Creduent</div>
                     <div class="identity-uri" id="agentIdDisplay">agent://idevsec/steward</div>
                     <div class="fields">

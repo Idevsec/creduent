@@ -2492,7 +2492,7 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
 
     <nav>
         <a href="/" class="nav-logo">
-            <div class="nav-logo-icon">⬡</div>
+            <div class="nav-logo-icon" style="color: white; font-weight: bold;">C</div>
             Creduent
         </a>
         <div class="nav-right">
@@ -2507,7 +2507,7 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
 
     <main>
         <div class="hero">
-            <div class="hero-eyebrow">⬡ &nbsp;Creduent Protocol · v1.0</div>
+            <div class="hero-eyebrow">Creduent Protocol · v1.0</div>
             <h1>Agent Console</h1>
             <p>Delegated task execution and cryptographic signature console for autonomous AI agents over the Creduent protocol.</p>
         </div>
@@ -2522,7 +2522,7 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
                     </div>
                 </div>
                 <div class="identity-inner">
-                    <div class="identity-badge">⬡</div>
+                    <div class="identity-badge" style="color: white; font-weight: bold;">A</div>
                     <div class="identity-name" id="ownerDisplay">Creduent</div>
                     <div class="identity-uri" id="agentIdDisplay">agent://idevsec/steward</div>
                     <div class="fields">

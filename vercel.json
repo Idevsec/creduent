@@ -22,17 +22,6 @@
       "has": [
         {
           "type": "host",
-          "value": "creduent.idevsec.com"
-        }
-      ],
-      "destination": "https://creduent.idevsec.com/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
           "value": "registry.idevsec.com"
         }
       ],

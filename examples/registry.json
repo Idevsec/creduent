@@ -1,3 +1,3 @@
 {
-  "agent://idevsec/steward": "examples/reconbot.agent.json"
+  "agent://example/agent": "examples/example-agent.json"
 }

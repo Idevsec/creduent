@@ -10,7 +10,7 @@ This document outlines the development phases, adoption targets, and infrastruct
 
 ## Protocol Origins
 
-Originally designed and developed by Kashish Kanojia through IDevSec, the Creduent Protocol reference registry, signing utilities, and SDKs were established to solve core agent identity challenges. The stewardship of the protocol and its future development roadmap are maintained by IDevSec. Under this model, the roadmap represents a collaborative effort among autonomous system developers, security practitioners, and open standards organizations.
+Kashish Kanojia is the creator of the Creduent Protocol, reference registry, signing utilities, and SDKs, stewarded by IDevSec. Under this model, the protocol evolution and development roadmap represent a collaborative effort among autonomous system developers, security practitioners, and open standards organizations.
 
 ---
 
@@ -78,6 +78,7 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 **Goal:** Build verifiable provenance and delegation capabilities directly solving the inter-agent security boundaries.  
 **Target:** 3 gateway integrations, 5,000+ registered agents, 1 enterprise POC.
 * [ ] **Creduent Delegation Token (CDT) Specification (CREDUENT-007)**: Draft the formal specification defining attenuated capability delegation payload structure.
+* [ ] **The 6-Layer Composite Trust Integration**: Standardize the architectural mapping between Identity, Posture (APH), Delegation (CDT), Policy, Execution Context, and Evidence (Execution Receipts) across all reference specs.
 * [ ] **Verifiable Audit Logging Standard**: Draft specification for linking agent-to-agent call chains and identities into cryptographically signed trace logs (e.g., integrating Langfuse observability traces), enabling machine-speed correlation for compliance audits.
 * [ ] **Intent-to-Action Cryptographic Binding**: Bind delegation policies (CDT) directly to historical execution trace hashes (via Langfuse or equivalent), enabling downstream gateways to verify that the agent's behavior did not deviate from its authorized intent.
 * [ ] **Instruction & Prompt Integrity Attestation (CREDUENT-006)**: Draft specification for hashing and cryptographically signing active system prompts, model versions, and tool boundaries to prevent mid-session prompt hijacking.
@@ -85,9 +86,9 @@ Originally designed and developed by Kashish Kanojia through IDevSec, the Credue
 * [ ] **SDK Cryptographic Delegation Verification**: Implement recursive client-side delegation verification (`sign_delegation` and `verify_delegation_chain`) in both JS/TS and Python SDKs.
 * [ ] **Zero-Trust Gateway Integration**: Implement reference middlewares for LLM Gateways (Bifrost, CyberArk) and MCP Gateways to dynamically scope API keys and policies based on CDTs.
 * [ ] **Federated attestation**: Support third-party attesters (e.g., security auditors, compliance bodies, LLM providers) issuing custom attestations.
-* [ ] **Cross-registry trust**: Multiple registries recognize each other's attestations.
+* [ ] **Cross-Registry Root-and-Node Trust (CREDUENT-005)**: Implement the Parent-and-Child federation model, establishing `creduent.idevsec.com` as the default Root Registry that attests and federates enterprise Node registries.
 * [ ] **Formal RFC**: Submit CREDUENT-001/007 as formal open RFCs to the IETF or equivalent standard bodies.
-* [ ] **Enterprise registry**: Private hosted Creduent registry for internal enterprise agent fleets (SOC2 compliant).
+* [ ] **Enterprise Node Registry**: Package a self-hostable, SOC2-compliant Creduent Node registry for private enterprise agent fleets, attested by the global Root Registry.
 * [ ] **`agent://` IANA registration**: Formal IANA registration of the `agent://` URI scheme.
 * [ ] **MCP marketplace integration**: Verification requirement integration with major MCP marketplaces.
 

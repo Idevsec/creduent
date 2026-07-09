@@ -1,23 +1,19 @@
 # Creduent Protocol: Authors
 
-## Founder and Original Author
+## Creator and Original Author
 
-Kashish Kanojia
-
-## Initial Development and Reference Implementation
-
-IDevSec
+Kashish Kanojia is the creator and original author of the Creduent Protocol.
 
 ## Protocol Stewardship
 
-IDevSec
-
-## Contributors
-
-This section is reserved for future contributors to the Creduent Protocol ecosystem.
+The Creduent Protocol is stewarded by IDevSec.
 
 ---
 
-The Creduent Protocol was designed and developed by Kashish Kanojia through IDevSec, which maintains the protocol's evolution and ecosystem stewardship.
+### Core Principles
 
-To contribute to the protocol, please open an issue or submit a pull request on the repository.
+- **Creator:** Kashish Kanojia
+- **Stewardship:** IDevSec
+- **Reference Implementation:** Managed and developed under IDevSec
+
+To contribute to the standard or reference implementations, please open an issue or submit a pull request on the repository.

@@ -1,8 +1,8 @@
 {
   "version": "2.0",
   "identity": {
-    "agent_id": "agent://creduent/assistant",
-    "owner": "Creduent",
+    "agent_id": "agent://example/agent",
+    "owner": "Example Corp",
     "keys": [
       {
         "id": "key-1",
@@ -11,13 +11,12 @@
         "status": "active"
       }
     ],
-    "endpoint": "https://creduent.idevsec.com"
+    "endpoint": "https://example.com/agent"
   },
   "policy": {
     "capabilities": [
       "scan",
       "query"
     ]
-  },
-  "signature": "RRLJgg8ADWV6NfWefBK4Y5GSKmmxI8ZvadcqxdkxDrndLplMFw9aAYP2vJjyLeCD+LhzOQ5JfwZIUMzsyhm5Bw=="
+  }
 }

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.6] - 2026-07-09
+
+### Changed
+- **Capability Refinement:** Renamed and consolidated capability names in `api/index.py` and `api/services.py` from `osint`, `dns_lookup`, and `vulnerability_scan` to `scan` and `query` to match the frontend and specifications.
+- **Removed Legacy Features:** Completely dropped the legacy `osint` capability logic and all references to banned legacy scanner terms.
+- **Creator and Steward Realignment:** Standardized all documentation (`AUTHORS.md`, `README.md`, `SPEC.md`, `ROADMAP.md`, tool manuals) to clearly designate Kashish Kanojia as Creator/Original Author and IDevSec as Steward.
+
 ## [2.0.5] - 2026-07-08
 
 ### Added

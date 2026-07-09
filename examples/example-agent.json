@@ -7,5 +7,7 @@
   "capabilities": [
     "scan",
     "query"
-  ]
+  ],
+  "issued_at": "2026-05-29T00:04:16Z",
+  "signature": "7TzK1gKFw9pSvCaW6fi1ewwk7xJPh85ggLdV5x1oGZ8TlFNRxZbaBQdgI9BjhQzRN6qNyHutt2YIcPhfhNw8DA=="
 }

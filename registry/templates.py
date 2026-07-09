@@ -2542,9 +2542,8 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
                         </div>
                     </div>
                     <div class="caps-wrap" id="capsWrap">
-                        <span class="cap-pill">dns_lookup</span>
-                        <span class="cap-pill">osint</span>
-                        <span class="cap-pill">vulnerability_scan</span>
+                        <span class="cap-pill">scan</span>
+                        <span class="cap-pill">query</span>
                     </div>
                 </div>
             </div>
@@ -2568,16 +2567,12 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
                     <div class="cap-row">
                         <span class="cap-row-label">Mode:</span>
                         <label class="radio-opt">
-                            <input type="radio" name="cap" value="dns_lookup" checked>
-                            DNS Lookup
+                            <input type="radio" name="cap" value="scan" checked>
+                            Security Scan
                         </label>
                         <label class="radio-opt">
-                            <input type="radio" name="cap" value="osint">
-                            OSINT Fingerprint
-                        </label>
-                        <label class="radio-opt">
-                            <input type="radio" name="cap" value="vulnerability_scan">
-                            Vuln Scan
+                            <input type="radio" name="cap" value="query">
+                            Discovery Query
                         </label>
                     </div>
                 </div>
@@ -2659,7 +2654,7 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
 
     async function executeScan() {
         const target = document.getElementById('targetInput').value.trim();
-        const cap = document.querySelector('input[name="cap"]:checked')?.value || 'dns_lookup';
+        const cap = document.querySelector('input[name="cap"]:checked')?.value || 'scan';
         if (!target) return;
 
         const btn = document.getElementById('scanBtn');

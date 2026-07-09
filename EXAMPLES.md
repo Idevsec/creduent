@@ -39,6 +39,35 @@ The smallest valid signed agent.json document:
 
 ---
 
+## Example 2a: Minimal agent.json (Version 2.0)
+
+The v2.0 schema splits identity configuration, keys, and capabilities into distinct namespace blocks:
+
+```json
+{
+  "version": "2.0",
+  "identity": {
+    "agent_id": "agent://example/mybot",
+    "owner": "Example Corp",
+    "keys": [
+      {
+        "id": "key-1",
+        "type": "ed25519",
+        "public_key": "ed25519:MI0YrgwrpBd21mfwWi5Kyme8J32JBpRStfLeTjrYZVU=",
+        "status": "active"
+      }
+    ],
+    "endpoint": "https://api.example.com"
+  },
+  "policy": {
+    "capabilities": ["chat"]
+  },
+  "signature": "749+ElO3Cua0/xQDL0npagjR9gTwJVA6oGP5rGq3qtXnbv7ziap1mA0xH4yipLV299UEzcjnenQB2dK5KdtrDQ=="
+}
+```
+
+---
+
 ## Example 3: Generate Keys and Sign (Python)
 
 ```python
@@ -237,7 +266,7 @@ Once `creduent_mcp_server.py` is configured in your MCP host, call the `verify_a
   "attestation_expires_at": "2027-05-29T00:00:00Z",
   "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
   "endpoint": "https://creduent.idevsec.com",
-  "capabilities": ["osint", "dns_lookup", "vulnerability_scan"],
+  "capabilities": ["query", "resolve", "verify"],
   "checked_at": "2026-05-30T07:00:00Z"
 }
 ```

@@ -10,7 +10,7 @@ Creduent is an open application-layer protocol for cryptographic identity and tr
 
 ### Who maintains Creduent?
 
-IDevSec. The protocol specification is open-source, and the reference registry runs at `creduent.idevsec.com`.
+Creduent is an open standard created and originated by Kashish Kanojia, and is actively stewarded by IDevSec. The protocol specification is open-source, and the reference registry runs at `creduent.idevsec.com`.
 
 ### Is Creduent a SaaS product or an open protocol?
 

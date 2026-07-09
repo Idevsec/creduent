@@ -47,10 +47,10 @@ Every agent publishes its cryptographic identity at `https://<domain>/.well-know
 {
   "version": "1.0",
   "issued_at": "2026-05-27T02:41:21Z",
-  "agent_id": "agent://example/reconbot",
+  "agent_id": "agent://example/agent",
   "owner": "Example Corp",
   "public_key": "ed25519:hArTvbITJ2jirL170IOSjcVvEvstC4s+RjYLu4chCwg=",
-  "endpoint": "https://api.example.com/recon",
+  "endpoint": "https://api.example.com/assistant",
   "capabilities": ["scan", "query"],
   "signature": "base64_signature_here"
 }
@@ -68,7 +68,7 @@ python cli/creduent-sign.py sign --key private_key.pem --input examples/draft_ag
 ### 2. Expose Metadata and Configure DNS
 Host `agent.json` on your web server at `https://<domain>/.well-known/agent.json`. Then, publish a DNS TXT record under your domain to bind the domain identity to the agent ID:
 ```
-_creduent.example.com TXT "agent://example/reconbot"
+_creduent.example.com TXT "agent://example/agent"
 ```
 
 ### 3. Register with Creduent Registry
@@ -76,7 +76,7 @@ Submit your agent's registration to the registry:
 ```bash
 curl -X POST https://creduent.idevsec.com/register \
   -H "Content-Type: application/json" \
-  -d '{"agent_id": "agent://example/reconbot", "domain": "example.com", "agent_json_url": "https://example.com/.well-known/agent.json"}'
+  -d '{"agent_id": "agent://example/agent", "domain": "example.com", "agent_json_url": "https://example.com/.well-known/agent.json"}'
 ```
 
 ## SDKs & Tooling
@@ -151,12 +151,12 @@ The Creduent Protocol is structured as a series of formal standards-track docume
 * **[CREDUENT-002: Attestation](standards/CREDUENT-002-attestation.md)** - Signed attestation schemas and verification pipelines
 * **[CREDUENT-003: Registry API](standards/CREDUENT-003-registry-api.md)** - Registry HTTP API endpoints and security controls
 * **[CREDUENT-004: Agent URI Resolution](standards/CREDUENT-004-uri-resolution.md)** - DNS-bound `agent://` URI scheme resolution
-* **[CREDUENT-005: Federation](standards/CREDUENT-005-federation.md)** - Multi-registry cross-trust models (Draft)
+* **[CREDUENT-005: Federation](standards/CREDUENT-005-federation.md)** - Federated Root-and-Node trust model
 * **[CREDUENT-006: Dynamic Attestation](standards/CREDUENT-006-dynamic-attestation.md)** - Dynamic prompt and hardware attestation (Draft)
 
 ## Origin and Stewardship
 
-The Creduent Protocol was originally designed and developed by Kashish Kanojia through [IDevSec](https://idevsec.com).
+Kashish Kanojia is the creator of the Creduent Protocol, stewarded by [IDevSec](https://idevsec.com).
 
 Creduent is an open protocol intended for community adoption, interoperability, and federated trust. Long-term governance and stewardship are managed by IDevSec to ensure it remains a neutral, open standard for the entire AI agent ecosystem.
 

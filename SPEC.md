@@ -2,7 +2,7 @@
 
 **Status:** Active RFC draft  
 **Version:** 1.1.0  
-**Founder:** Kashish Kanojia  
+**Creator:** Kashish Kanojia  
 **Author:** IDevSec  
 **Date:** 2026-05-31  
 
@@ -18,7 +18,24 @@ Creduent sits above the existing web stack (HTTPS, DNS, APIs) rather than replac
 * **Identity resolution is decentralized:** Anyone can issue an agent ID and identity document without registering with a central gatekeeper or waiting for ICANN naming extensions.
 * **Trust is federated:** Verifiable trust is built via composable third-party attestations (e.g., identity verification by Creduent Registry, security verification by auditors, provider verification by LLM platforms) rather than a single monolithic authority.
 
-Originally designed and developed by Kashish Kanojia, the Creduent Protocol is maintained by IDevSec as an open, community-driven standard. This ensures that the protocol remains a neutral, objective, and globally accessible standard for the broader artificial intelligence and agentic ecosystem.
+Kashish Kanojia is the creator of the Creduent Protocol, stewarded by IDevSec as an open, community-driven standard. This ensures that the protocol remains a neutral, objective, and globally accessible standard for the broader artificial intelligence and agentic ecosystem.
+
+### 1.1 The Composite Trust Model
+
+Creduent recognizes that securing autonomous systems is a multi-dimensional challenge. It divides trust verification into six distinct logical layers:
+
+1. **Identity:** Proves *which* agent or workload is acting. Implemented via cryptographic keys (Ed25519) and DNS bindings in the `agent.json` document.
+2. **Posture:** Proves *what* instruction and tool surface is loaded. Implemented via the **Agent Prompt Hash (APH)** to verify system instructions, model settings, and allowed schemas. Note that posture is a boundary constraint rather than full behavioral proof, ensuring starting rules remain untampered.
+3. **Delegation:** Proves *whose authority* the agent is acting under. Implemented via the **Creduent Delegation Token (CDT)** which binds authority directly to specific action scopes and tool arrays.
+4. **Policy:** Defines *what is allowed* in the current session. Checked dynamically by gateway enforcers (like Atlas Proxy).
+5. **Execution Context:** Defines *the boundary of the task* (e.g. current session variables, run metadata).
+6. **Evidence:** Proves *what actually happened*. Implemented via signed **Execution Receipts** aggregated into tamper-proof local Merkle Trees.
+
+### 1.2 Threat Model: The WAF Bypass Vulnerability
+
+Traditional network perimeter defenses (e.g. mTLS, TLS 1.3, and Web Application Firewalls) protect the connection pipe. While a WAF is highly effective at identifying and filtering out malicious bot traffic, it is blind to application-layer cognitive payloads. 
+
+When you authorize a vendor's AI agent to access your APIs, their traffic is legitimate. However, if that agent parses an untrusted file and undergoes prompt injection, its subsequent requests still carry valid API keys and pass WAF signature checks. Creduent addresses this gap by verifying software provenance (the APH and code signature) at the receiving gateway, preventing the execution of hijacked instructions.
 
 ---
 
@@ -59,11 +76,11 @@ A v1.0 `agent.json` document consists of the following 8 fields:
 
 6. **`endpoint`** (String, Required)  
    The base HTTPS API url through which this agent receives instructions, handles communication, or delegates tasks.  
-   *Example:* `"https://creduent.idevsec.com/recon"`
+   *Example:* `"https://creduent.idevsec.com/assistant"`
 
 7. **`capabilities`** (Array of Strings, Required)  
    A list of semantic tags exposing what functions/tasks this agent is capable of performing.  
-   *Example:* `["osint", "dns_lookup", "vulnerability_scan"]`
+   *Example:* `["query", "resolve", "verify"]`
 
 8. **`signature`** (String, Required)  
    The cryptographic signature verifying the integrity and authenticity of the identity document. The signature is computed over the JCS-canonicalized representation of the document *excluding* the `signature` field itself.

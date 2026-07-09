@@ -71,8 +71,9 @@ def sign_document(key_path, input_path, output_path):
             sys.exit(1)
 
     # Normalize fields
-    doc["version"] = "1.0"
-    if "issued_at" not in doc:
+    if "version" not in doc:
+        doc["version"] = "1.0"
+    if doc["version"] == "1.0" and "issued_at" not in doc:
         doc["issued_at"] = (
             datetime.now(timezone.utc)
             .isoformat(timespec="seconds")

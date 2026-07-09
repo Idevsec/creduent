@@ -55,7 +55,7 @@ def resolve_agent_id(agent_id, local_registry_path="examples/registry.json"):
             print(f"[!] Warning reading registry file: {e}")
 
     # 2. Hardcoded fallback mappings for demo/test purposes
-    fallback_mappings = {"agent://idevsec/steward": "examples/reconbot.agent.json"}
+    fallback_mappings = {"agent://example/agent": "examples/example-agent.json"}
     if agent_id in fallback_mappings:
         print(
             f"[+] Found fallback mapping: {agent_id} -> {fallback_mappings[agent_id]}"
@@ -182,7 +182,20 @@ def manual_validation(doc):
 
 def verify_identity(doc):
     # 1. Parse public key
-    pk_str = doc["public_key"]
+    if doc.get("version") == "2.0":
+        keys = doc.get("identity", {}).get("keys", [])
+        active_keys = [k for k in keys if k.get("status") == "active"]
+        if not active_keys:
+            print("[-] Error: No active public keys found in v2.0 document.", file=sys.stderr)
+            sys.exit(1)
+        pk_str = active_keys[0]["public_key"]
+    else:
+        pk_str = doc.get("public_key")
+
+    if not pk_str:
+        print("[-] Error: public_key is missing from document.", file=sys.stderr)
+        sys.exit(1)
+
     if not pk_str.startswith("ed25519:"):
         print("[-] Error: Unsupported public key format.", file=sys.stderr)
         sys.exit(1)
@@ -294,8 +307,14 @@ def main():
     verify_identity(doc)
 
     # Health check endpoint connectivity
-    if not args.no_healthcheck and "endpoint" in doc:
-        check_endpoint(doc["endpoint"])
+    endpoint_url = None
+    if doc.get("version") == "2.0":
+        endpoint_url = doc.get("identity", {}).get("endpoint")
+    else:
+        endpoint_url = doc.get("endpoint")
+
+    if not args.no_healthcheck and endpoint_url:
+        check_endpoint(endpoint_url)
 
     print("=========================================")
     print("[SUCCESS] IDENTITY AND SYSTEM VERIFIED SUCCESSFULLY")

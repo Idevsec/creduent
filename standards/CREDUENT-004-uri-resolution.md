@@ -84,7 +84,7 @@ Check for a local `examples/registry.json` file mapping agent URIs to local file
 
 ```json
 {
-  "agent://idevsec/steward": "examples/reconbot.agent.json"
+  "agent://idevsec/steward": "examples/example-agent.json"
 }
 ```
 

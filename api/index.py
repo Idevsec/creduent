@@ -36,16 +36,28 @@ app.add_middleware(
 )
 
 # Core agent metadata fallback (corresponds to our signed agent.json)
-# NOTE: Keep this in sync with .well-known/agent.json whenever keys are rotated.
 AGENT_METADATA_FALLBACK = {
-    "version": "1.0",
-    "agent_id": "agent://idevsec/steward",
-    "owner": "Creduent",
-    "public_key": "ed25519:uMMQ6RfZB5RJuYcZPwzLoiv8b6EQfU7CUJ2oLragCHg=",
-    "endpoint": "https://creduent.idevsec.com",
-    "capabilities": ["osint", "dns_lookup", "vulnerability_scan"],
-    "issued_at": "2026-05-28T22:29:03Z",
-    "signature": "pWxvJRnW9bhtqSsehW7I//8/kBgV/GZsnZo7IccxUDv5ethFZJWZZdDv5qxuIZ3sI4iaw49bxHtDy6b3BrSRAA==",
+    "version": "2.0",
+    "identity": {
+        "agent_id": "agent://creduent/assistant",
+        "owner": "Creduent",
+        "keys": [
+            {
+                "id": "key-1",
+                "type": "ed25519",
+                "public_key": "ed25519:MI0YrgwrpBd21mfwWi5Kyme8J32JBpRStfLeTjrYZVU=",
+                "status": "active"
+            }
+        ],
+        "endpoint": "https://creduent.idevsec.com"
+    },
+    "policy": {
+        "capabilities": [
+            "scan",
+            "query"
+        ]
+    },
+    "signature": "RRLJgg8ADWV6NfWefBK4Y5GSKmmxI8ZvadcqxdkxDrndLplMFw9aAYP2vJjyLeCD+LhzOQ5JfwZIUMzsyhm5Bw=="
 }
 
 AGENT_METADATA = AGENT_METADATA_FALLBACK
@@ -117,8 +129,8 @@ def serve_agent_json():
 def run_agent_scan(
     domain: str = Query(..., description="Target domain to scan"),
     capability: str = Query(
-        "dns_lookup",
-        description="Capability to run: dns_lookup, osint, vulnerability_scan",
+        "scan",
+        description="Capability to run: scan, query",
     ),
 ):
     """
@@ -128,10 +140,18 @@ def run_agent_scan(
     # 1. Delegate capability scan logic to api.services
     results = execute_agent_capabilities(domain, capability)
 
+    agent_id = (
+        AGENT_METADATA.get("identity", {}).get("agent_id")
+        if AGENT_METADATA.get("version") == "2.0"
+        else AGENT_METADATA.get("agent_id")
+    )
+    if not agent_id:
+        agent_id = "agent://creduent/assistant"
+
     # 2. Sign the results payload
     response_payload = {
         "version": "1.0",
-        "agent_id": AGENT_METADATA["agent_id"],
+        "agent_id": agent_id,
         "results": results,
     }
 
@@ -412,7 +432,7 @@ def serve_dashboard():
         <div class="card">
             <div class="header">
                 <div class="brand">
-                    <h1>Creduent Recon Agent</h1>
+                    <h1>Creduent Assistant Agent</h1>
                     <p>Open Application-Layer Trust Protocol</p>
                 </div>
                 <div class="badge">
@@ -424,7 +444,7 @@ def serve_dashboard():
             <div class="info-grid">
                 <div class="info-item">
                     <label>Agent URI</label>
-                    <span id="agentIdDisplay">agent://idevsec/steward</span>
+                    <span id="agentIdDisplay">agent://creduent/assistant</span>
                 </div>
                 <div class="info-item">
                     <label>Owner</label>
@@ -432,7 +452,7 @@ def serve_dashboard():
                 </div>
                 <div class="info-item" style="grid-column: span 2;">
                     <label>Public Key (Ed25519)</label>
-                    <span id="publicKeyDisplay">ed25519:uMMQ6RfZB5RJuYcZPwzLoiv8b6EQfU7CUJ2oLragCHg=</span>
+                    <span id="publicKeyDisplay">ed25519:MI0YrgwrpBd21mfwWi5Kyme8J32JBpRStfLeTjrYZVU=</span>
                 </div>
                 <div class="info-item" style="grid-column: span 2;">
                     <label>Discovery Endpoint</label>
@@ -444,9 +464,8 @@ def serve_dashboard():
                 <h3>Delegated Task Console</h3>
                 <div class="input-group">
                     <select id="capabilitySelect">
-                        <option value="dns_lookup">dns_lookup (DNS Resolution)</option>
-                        <option value="osint">osint (Server footprint scan)</option>
-                        <option value="vulnerability_scan">vulnerability_scan (Header audit)</option>
+                        <option value="scan">scan (Full Security Scan)</option>
+                        <option value="query">query (Domain Discovery Query)</option>
                     </select>
                     <input type="text" id="targetInput" placeholder="Enter target domain (e.g., google.com)" value="google.com">
                     <button onclick="executeScan()">Execute Scan</button>
@@ -457,7 +476,7 @@ def serve_dashboard():
             </div>
         </div>
         <div class="footer">
-            Powered by <a href="https://github.com/cyberfascinate/creduent" target="_blank">Creduent Protocol Specification</a> (v1.0)
+            Powered by <a href="https://github.com/idevsec/creduent" target="_blank">Creduent Protocol Specification</a> (v1.0)
         </div>
     </div>
 
@@ -480,9 +499,20 @@ def serve_dashboard():
                 const response = await fetch('/.well-known/agent.json');
                 if (response.ok) {
                     const data = await response.json();
-                    document.getElementById('agentIdDisplay').textContent = data.agent_id || 'agent://idevsec/steward';
-                    document.getElementById('ownerDisplay').textContent = data.owner || 'Creduent Protocol Group';
-                    document.getElementById('publicKeyDisplay').textContent = data.public_key || '';
+                    let agentId, owner, publicKey;
+                    if (data.version === '2.0') {
+                        agentId = data.identity ? data.identity.agent_id : null;
+                        owner = data.identity ? data.identity.owner : null;
+                        const activeKey = data.identity && data.identity.keys ? data.identity.keys.find(k => k.status === 'active') : null;
+                        publicKey = activeKey ? activeKey.public_key : null;
+                    } else {
+                        agentId = data.agent_id;
+                        owner = data.owner;
+                        publicKey = data.public_key;
+                    }
+                    document.getElementById('agentIdDisplay').textContent = agentId || 'agent://creduent/assistant';
+                    document.getElementById('ownerDisplay').textContent = owner || 'Creduent';
+                    document.getElementById('publicKeyDisplay').textContent = publicKey || '';
                 }
             } catch (e) {
                 console.error("Error loading agent metadata:", e);

@@ -63,12 +63,23 @@ Create a file called `draft_agent.json`:
 
 ```json
 {
-  "version": "1.0",
-  "agent_id": "agent://example/mybot",
-  "owner": "Example Corp",
-  "public_key": "ed25519:<paste-your-public-key-here>",
-  "endpoint": "https://api.example.com",
-  "capabilities": ["chat", "search"]
+  "version": "2.0",
+  "identity": {
+    "agent_id": "agent://example/mybot",
+    "owner": "Example Corp",
+    "keys": [
+      {
+        "id": "key-1",
+        "type": "ed25519",
+        "public_key": "ed25519:<paste-your-public-key-here>",
+        "status": "active"
+      }
+    ],
+    "endpoint": "https://api.example.com"
+  },
+  "policy": {
+    "capabilities": ["chat", "search"]
+  }
 }
 ```
 

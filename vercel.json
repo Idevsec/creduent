@@ -22,7 +22,7 @@
       "has": [
         {
           "type": "host",
-          "value": "api.idevsec.com"
+          "value": "creduent.idevsec.com"
         }
       ],
       "destination": "https://creduent.idevsec.com/:path*",

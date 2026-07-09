@@ -86,26 +86,26 @@ This allows any verifier to:
 
 ### 4.2 Trust Anchor Model
 
-Federation requires at least one trust anchor. Proposed options:
+Federation is resolved around a **Parent-and-Child Trust Anchor Hierarchy** (Option A). Options B and C remain supported local fallback profiles for disconnected networks, but Option A is the standard configuration for the public web.
 
-**Option A: Root Registry**  
-IDevSec operates a root registry that attests other registries. A verifier that trusts the root registry transitively trusts all attested registries.
+**Standard Architecture: Root and Node Registry (Option A)**  
+IDevSec operates the Root Registry (`creduent.idevsec.com`) that attests and federates other Node registries. A verifier that trusts the Root Registry transitively trusts all Node registries attested by it.
 
 ```
-Root Registry (IDevSec)
+Root Registry (creduent.idevsec.com)
     |
-    +-- Attests: Registry A (my-org.com)
-    +-- Attests: Registry B (enterprise.com)
-    +-- Attests: Registry C (community.ai)
+    +-- Attests Node: Registry A (my-org.com)
+    +-- Attests Node: Registry B (enterprise.com)
+    +-- Attests Node: Registry C (community.ai)
 ```
 
-**Option B: Web of Trust**  
-Registries mutually attest each other. Verifiers accumulate trusted keys over time. No root registry required.
+**Alternative Profile: Web of Trust (Option B)**  
+Registries mutually attest each other. Verifiers accumulate trusted keys over time. Used strictly in decentralized or peer-to-peer contexts where a root registry is absent.
 
-**Option C: Explicit Allowlist**  
-Verifiers maintain a local list of trusted registry public keys. Simpler to implement, less scalable.
+**Alternative Profile: Explicit Allowlist (Option C)**  
+Verifiers maintain a local list of trusted registry public keys. Used for local-first testing and internal development networks.
 
-The v1.0 protocol does not mandate any of these options. CREDUENT-005 will be updated when consensus is reached.
+The Creduent standard mandates Option A as the default resolution path for global clients.
 
 ### 4.3 Cross-Registry Agent Lookup
 

@@ -1,6 +1,6 @@
 # Creduent: Open Standard for AI Agent Identity & Trust
 
-[![Protocol Version](https://img.shields.io/badge/protocol-v2.0.0-cyan)](https://idevsec.com/creduent)
+[![Protocol Version](https://img.shields.io/badge/protocol-v2.0.5-cyan)](https://idevsec.com/creduent)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://idevsec.com/creduent/licensing)
 [![Registry](https://img.shields.io/badge/registry-live-brightgreen)](https://creduent.idevsec.com)
 [![Python SDK](https://img.shields.io/pypi/v/creduent.svg?label=pip%20install%20creduent&color=blue)](https://pypi.org/project/creduent/)

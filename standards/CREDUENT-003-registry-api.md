@@ -297,6 +297,8 @@ The `signature` MUST be computed using one of the following formats:
 
 Retrieve the registered webhook URL for an agent.
 
+**Required Headers:** Same as `DELETE /revoke` (Multisig headers or legacy fallback).
+
 **Success Response (200):**
 ```json
 {
@@ -447,6 +449,7 @@ The registry uses admin-key authentication only for destructive operations (revo
 | POST /recovery/override | DNS validation proof required |
 | POST /renew | Signature required |
 | POST /webhook/register | Signature required |
+| GET /webhook/{id} | Yes (Multisig headers / symmetric key fallback) |
 | GET /challenge/{id} | No |
 | POST /verify-challenge | Signature required |
 | GET /public-key | No |

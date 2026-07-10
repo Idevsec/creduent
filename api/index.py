@@ -124,6 +124,20 @@ def serve_agent_json():
     return JSONResponse(content=AGENT_METADATA)
 
 
+@app.get("/api/cron/renew")
+def run_cron_renewal():
+    """
+    Trigger the background renewal daemon from the daily Vercel cron job.
+    """
+    from registry.daemon import main as run_daemon
+    try:
+        run_daemon()
+        return JSONResponse(content={"status": "ok", "message": "Renewal check complete"})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Daemon execution failed: {str(e)}")
+
+
+
 @app.get("/api/scan")
 @app.post("/api/scan")
 def run_agent_scan(

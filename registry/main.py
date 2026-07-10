@@ -524,9 +524,32 @@ def register_webhook(req: WebhookRegisterRequest):
 
 
 @router.get("/webhook/{agent_id:path}")
-def get_webhook_url(agent_id: str):
+def get_webhook_url(agent_id: str, request: Request):
     if agent_id.startswith("agent:/") and not agent_id.startswith("agent://"):
         agent_id = "agent://" + agent_id[7:]
+
+    # Enforce administrative authorization to prevent webhook URL/token leaks
+    admin_key_env = os.environ.get("CREDUENT_ADMIN_KEY")
+    if not admin_key_env:
+        raise HTTPException(
+            status_code=500,
+            detail="Admin key not configured on server (CREDUENT_ADMIN_KEY env var missing).",
+        )
+    admin_key_env = admin_key_env.strip()
+    creduent_admin_key = request.headers.get(
+        "CREDUENT_ADMIN_KEY"
+    ) or request.headers.get("CREDUENT-ADMIN-KEY")
+    if not creduent_admin_key:
+        raise HTTPException(
+            status_code=403, detail="Forbidden: Missing CREDUENT_ADMIN_KEY header."
+        )
+    creduent_admin_key = creduent_admin_key.strip()
+    if not secrets.compare_digest(
+        creduent_admin_key.encode("utf-8"), admin_key_env.encode("utf-8")
+    ):
+        raise HTTPException(
+            status_code=403, detail="Forbidden: Invalid CREDUENT_ADMIN_KEY header."
+        )
 
     webhook_url = get_webhook(agent_id)
     if not webhook_url:

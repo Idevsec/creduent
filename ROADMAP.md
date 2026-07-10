@@ -15,7 +15,6 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 ---
 
 ## Phase 1 - Foundation - Complete
-**Timeline:** May 2026
 * [x] `agent.json` schema + Ed25519 + JCS signing standard
 * [x] DNS TXT domain ownership verification
 * [x] Attestation registry with signed attestations (Upstash Redis)
@@ -28,7 +27,6 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 
 ## Phase 2 - Ecosystem - Complete
 **Goal:** Drop integration friction to zero. Make adoption a 3-minute decision.  
-**Target:** 50 registered agents by end of August 2026.
 * [x] **`pip install creduent`**: Python SDK with `sign()`, `verify()`, `register()`, and `attest()` as first-class methods.
 * [x] **`agent://` URI public resolver**: Any client can resolve `agent://<namespace>/<name>` to a live `agent.json` without knowing the host domain.
 * [x] **JavaScript/TypeScript SDK**: `npm install @idevsec/creduent` for MCP hosts running Node.
@@ -59,7 +57,6 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 
 ## Phase 4 - Expansion & Hardening - July -> December 2026
 **Goal:** Expand framework coverage, introduce local developer tooling, and harden core cryptography/revocation infrastructure.  
-**Target:** 1,000+ registered agents, 5 framework integrations, security audit completed.
 * [ ] **More Framework Integrations**: Native integrations for LlamaIndex, LangChain (Python & JS), Semantic Kernel, and Google ADK (Agent Development Kit).
 * [ ] **Creduent Playground**: Interactive sandbox on the developer dashboard to cryptographically sign, verify, and debug `agent.json` files live in-browser.
 * [ ] **Key Revocation & Cache Tuning**: Implement edge-native cached endpoints (Vercel/Cloudflare KV) and local SDK LRU cache hooks (5-min TTL) to protect registry origin under live check workloads.

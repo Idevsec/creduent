@@ -1,6 +1,6 @@
 # Security Policy
 
-We take the security of the Creduent Open Protocol and its reference implementations very seriously. Creduent is a cryptographic credential protocol — any vulnerabilities in its core design or implementations could have significant trust and security implications.
+We take the security of the Creduent Open Protocol and its reference implementations very seriously. Creduent is a cryptographic credential protocol. Any vulnerabilities in its core design or implementations could have significant trust and security implications.
 
 ---
 

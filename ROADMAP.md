@@ -35,7 +35,7 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 * [x] **Auto-renewal daemon**: Lightweight background process for agents to automatically re-attest 30 days before expiry.
 * [x] **Webhook notifications**: POST notifications to a configured URL on registration, revocation, and expiry.
 * [x] **Developer dashboard**: Web UI at `creduent.idevsec.com/dashboard` to manage registered agents, view attestation status, and rotate keys.
-* [x] **GitHub Action**: `creduent-attest` action to register/re-attest automatically on every deploy.
+* [x] **GitHub Actions Workflow**: Reference CI workflow for auto-attestation on every deploy using the Python SDK (`register()` call inside a GitHub Actions step). See `EXAMPLES.md` Example 15.
 
 ---
 
@@ -52,7 +52,7 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 * [x] **Organization namespaces**: `agent://<org_name>/*` namespaces owned and managed under one organizational account.
 * [x] **Creduent CLI v2**: `creduent register`, `creduent verify`, `creduent revoke`, `creduent renew`, `creduent webhook`, and `creduent discover` packaged as a native command-line tool.
 * [x] **CRD shorthand**: If the team wants something terse for technical contexts, introduce CRD as a short tag alongside Creduent (e.g., header X-CRD-Version), without renaming the protocol itself.
-* [x] **Native Ed25519 JS SDK**: Zero-dependency cryptographic verification via `globalThis.crypto.subtle` and RFC 8785 JCS canonicalization — compatible with Vercel Edge, Cloudflare Workers, Deno, and Node.js 18+.
+* [x] **Native Ed25519 JS SDK**: Zero-dependency cryptographic verification via `globalThis.crypto.subtle` and RFC 8785 JCS canonicalization. It is compatible with Vercel Edge, Cloudflare Workers, Deno, and Node.js 18+.
 * [x] **CLI native verification**: `creduent verify` now performs local Ed25519 signature validation using the native SDK instead of querying the registry API.
 
 ---
@@ -68,7 +68,8 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 * [x] **Multisig Admin Quorum**: Deprecate the symmetric `CREDUENT_ADMIN_KEY` for the `trusted` tier, replacing it with an asymmetric multisig threshold verification (e.g., 2-of-3 signatures from admin public keys).
 * [ ] **HMAC Webhook Signatures**: Add HMAC-SHA256 signing headers (`X-Creduent-Signature256`) to the daemon’s alert notifications so endpoints can verify webhook authenticity.
 * [x] **Schema Decoupling (v2.0)**: Release the v2.0 schema structure separating cryptographic identity (version, keys, owner) from transient policy declarations (endpoint, capabilities), introducing incremental version parsing to avoid breaking v1.x flat documents.
-* [x] **Formal Security Audit**: Completed thorough cryptographic, SSRF, file permission, and dependency audit of the core registry, CLI, and SDKs (June 2026).
+* [x] **Formal Security Audit & Patches**: Completed thorough cryptographic, SSRF, file permission, and dependency audit of the core registry, CLI, and SDKs. Patched webhook SSRF vectors using IP-filtering middleware, restricted metadata lookup endpoints, and integrated environment-based admin credential propagation in the CLI.
+* [x] **Robots & Sitemap Route Integrations**: Implemented structured, dynamic crawl controls and sitemap indexing mappings (`/robots.txt` and `/sitemap.xml`) to support optimized search engine visibility for dynamic UIs.
 * [ ] **DID Interoperability**: Resolve `agent://` URIs as Decentralized Identifiers (e.g., standardizing `did:creduent` or integrating with `did:web`).
 * [ ] **Identity-Based Rate Limiting (IBRL)**: Standardize and implement middleware that rate-limits and blocks request flows by verified `agent_id` (rather than transient IPs), preventing rapid API scanning/probing.
 

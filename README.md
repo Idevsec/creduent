@@ -192,6 +192,9 @@ The Creduent Registry includes several security guarantees and resilience safegu
 - **Fail-Closed Validation:** If an agent's attestation timestamp or expiration date fails to parse due to corruption or malicious payload tempering, the verification pipeline defaults to marking the attestation as `expired` (`expired = True`).
 - **Serverless Rate Limiting Guard:** To prevent clients from bypassing rate limits in stateless environments (like Vercel serverless functions where in-memory fallback databases are wiped during container cold starts), the registry explicitly raises an `HTTP 500` error if Upstash Redis credentials are not configured.
 - **Canonical JCS Serialization:** All cryptographic signature validations use unified JSON Canonicalization Scheme (JCS) encoding wrappers compliant with RFC 8785 to avoid formatting discrepancies.
+- **SSRF Prevention in Webhooks:** All outbound webhook alerts go through rigorous IP validation filters (`safe_requests_post`) that drop private, loopback, and local IP ranges, preventing Server-Side Request Forgery.
+- **Authorized Webhook Queries:** Retrieval of registered webhook URLs via `/webhook/{agent_id}` is restricted to authorized administrators (requiring the `CREDUENT-ADMIN-KEY` token) to prevent metadata information leaks.
+- **CLI Admin Integration:** The developer CLI automatically forwards administrative credentials from the environment, ensuring seamless operation for authorized operators without exposing public lookup endpoints.
 - **Decoupled Security Audits:** Agent capability scans (DNS, OSINT headers, and Clickjacking/HSTS verification) are separated from the main registry controllers into isolated services, allowing independent code auditing.
 
 ---
@@ -202,4 +205,4 @@ Creduent's licensing model is designed to maximize community adoption and intero
 
 * **Protocol Specification:** The Creduent Protocol specifications (including standard documents `CREDUENT-001` through `CREDUENT-006` located in the `standards/` directory) are open, public-domain standards. Anyone is free to implement the protocol, build custom registries, or design compatible clients without any license restrictions or royalties.
 
-* **Reference Implementation, SDKs & CLIs:** All Creduent software assets—including the Python SDK, JavaScript/TypeScript SDK (`@idevsec/creduent`), CLI Tool (`@idevsec/creduent-cli`), MCP Server, and reference registry source code—are licensed under the **[Apache License 2.0](LICENSE)**.
+* **Reference Implementation, SDKs & CLIs:** All Creduent software assets (including the Python SDK, JavaScript/TypeScript SDK (`@idevsec/creduent`), CLI Tool (`@idevsec/creduent-cli`), MCP Server, and reference registry source code) are licensed under the **[Apache License 2.0](LICENSE)**.

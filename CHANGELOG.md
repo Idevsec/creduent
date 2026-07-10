@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.7] - 2026-07-10
+
+### Changed
+- **ROADMAP accuracy**: Corrected the Phase 2 GitHub Action entry from `creduent-attest` (implies a standalone marketplace action) to `GitHub Actions Workflow`, accurately reflecting the actual deliverable: a reference CI workflow that calls the Python SDK inline. Pointer added to `EXAMPLES.md` Example 15.
+
 ## [2.0.6] - 2026-07-09
 
 ### Changed

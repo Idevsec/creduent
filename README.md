@@ -25,19 +25,20 @@ Autonomous agents lack a native, decentralized mechanism to verify their identit
 ## How It Works
 
 ```
-+------------------+             +----------------------+             +------------------+
-|   Agent Domain   |             |   Creduent Registry  |             |   Agent Client   |
-|   (agent.json)   |             |                      |             |    (MCP Host)    |
-+------------------+             +----------------------+             +------------------+
-         |                                |                                |
-         |---- 1. Serve agent.json ------>|                                |
-         |                                |-- 2. Verify identity & DNS --->|
-         |                                |      and sign attestation      |
-         |                                |                                |
-         |<--- 3. Query agent endpoint ------------------------------------|  (verify_agent tool)
-         |                                |                                |
-         |                                |<--- 4. Fetch attestation ------|  (registry validation)
++-------------------+             +----------------------+             +-------------------+
+|   Agent Provider  |             |   Creduent Registry  |             |    Client App     |
+|    (agent.json)   |             |                      |             |    (MCP Host)     |
++-------------------+             +----------------------+             +-------------------+
+          |                                  |                                   |
+          |----- 1. Host agent.json -------->|                                   |
+          |                                  |-- 2. Verify identity & DNS ------>|
+          |                                  |      and sign attestation         |
+          |                                  |                                   |
+          |<---- 3. Call agent endpoint -----------------------------------------|  (verify_agent tool)
+          |                                  |                                   |
+          |                                  |<--- 4. Fetch attestation ---------|  (registry validation)
 ```
+
 
 ## The agent.json Document
 

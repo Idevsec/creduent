@@ -2,6 +2,8 @@
 
 Thank you for your interest in contributing to the Creduent Open Protocol! This guide covers how to contribute to the protocol specification, reference implementations, schemas, and documentation.
 
+Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
+
 ---
 
 ## Contributor Licensing (DCO)
@@ -76,3 +78,32 @@ Please ensure all contributions align with the core Creduent protocol security g
 4. Open a Pull Request against the `main` branch.
 5. Fill out the Pull Request template completely.
 6. Ensure all CI checks pass and request review from maintainers.
+
+---
+
+## Specification Change Process
+
+Changes to the protocol specifications (files in the `standards/` directory and schemas in the `schemas/` directory) follow a strict review process to maintain backward compatibility:
+
+1. **Open an Issue First:** Do not submit a Pull Request for a specification change without a linked discussion issue.
+2. **Review Cycle:** Specification Pull Requests require review and approval from at least two core maintainers.
+3. **Backward Compatibility:** Proposals must not break existing attestation formats or registry endpoints unless a new specification version is explicitly declared.
+
+---
+
+## Commit Message Conventions
+
+We follow the Conventional Commits specification. Commit messages must be structured as follows:
+
+```text
+<type>(<scope>): <description>
+
+[optional body]
+```
+
+Allowed types include:
+- `feat`: A new protocol feature or SDK capability.
+- `fix`: A bug fix in the reference implementation or schema.
+- `docs`: Documentation updates.
+- `spec`: Changes to specification drafts.
+- `refactor`: Code changes that do not alter behavior.

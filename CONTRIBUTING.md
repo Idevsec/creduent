@@ -4,6 +4,18 @@ Thank you for your interest in contributing to the Creduent Open Protocol! This 
 
 ---
 
+## Contributor Licensing (DCO)
+
+By submitting a Pull Request, you certify that your contribution is made under the terms of the [Developer Certificate of Origin](https://developercertificate.org). Add a sign-off to every commit:
+
+```bash
+git commit -s -m "your commit message"
+```
+
+This adds a `Signed-off-by: Your Name <your@email.com>` line to your commit. Pull Requests without a sign-off on every commit will not be merged.
+
+---
+
 ## Ways to Contribute
 
 - **Protocol Specification:** Propose changes or clarifications to `SPEC.md` or `schemas/`

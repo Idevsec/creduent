@@ -42,6 +42,10 @@ An agent MUST define its cognitive bounds in a **Cognitive Manifest** dictionary
 | `tools` | Array | Yes | A list of JSON schema representations of the tools the agent is permitted to use. |
 | `parent_identity` | String | No | The Creduent URI of the parent/orchestrator agent (if part of a multi-agent system). |
 
+Each entry in `tools` MUST additionally declare a `reversibility` field describing how hard the tool's effect is to undo, one of `read-only`, `reversible`, `external-reversible`, or `irreversible` (the OWASP AISVS v1.0 reversibility classification, C9.2.3). This class is set at design time by the manifest author. Because the Cognitive Manifest is canonicalized and hashed into the APH (Section 2.2), the reversibility class is covered by the APH and the agent cannot assert or alter it at runtime.
+
+The `reversibility` field is REQUIRED on every tool entry. A manifest whose tool omits it is nonconformant and SHOULD be rejected when the manifest is built or loaded. This build-time requirement is a conformance gate and does not remove the runtime fail-closed default of Section 4.1: a securing runtime MUST still record an unclassified tool's action as `irreversible`, because a tool can reach the runtime by paths that skip manifest validation, such as dynamic or federated registration, delegation from a parent agent, or a manifest written against an earlier schema version. Requiring the field adds a second gate at build time; it does not replace the runtime default.
+
 ### 2.2 Computing the APH
 
 The APH is computed by serializing and hashing the Cognitive Manifest:
@@ -90,7 +94,8 @@ For the following manifest:
           "command": { "type": "string" }
         },
         "required": ["command"]
-      }
+      },
+      "reversibility": "irreversible"
     }
   ]
 }
@@ -181,7 +186,8 @@ This receipt allows auditors to prove retroactively that a specific version of a
     "target": "execute_command",
     "payload": {
       "command": "git push origin main"
-    }
+    },
+    "reversibility": "irreversible"
   },
   "result": {
     "status": "success",
@@ -191,11 +197,25 @@ This receipt allows auditors to prove retroactively that a specific version of a
 }
 ```
 
+The securing runtime MUST populate `action.reversibility` by copying the `reversibility` class declared on the invoked tool in the Cognitive Manifest (Section 2.1). The runtime MUST NOT accept a reversibility class supplied by the agent at runtime. If the invoked tool declares no reversibility class, the runtime MUST record `action.reversibility` as `irreversible` (fail-closed). Because `action.reversibility` is part of the signed receipt payload, it is covered by the proxy `signature` and cannot be stripped or downgraded after the fact.
+
 ### 4.2 Merkle Audit Ledger
 
 The Atlas Proxy aggregates execution receipts into a local append-only Merkle Tree.
 * The root hash of this tree is periodically published to the Creduent Registry or a public ledger.
 * This makes the history of agent actions completely tamper-proof. An auditor can verify the inclusion of any receipt using a standard Merkle proof.
+
+Where receipts are linked into a call chain, a verifier over the ledger MUST compute the chain's governing reversibility class as the worst-case (least-reversible) `action.reversibility` present across the linked receipts, under the order `read-only` < `reversible` < `external-reversible` < `irreversible`. Individually reversible steps that compose into an irreversible end state are therefore governed as `irreversible` from the start of the chain. Any human-approval or gating policy keyed on reversibility MUST evaluate against this worst-case class, not the per-receipt class.
+
+### 4.3 Reversibility Conformance
+
+An implementation conforms to the reversibility requirements of this section if:
+1. every entry in a Cognitive Manifest's `tools` carries a `reversibility` value in `{read-only, reversible, external-reversible, irreversible}`;
+2. every Execution Receipt's `action.reversibility` equals the invoked tool's declared class, or `irreversible` when the tool declares none;
+3. no receipt's `action.reversibility` is derived from agent-supplied input;
+4. a chain verifier returns the worst-case class across linked receipts, per Section 4.2.
+
+Test vectors SHOULD include: a receipt whose `action.reversibility` was downgraded relative to the invoked tool's declared class (which MUST be rejected); a receipt for an invoked tool that declared no reversibility class, where the runtime MUST record `action.reversibility` as `irreversible` and a receipt that instead records a softer class or omits the field MUST be rejected; and a chain of individually reversible receipts that reaches an `irreversible` step (which MUST be governed as `irreversible`).
 
 ---
 
@@ -273,3 +293,4 @@ On receiving a revocation request:
 | Version | Date | Notes |
 |:---|:---|:---|
 | 0.1 | 2026-07-04 | Initial draft. Introduced Agent Prompt Hash (APH), hardware attestation mapping, execution receipts, and active revocation flow. |
+| 0.2 | 2026-07-12 | Added action reversibility class: design-time tool declaration (folded into APH), proxy-copied receipt field (fail-closed on unclassified), worst-case-across-chain ledger rule (Section 4.2), and conformance vectors (Section 4.3). Review revision: `reversibility` made a required tool-schema field as a build-time conformance gate additive to the runtime default (Section 2.1), plus an explicit fail-closed test vector (Section 4.3). |

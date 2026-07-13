@@ -112,7 +112,7 @@ To prevent an attacker from modifying an agent's code or instructions on a compr
 
 ```
 +-------------------------------------------------------+
-|                 Atlas Secure Node (TEE)               |
+|                 Creduent-Certified Secure Node (TEE)          |
 |                                                       |
 |   +------------------+         +------------------+   |
 |   |     AI Agent     |         |    vTPM / TPM    |   |
@@ -134,7 +134,7 @@ To prevent an attacker from modifying an agent's code or instructions on a compr
 
 ### 3.1 TPM PCR Binding
 
-When running on an Atlas Secure Node, the execution environment maps cognitive metrics to specific TPM Platform Configuration Registers (PCRs):
+When running on a Creduent-certified secure execution node, the execution environment maps cognitive metrics to specific TPM Platform Configuration Registers (PCRs):
 
 * **PCR 10 (System Integrity):** Stores Linux Integrity Measurement Architecture (IMA) digests of the agent's executable binaries, runtime scripts, and libraries.
 * **PCR 15 (Cognitive Integrity):** Stores the extended value of the **Agent Prompt Hash (APH)**.
@@ -155,7 +155,7 @@ Verifiers crosscheck this quote against the known registry and the golden PCR va
 
 ## 4. Cryptographic Execution Receipts
 
-Every action taken by an autonomous agent (e.g., executing a system command, making an outbound API call, modifying data) MUST be recorded by the securing runtime (e.g., Atlas Proxy) in a cryptographically signed **Execution Receipt**.
+Every action taken by an autonomous agent (e.g., executing a system command, making an outbound API call, modifying data) MUST be recorded by the securing runtime (e.g., a compliant execution gateway or proxy) in a cryptographically signed **Execution Receipt**.
 
 This receipt allows auditors to prove retroactively that a specific version of an agent (defined by its APH) executed a specific command in a verified hardware environment.
 
@@ -174,7 +174,7 @@ This receipt allows auditors to prove retroactively that a specific version of a
     "trace_hash": "sha256:a1b2c3d4..."
   },
   "host_attestation": {
-    "node_id": "node://atlas-grid/us-east-1",
+    "node_id": "node://secure-grid/us-east-1",
     "pcrs": {
       "10": "d3a246...",
       "15": "f48c1b..."
@@ -201,7 +201,7 @@ The securing runtime MUST populate `action.reversibility` by copying the `revers
 
 ### 4.2 Merkle Audit Ledger
 
-The Atlas Proxy aggregates execution receipts into a local append-only Merkle Tree.
+The securing runtime aggregates execution receipts into a local append-only Merkle Tree.
 * The root hash of this tree is periodically published to the Creduent Registry or a public ledger.
 * This makes the history of agent actions completely tamper-proof. An auditor can verify the inclusion of any receipt using a standard Merkle proof.
 
@@ -242,7 +242,7 @@ Since agents are dynamic, their identity and permissions must support real-time 
                                │
                                ▼
                   +──────────────────────────+
-                  |    Atlas Proxy / Node    |
+                   |    Execution Gateway / Node  |
                   |                          |
                   |   - Server connection    |
                   |   - Reject agent calls   |
@@ -272,8 +272,8 @@ Headers:
 #### 5.2.2 Downstream Enforcement
 On receiving a revocation request:
 1. The Registry sets the agent's attestation status to `"revoked"`.
-2. The Registry publishes an instant notification to all registered webhooks for that agent, notifying the hosting Atlas Nodes.
-3. Atlas Proxy intercepts this signal:
+2. The Registry publishes an instant notification to all registered webhooks for that agent, notifying the hosting execution gateway nodes.
+3. The compliant execution gateway intercepts this signal:
    - It severs any active SSH/API sessions associated with the `agent_id`.
    - It rejects any incoming requests signed by the revoked agent's public key.
    - It denies the agent access to any secured APIs.

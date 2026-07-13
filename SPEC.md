@@ -27,7 +27,7 @@ Creduent recognizes that securing autonomous systems is a multi-dimensional chal
 1. **Identity:** Proves *which* agent or workload is acting. Implemented via cryptographic keys (Ed25519) and DNS bindings in the `agent.json` document.
 2. **Posture:** Proves *what* instruction and tool surface is loaded. Implemented via the **Agent Prompt Hash (APH)** to verify system instructions, model settings, and allowed schemas. Note that posture is a boundary constraint rather than full behavioral proof, ensuring starting rules remain untampered.
 3. **Delegation:** Proves *whose authority* the agent is acting under. Implemented via the **Creduent Delegation Token (CDT)** which binds authority directly to specific action scopes and tool arrays.
-4. **Policy:** Defines *what is allowed* in the current session. Checked dynamically by gateway enforcers (like Atlas Proxy).
+4. **Policy:** Defines *what is allowed* in the current session. Checked dynamically by compliant execution gateway enforcers.
 5. **Execution Context:** Defines *the boundary of the task* (e.g. current session variables, run metadata).
 6. **Evidence:** Proves *what actually happened*. Implemented via signed **Execution Receipts** aggregated into tamper-proof local Merkle Trees.
 

@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.8] - 2026-07-13
+
+### Changed
+- **CREDUENT-006 (Dynamic Attestation)**: Merged PR #8 (resolves Issue #6) by @Mayur021. Added action reversibility class specifications (read-only, reversible, external-reversible, and irreversible) based on OWASP AISVS v1.0 (C9.2.3). Implemented dual-gate verification (build-time manifest schema gate and runtime proxy safety gate), Merkle chain worst-case logic, and compliance test vectors.
+
 ## [2.0.7] - 2026-07-10
 
 ### Changed

@@ -202,12 +202,27 @@ def revoke_agent(agent_id: str):
 WEBHOOKS_DB_PATH = os.path.join(BASE_DIR, "registry", "webhooks_db.json")
 
 
-def save_webhook(agent_id: str, webhook_url: str):
-    """Persist an agent → webhook_url mapping."""
+def _derive_webhook_secret(agent_id: str) -> str:
+    import hashlib
+    salt = os.environ.get("CREDUENT_WEBHOOK_SALT", "default_creduent_salt_2026")
+    h = hashlib.sha256(f"{agent_id}|{salt}".encode("utf-8"))
+    return f"whsec_legacy_{h.hexdigest()[:32]}"
+
+
+def save_webhook(agent_id: str, webhook_url: str) -> str:
+    """Persist an agent -> webhook configuration mapping. Returns the webhook secret."""
+    import secrets
+    secret = f"whsec_{secrets.token_hex(24)}"
+    config = {
+        "url": webhook_url,
+        "secret": secret
+    }
+    val = json.dumps(config)
+
     if is_redis_configured():
         try:
             client = get_redis_client()
-            client.hset("creduent:webhooks", agent_id, webhook_url)
+            client.hset("creduent:webhooks", agent_id, val)
         except Exception as e:
             print(f"[-] Redis error in save_webhook: {e}", file=sys.stderr)
             traceback.print_exc(file=sys.stderr)
@@ -224,22 +239,23 @@ def save_webhook(agent_id: str, webhook_url: str):
                     db = json.load(f)
                 except Exception:
                     db = {}
-            db[agent_id] = webhook_url
+            db[agent_id] = val
             with open(WEBHOOKS_DB_PATH, "w", encoding="utf-8") as f:
                 json.dump(db, f, indent=2, ensure_ascii=False)
+    return secret
 
 
-def get_webhook(agent_id: str):
-    """Return the webhook URL for an agent, or None."""
+def get_webhook_config(agent_id: str) -> dict:
+    """Return the webhook configuration dict {"url": url, "secret": secret} or None."""
+    val = None
     if is_redis_configured():
         try:
             client = get_redis_client()
             val = client.hget("creduent:webhooks", agent_id)
             if isinstance(val, bytes):
-                return val.decode("utf-8")
-            return val if val else None
+                val = val.decode("utf-8")
         except Exception as e:
-            print(f"[-] Redis error in get_webhook: {e}", file=sys.stderr)
+            print(f"[-] Redis error in get_webhook_config: {e}", file=sys.stderr)
             return None
     else:
         if not os.path.exists(WEBHOOKS_DB_PATH):
@@ -248,27 +264,59 @@ def get_webhook(agent_id: str):
             with open(WEBHOOKS_DB_PATH, "r", encoding="utf-8") as f:
                 try:
                     db = json.load(f)
-                    return db.get(agent_id)
+                    val = db.get(agent_id)
                 except Exception:
                     return None
 
+    if not val:
+        return None
 
-def list_webhooks() -> dict:
-    """Return the full {agent_id: webhook_url} mapping."""
+    # Attempt to parse as JSON config. If it fails, it's a legacy URL string.
+    if isinstance(val, str):
+        val = val.strip()
+        if val.startswith("{") and val.endswith("}"):
+            try:
+                data = json.loads(val)
+                if isinstance(data, dict) and "url" in data:
+                    if "secret" not in data:
+                        data["secret"] = _derive_webhook_secret(agent_id)
+                    return data
+            except Exception:
+                pass
+        
+        # Legacy fallback
+        return {
+            "url": val,
+            "secret": _derive_webhook_secret(agent_id)
+        }
+    elif isinstance(val, dict) and "url" in val:
+        if "secret" not in val:
+            val["secret"] = _derive_webhook_secret(agent_id)
+        return val
+
+    return None
+
+
+def get_webhook(agent_id: str):
+    """Return the webhook URL for an agent, or None (for backwards compatibility)."""
+    cfg = get_webhook_config(agent_id)
+    return cfg["url"] if cfg else None
+
+
+def list_webhooks_configs() -> dict:
+    """Return the full {agent_id: {"url": url, "secret": secret}} mapping."""
+    raw_webhooks = {}
     if is_redis_configured():
         try:
             client = get_redis_client()
             raw = client.hgetall("creduent:webhooks")
-            if not raw:
-                return {}
-            result = {}
-            for k, v in raw.items():
-                key = k.decode("utf-8") if isinstance(k, bytes) else k
-                val = v.decode("utf-8") if isinstance(v, bytes) else v
-                result[key] = val
-            return result
+            if raw:
+                for k, v in raw.items():
+                    key = k.decode("utf-8") if isinstance(k, bytes) else k
+                    val = v.decode("utf-8") if isinstance(v, bytes) else v
+                    raw_webhooks[key] = val
         except Exception as e:
-            print(f"[-] Redis error in list_webhooks: {e}", file=sys.stderr)
+            print(f"[-] Redis error in list_webhooks_configs: {e}", file=sys.stderr)
             return {}
     else:
         if not os.path.exists(WEBHOOKS_DB_PATH):
@@ -276,9 +324,40 @@ def list_webhooks() -> dict:
         with file_lock(WEBHOOKS_DB_PATH):
             with open(WEBHOOKS_DB_PATH, "r", encoding="utf-8") as f:
                 try:
-                    return json.load(f)
+                    raw_webhooks = json.load(f)
                 except Exception:
                     return {}
+
+    result = {}
+    for agent_id, val in raw_webhooks.items():
+        if isinstance(val, str):
+            val = val.strip()
+            if val.startswith("{") and val.endswith("}"):
+                try:
+                    data = json.loads(val)
+                    if isinstance(data, dict) and "url" in data:
+                        if "secret" not in data:
+                            data["secret"] = _derive_webhook_secret(agent_id)
+                        result[agent_id] = data
+                        continue
+                except Exception:
+                    pass
+            # Legacy fallback
+            result[agent_id] = {
+                "url": val,
+                "secret": _derive_webhook_secret(agent_id)
+            }
+        elif isinstance(val, dict) and "url" in val:
+            if "secret" not in val:
+                val["secret"] = _derive_webhook_secret(agent_id)
+            result[agent_id] = val
+    return result
+
+
+def list_webhooks() -> dict:
+    """Return the full {agent_id: webhook_url} mapping (for backwards compatibility)."""
+    configs = list_webhooks_configs()
+    return {agent_id: cfg["url"] for agent_id, cfg in configs.items()}
 
 
 def delete_webhook(agent_id: str):

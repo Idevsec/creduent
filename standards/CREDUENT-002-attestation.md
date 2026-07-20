@@ -1,9 +1,9 @@
 # CREDUENT-002: Attestation Specification
 
 **Status:** Active 
-**Version:** 0.3 
+**Version:** 0.4 
 **Author:** IDevSec 
-**Date:** 2026-05-30 
+**Date:** 2026-07-20 
 **Supersedes:** N/A 
 **Related:** [CREDUENT-001](SPEC.md), [CREDUENT-003](standards/CREDUENT-003-registry-api.md)
 
@@ -277,6 +277,21 @@ The `signature` field MUST be computed over one of the following payload formats
 }
 ```
 
+### 8.4 Cryptographic Signatures (HMAC-SHA256)
+
+To prevent spoofing and replay attacks, every webhook notification sent by the registry MUST contain verification headers:
+
+*   `X-Creduent-Timestamp`: The Unix epoch timestamp (seconds) when the notification was dispatched.
+*   `X-Creduent-Signature256`: The hex-encoded HMAC-SHA256 signature.
+
+The signature is computed over the UTF-8 bytes of:
+```
+timestamp + "." + canonical_json_payload
+```
+using the webhook's pre-shared secret key (returned during webhook registration).
+
+Recipients MUST verify the signature before processing the event payload. Additionally, recipients SHOULD reject notifications with a timestamp offset greater than 300 seconds (5 minutes) to prevent replay attacks.
+
 ---
 
 ## 9. Security Considerations
@@ -292,6 +307,7 @@ The `signature` field MUST be computed over one of the following payload formats
 
 | Version | Date | Notes |
 |:---|:---|:---|
+| 0.4 | 2026-07-20 | Added X-Creduent-Signature256 and X-Creduent-Timestamp verification headers to webhook payloads. |
 | 0.3 | 2026-05-30 | Extracted from SPEC.md into standalone standards document. Webhook signature requirement documented. |
 | 0.2 | 2026-05-27 | Added renewal and webhook notifications. |
 | 0.1 | 2026-05-01 | Initial attestation model. |

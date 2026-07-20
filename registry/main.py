@@ -512,7 +512,7 @@ def register_webhook(req: WebhookRegisterRequest):
         )
 
     try:
-        save_webhook(agent_id, req.webhook_url)
+        secret = save_webhook(agent_id, req.webhook_url)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Webhook storage failed: {str(e)}")
 
@@ -520,6 +520,7 @@ def register_webhook(req: WebhookRegisterRequest):
         "status": "registered",
         "agent_id": agent_id,
         "webhook_url": req.webhook_url,
+        "webhook_secret": secret,
     }
 
 

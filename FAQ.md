@@ -14,7 +14,7 @@ Creduent is an open standard created and originated by Kashish Kanojia, and is a
 
 ### Is Creduent a SaaS product or an open protocol?
 
-It is an open protocol. The specification documents (CREDUENT-001 through CREDUENT-006) are free to implement. Anyone can run a Creduent-compatible registry. The reference registry at `creduent.idevsec.com` is one implementation, not the only one.
+It is an open protocol. The specification documents (CREDUENT-001 through CREDUENT-007) are free to implement. Anyone can run a Creduent-compatible registry. The reference registry at `creduent.idevsec.com` is one implementation, not the only one.
 
 ### What problem does Creduent solve?
 

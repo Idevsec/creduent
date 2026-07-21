@@ -154,6 +154,8 @@ The Creduent Protocol is structured as a series of formal standards-track docume
 * **[CREDUENT-004: Agent URI Resolution](standards/CREDUENT-004-uri-resolution.md)** - DNS-bound `agent://` URI scheme resolution
 * **[CREDUENT-005: Federation](standards/CREDUENT-005-federation.md)** - Federated Root-and-Node trust model
 * **[CREDUENT-006: Dynamic Attestation](standards/CREDUENT-006-dynamic-attestation.md)** - Dynamic prompt and hardware attestation (Draft)
+* **[CREDUENT-007: Delegation Token](standards/CREDUENT-007-delegation.md)** - Creduent Delegation Token (CDT) Specification (Draft)
+
 
 ## Origin and Stewardship
 
@@ -204,6 +206,6 @@ The Creduent Registry includes several security guarantees and resilience safegu
 
 Creduent's licensing model is designed to maximize community adoption and interoperability:
 
-* **Protocol Specification:** The Creduent Protocol specifications (including standard documents `CREDUENT-001` through `CREDUENT-006` located in the `standards/` directory) are open, public-domain standards. Anyone is free to implement the protocol, build custom registries, or design compatible clients without any license restrictions or royalties.
+* **Protocol Specification:** The Creduent Protocol specifications (including standard documents `CREDUENT-001` through `CREDUENT-007` located in the `standards/` directory) are open, public-domain standards. Anyone is free to implement the protocol, build custom registries, or design compatible clients without any license restrictions or royalties.
 
 * **Reference Implementation, SDKs & CLIs:** All Creduent software assets (including the Python SDK, JavaScript/TypeScript SDK (`@idevsec/creduent`), CLI Tool (`@idevsec/creduent-cli`), MCP Server, and reference registry source code) are licensed under the **[Apache License 2.0](LICENSE)**.

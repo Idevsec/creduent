@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.10] - 2026-07-21
+
+### Added
+- **CREDUENT-007 (Delegation Token)**: Drafted the formal Creduent Delegation Token (CDT) specification (`standards/CREDUENT-007-delegation.md`). Defined the attenuated capability delegation payload structure, fields schema, and recursive delegation chain verification guidelines.
+
+### Changed
+- **Specifications Alignment**: Aligned sitemap, FAQ, index (`standards/README.md`), and main README files to cover standard specs `CREDUENT-001` through `CREDUENT-007`.
+
 ## [2.0.9] - 2026-07-20
 
 ### Added

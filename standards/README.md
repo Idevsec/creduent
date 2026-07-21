@@ -14,6 +14,7 @@ This directory contains the formal standards-track documents for the Creduent Pr
 | [CREDUENT-004](CREDUENT-004-uri-resolution.md) | Agent URI Resolution | Active | 0.3 |
 | [CREDUENT-005](CREDUENT-005-federation.md) | Federation and Cross-Registry Trust | Draft | 0.1 |
 | [CREDUENT-006](CREDUENT-006-dynamic-attestation.md) | Dynamic Prompt and Hardware Attestation | Draft | 0.2 |
+| [CREDUENT-007](CREDUENT-007-delegation.md) | Creduent Delegation Token (CDT) Specification | Draft | 0.1 |
 
 ---
 

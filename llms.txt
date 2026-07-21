@@ -28,6 +28,8 @@ When an AI agent contacts another agent or service, there is no standard way to 
 - CREDUENT-004: Agent URI resolution (agent:// scheme, DNS TXT binding)
 - CREDUENT-005: Federation and cross-registry trust (Draft)
 - CREDUENT-006: Dynamic Prompt and Hardware Attestation (Draft)
+- CREDUENT-007: Creduent Delegation Token (CDT) Specification (Draft)
+
 
 ## Attestation Levels
 - verified: Schema valid, Ed25519 signature valid, DNS TXT record matched, endpoint reachable

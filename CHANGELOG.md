@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.12] - 2026-07-21
+
+### Added
+- **Ecosystem Contribution Directory**: Added a centralized contributor task directory in `CONTRIBUTING.md` linking global roadmap goals to language-specific repositories (`creduent-cli`, `creduent-js`, `creduent-python`).
+- **CREDUENT-007 Expansion (v0.2)**: Expanded the Creduent Delegation Token (CDT) spec with dedicated sections on Security Considerations (privilege escalation, replay attacks, depth limit), Error Codes, Token Revocation, JWT/OAuth Comparison, Conformance Requirements, and reference implementation appendices.
+
+### Changed
+- **Roadmap Synchronization**: Checked off the CDT Specification and 6-Layer Composite Trust Integration milestones in the Phase 5 roadmap.
+
 ## [2.0.11] - 2026-07-21
 
 ### Added

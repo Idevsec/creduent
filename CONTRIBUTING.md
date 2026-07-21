@@ -107,3 +107,33 @@ Allowed types include:
 - `docs`: Documentation updates.
 - `spec`: Changes to specification drafts.
 - `refactor`: Code changes that do not alter behavior.
+
+---
+
+## Ecosystem Contribution Directory
+
+Because the Creduent Protocol is split across multiple specialized repositories, we maintain a centralized roadmap but distribute active development tasks across the respective codebases. If you want to contribute, identify your preferred language/tool and refer to the hotspots below:
+
+### Creduent CLI (`creduent-cli`)
+* **Focus:** Developer utilities, registry command interfaces, and local validation tools.
+* **Active Tasks:**
+  * **[Good First Issue] Output Formatting:** Add `--format json` and `--format table` options to `creduent discover` and `creduent resolve` commands.
+  * **[Intermediate] Shell Autocomplete:** Write shell autocomplete generator scripts for bash, zsh, and powershell.
+  * **[Intermediate] Interactive Sign Wizard:** Build an interactive prompt runner for the `creduent init` and signing steps to guide developers visually.
+
+### JS/TS SDK (`creduent-js`)
+* **Focus:** Zero-dependency edge-compatible client verification, JS/TS framework integrations.
+* **Active Tasks:**
+  * **[Intermediate] Framework Integrations:** Author native helper middleware/tools for **LangChain JS** and **LlamaIndex TS** (similar to our Python integration adapters).
+  * **[Intermediate] Local Cache Tuning:** Implement local LRU caching (5-min default TTL) inside the verification pipeline in `src/verifier.ts` to minimize registry roundtrips.
+  * **[Advanced] Delegation (CREDUENT-007):** Help implement recursive chain validation in `verifyDelegationChain()` mapping delegates to parent delegator key verification.
+
+### Python SDK (`creduent-python`)
+* **Focus:** Core python client tools, agentic AI frameworks integrations (CrewAI, AutoGen).
+* **Active Tasks:**
+  * **[Intermediate] Framework Integrations:** Expand support for LlamaIndex Python, Google ADK (Agent Development Kit), and Semantic Kernel.
+  * **[Intermediate] Verifier Caching:** Implement thread-safe local caching wrappers for agent attestation lookups.
+  * **[Advanced] Delegation (CREDUENT-007):** Implement the `sign_delegation` reference method to generate JCS-signed delegation tokens and bind to trace contexts.
+
+To begin, clone the respective child repository and refer to their local `CONTRIBUTING.md` for specific environment setup and local verification/testing guidelines.
+

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.9] - 2026-07-20
+
+### Added
+- **HMAC Webhook Signatures**: Added HMAC-SHA256 signing headers (`X-Creduent-Signature256` and `X-Creduent-Timestamp`) to the attestation registry alert webhooks. Updated specs `CREDUENT-002` and `CREDUENT-003` to document payload signing over JCS canonical body concatenated with timestamp.
+- **Registry Webhook Config Storage**: Upgraded `/webhook/register` response to yield hex-encoded pre-shared secret keys (`whsec_...`) and persist webhook metadata as nested JSON configurations in Upstash Redis. Added Legacy Webhook HMAC derivation fallback to preserve backwards compatibility for existing webhooks.
+
 ## [2.0.8] - 2026-07-13
 
 ### Changed

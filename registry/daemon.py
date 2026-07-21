@@ -110,7 +110,7 @@ def _load_json_file(file_path: str) -> dict:
 # ---------------------------------------------------------------------------
 
 
-def send_webhook(agent_id, webhook_url, domain, expires_at, days_remaining):
+def send_webhook(agent_id, webhook_url, webhook_secret, domain, expires_at, days_remaining):
     action_url = (
         f"https://{domain}/renew" if domain else "https://creduent.idevsec.com/renew"
     )
@@ -124,7 +124,36 @@ def send_webhook(agent_id, webhook_url, domain, expires_at, days_remaining):
         "action_url": action_url,
     }
 
-    headers = {"Content-Type": "application/json"}
+    import hmac
+    import hashlib
+    from creduent.crypto import canonicalize
+
+    try:
+        # Canonicalize payload using RFC 8785 (JCS)
+        canonical_str = canonicalize(payload)
+        
+        # Get current Unix timestamp (seconds)
+        timestamp = str(int(datetime.now(timezone.utc).timestamp()))
+        
+        # Sign payload: timestamp + "." + canonical_payload
+        sig_data = f"{timestamp}.{canonical_str}".encode("utf-8")
+        
+        # Use webhook_secret for HMAC signing
+        sig_hex = hmac.new(
+            webhook_secret.encode("utf-8"),
+            sig_data,
+            hashlib.sha256
+        ).hexdigest()
+        
+        headers = {
+            "Content-Type": "application/json",
+            "X-Creduent-Timestamp": timestamp,
+            "X-Creduent-Signature256": sig_hex
+        }
+    except Exception as e:
+        logging.error(f"Error computing HMAC signature for webhook: {e}")
+        headers = {"Content-Type": "application/json"}
+
     req = urllib.request.Request(
         webhook_url,
         data=json.dumps(payload).encode("utf-8"),
@@ -206,12 +235,23 @@ def main():
                 f"Agent '{agent_id}' expires in {days_remaining} days ({expires_at_str})"
             )
 
-            webhook_url = webhooks.get(agent_id)
-            if webhook_url:
-                logging.info(f"Firing warning webhook for '{agent_id}' → {webhook_url}")
+            webhook_data = webhooks.get(agent_id)
+            if webhook_data:
+                if isinstance(webhook_data, dict):
+                    webhook_url = webhook_data.get("url")
+                    webhook_secret = webhook_data.get("secret")
+                else:
+                    # Legacy webhook string or mock test mock_webhooks
+                    webhook_url = webhook_data
+                    webhook_secret = "test_webhook_secret_key_123"
+
+                logging.info(
+                    f"Firing warning webhook for '{agent_id}' -> {webhook_url}"
+                )
                 if send_webhook(
                     agent_id,
                     webhook_url,
+                    webhook_secret,
                     record.get("domain"),
                     expires_at_str,
                     days_remaining,

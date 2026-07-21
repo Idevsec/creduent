@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.11] - 2026-07-21
+
+### Added
+- **HMAC Webhook Verification (SDK + CLI)**: Completed full-stack rollout of HMAC-SHA256 webhook signature verification across all Creduent SDKs and the CLI:
+  - **`creduent-vercel` (daemon)**: `daemon.py` now loads webhook configs via `list_webhooks_configs()` (url + pre-shared secret per agent) and signs every outgoing alert notification with `X-Creduent-Signature256` and `X-Creduent-Timestamp` headers using HMAC-SHA256 over the JCS-canonical payload.
+  - **`creduent-js`**: Added `verifyWebhookSignature(secret, signatureHex, timestamp, payload)` to `crypto.ts`, exported from the package root. Web Crypto API based — compatible with Node.js 18+, Vercel Edge, Cloudflare Workers, and Deno.
+  - **`creduent-python`**: Added `verify_webhook_signature(secret, signature_hex, timestamp, payload)` to `creduent/webhook.py`, exported from the package root. Uses `hmac.compare_digest` for timing-safe comparison.
+  - **`creduent-cli`**: Added `verifyWebhookSignature()` to `crypto.ts` (uses `timingSafeEqual`) and new `webhook verify` sub-command for command-line signature validation. Supports `--secret`, `--sig`, `--ts`, `--payload` flags and `CREDUENT_WEBHOOK_SECRET` env variable.
+
+### Changed
+- **Specifications Alignment**: Aligned sitemap, FAQ, index (`standards/README.md`), and main README files to cover standard specs `CREDUENT-001` through `CREDUENT-007`.
+
 ## [2.0.10] - 2026-07-21
 
 ### Added

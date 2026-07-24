@@ -76,7 +76,7 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 **Goal:** Build verifiable provenance and delegation capabilities directly solving the inter-agent security boundaries.  
 **Target:** 3 gateway integrations, 5,000+ registered agents, 1 enterprise POC.
 * [x] **Creduent Delegation Token (CDT) Specification (CREDUENT-007)**: Draft the formal specification defining attenuated capability delegation payload structure.
-* [x] **The 6-Layer Composite Trust Integration**: Standardize the architectural mapping between Identity, Posture (APH), Delegation (CDT), Policy, Execution Context, and Evidence (Execution Receipts) across all reference specs.
+* [ ] **The 6-Layer Composite Trust Integration**: Standardize the architectural mapping between Identity, Posture (APH), Delegation (CDT), Policy, Execution Context, and Evidence (Execution Receipts) across all reference specs.
 * [ ] **Verifiable Audit Logging Standard**: Draft specification for linking agent-to-agent call chains and identities into cryptographically signed trace logs (e.g., integrating Langfuse observability traces), enabling machine-speed correlation for compliance audits.
 * [ ] **Intent-to-Action Cryptographic Binding**: Bind delegation policies (CDT) directly to historical execution trace hashes (via Langfuse or equivalent), enabling downstream gateways to verify that the agent's behavior did not deviate from its authorized intent.
 * [x] **Instruction & Prompt Integrity Attestation (CREDUENT-006)**: Draft specification for hashing and cryptographically signing active system prompts, model versions, and tool boundaries to prevent mid-session prompt hijacking.

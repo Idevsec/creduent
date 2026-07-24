@@ -109,6 +109,36 @@ RESOLVER_HTML = """<!DOCTYPE html>
             margin-top: 4px;
         }
 
+        .nav-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glow);
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-btn.active {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
+            color: #a5b4fc;
+        }
+
         .status-badge {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
@@ -482,23 +512,51 @@ RESOLVER_HTML = """<!DOCTYPE html>
             margin: 0 auto;
         }
 
-        /* Footer */
+        /* Unified Modern Footer */
         .footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 0.85rem;
-            color: var(--text-dark);
-        }
-
-        .footer a {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            text-decoration: none;
-            border-bottom: 1px dotted var(--text-muted);
-            transition: color 0.2s;
         }
 
-        .footer a:hover {
-            color: var(--text-main);
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-brand-name {
+            font-weight: 700;
+            color: #f8fafc;
+            letter-spacing: 0.04em;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: #a5b4fc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(165, 180, 252, 0.4);
         }
 
         @media (max-width: 640px) {
@@ -534,13 +592,14 @@ RESOLVER_HTML = """<!DOCTYPE html>
             <!-- Header -->
             <header class="header">
                 <div class="title-area">
-                    <span class="brand-badge">iDevSec Security Suite</span>
+                    <span class="brand-badge">Creduent Protocol Registry</span>
                     <h1>Creduent Resolver</h1>
                     <p>Cryptographic Agent Identity Discovery</p>
                 </div>
-                <div class="status-badge">
-                    <span class="pulse-dot"></span>
-                    Registry Node Connected
+                <div class="nav-links">
+                    <a href="/resolver" class="nav-btn active">Resolver</a>
+                    <a href="/dashboard" class="nav-btn">Dashboard</a>
+                    <a href="/playground" class="nav-btn">Playground</a>
                 </div>
             </header>
 
@@ -619,7 +678,14 @@ RESOLVER_HTML = """<!DOCTYPE html>
         </div>
 
         <footer class="footer">
-            Creduent Trust Protocol &bull; A Project of <a href="https://idevsec.com" target="_blank">iDevSec</a>
+            <div class="footer-brand">
+                <span class="footer-brand-name">CREDUENT PROTOCOL</span>
+                <span style="color: rgba(255,255,255,0.25);">&bull;</span>
+                <span>Open Trust & Attestation Infrastructure</span>
+            </div>
+            <div class="footer-links">
+                <a href="https://idevsec.com" target="_blank" rel="noopener">IDevSec Ecosystem &rarr;</a>
+            </div>
         </footer>
     </main>
 
@@ -760,27 +826,29 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creduent Registry - Developer Dashboard</title>
     <meta name="description" content="Management and monitoring dashboard for Creduent Protocol Registry.">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0a0a;
-            --surface: #111111;
-            --surface-hover: #161616;
-            --border: #222222;
-            --border-focus: #3b82f6;
-            --text: #f3f4f6;
+            --bg-base: #060913;
+            --bg-surface: rgba(13, 20, 38, 0.7);
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --border-glow: rgba(99, 102, 241, 0.15);
+            --border-muted: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-glow: rgba(99, 102, 241, 0.3);
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.08);
+            --success-border: rgba(16, 185, 129, 0.2);
+            --error: #ef4444;
+            --error-bg: rgba(239, 68, 68, 0.08);
+            --error-border: rgba(239, 68, 68, 0.2);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.08);
+            --warning-border: rgba(245, 158, 11, 0.2);
+            --text-main: #f3f4f6;
             --text-muted: #9ca3af;
-            --blue: #3b82f6;
-            --blue-hover: #2563eb;
-            --blue-dim: rgba(59, 130, 246, 0.1);
-            --green: #22c55e;
-            --green-dim: rgba(34, 197, 94, 0.1);
-            --amber: #f59e0b;
-            --amber-dim: rgba(245, 158, 11, 0.1);
-            --red: #ef4444;
-            --red-dim: rgba(239, 68, 68, 0.1);
             --violet: #8b5cf6;
-            --violet-dim: rgba(139, 92, 246, 0.1);
         }
 
         * {
@@ -790,38 +858,100 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
             min-height: 100vh;
-            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.1) 0%, transparent 45%);
+            padding-bottom: 60px;
             line-height: 1.5;
         }
 
         .container {
+            width: 95%;
             max-width: 1200px;
-            margin: 0 auto;
+            padding: 40px 20px;
+            z-index: 10;
         }
 
-        header {
+        .glass-panel {
+            background: var(--bg-surface);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-muted);
+            padding-bottom: 24px;
             margin-bottom: 32px;
         }
 
-        .brand h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -0.025em;
+        .brand-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: inline-block;
         }
 
-        .brand p {
-            font-size: 0.875rem;
+        .title-area h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-area p {
+            font-size: 0.9rem;
             color: var(--text-muted);
             margin-top: 4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-muted);
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-btn.active {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: #6366f1;
+            color: #a5b4fc;
         }
 
         .status-badge {
@@ -830,18 +960,18 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             gap: 6px;
             font-size: 0.75rem;
             font-weight: 500;
-            background: var(--green-dim);
-            color: var(--green);
+            background: var(--success-bg);
+            color: var(--success);
             padding: 4px 10px;
             border-radius: 9999px;
-            border: 1px solid rgba(34, 197, 94, 0.2);
+            border: 1px solid var(--success-border);
         }
 
         .status-dot {
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background-color: var(--green);
+            background-color: var(--success);
         }
 
         /* Stats Grid */
@@ -853,10 +983,11 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         }
 
         .stat-card {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-muted);
+            border-radius: 12px;
             padding: 20px;
+            backdrop-filter: blur(12px);
         }
 
         .stat-label {
@@ -872,13 +1003,14 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             font-weight: 700;
             margin-top: 8px;
             font-family: 'JetBrains Mono', monospace;
+            color: var(--text-main);
         }
 
         .stat-card.warning {
             border-color: rgba(245, 158, 11, 0.4);
         }
         .stat-card.warning .stat-val {
-            color: var(--amber);
+            color: var(--warning);
         }
 
         /* Main Workspace Layout */
@@ -901,10 +1033,11 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         }
 
         .card {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-muted);
+            border-radius: 12px;
             padding: 24px;
+            backdrop-filter: blur(12px);
         }
 
         .card-title {
@@ -914,6 +1047,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             display: flex;
             align-items: center;
             justify-content: space-between;
+            color: var(--text-main);
         }
 
         /* Forms */
@@ -933,19 +1067,20 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
         .form-group input, .form-group textarea {
             width: 100%;
-            background-color: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text);
+            background-color: rgba(6, 9, 19, 0.6);
+            border: 1px solid var(--border-muted);
+            border-radius: 8px;
+            color: var(--text-main);
             padding: 10px 14px;
             font-family: inherit;
             font-size: 0.875rem;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
         }
 
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
-            border-color: var(--border-focus);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
         }
 
         .form-group input::placeholder {
@@ -962,31 +1097,34 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background-color: var(--blue);
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             color: white;
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
             padding: 10px 16px;
-            border-radius: 6px;
+            border-radius: 8px;
             border: none;
             cursor: pointer;
             width: 100%;
-            transition: background-color 0.2s;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px var(--primary-glow);
         }
 
         .btn:hover {
-            background-color: var(--blue-hover);
+            opacity: 0.95;
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
-            background-color: transparent;
-            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-muted);
             color: var(--text-muted);
+            box-shadow: none;
         }
 
         .btn-secondary:hover {
-            background-color: var(--bg);
-            color: var(--text);
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
         }
 
         .btn-sm {
@@ -1012,7 +1150,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             text-align: left;
             padding: 12px 24px;
             background-color: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-muted);
             font-weight: 500;
             color: var(--text-muted);
             font-size: 0.75rem;
@@ -1022,20 +1160,21 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
         td {
             padding: 16px 24px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-muted);
             vertical-align: middle;
+            color: var(--text-main);
         }
 
         tr:hover td {
-            background-color: rgba(255, 255, 255, 0.01);
+            background-color: rgba(255, 255, 255, 0.03);
         }
 
         tr.warning-row td {
-            background-color: rgba(239, 68, 68, 0.02);
+            background-color: rgba(239, 68, 68, 0.04);
         }
 
         tr.warning-row:hover td {
-            background-color: rgba(239, 68, 68, 0.04);
+            background-color: rgba(239, 68, 68, 0.08);
         }
 
         .monospace {
@@ -1055,33 +1194,33 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         }
 
         .badge-verified {
-            background-color: var(--green-dim);
-            color: var(--green);
-            border: 1px solid rgba(34, 197, 94, 0.15);
+            background-color: var(--success-bg);
+            color: var(--success);
+            border: 1px solid var(--success-border);
         }
 
         .badge-unverified {
-            background-color: var(--amber-dim);
-            color: var(--amber);
-            border: 1px solid rgba(245, 158, 11, 0.15);
+            background-color: var(--warning-bg);
+            color: var(--warning);
+            border: 1px solid var(--warning-border);
         }
 
         .badge-revoked {
-            background-color: var(--red-dim);
-            color: var(--red);
-            border: 1px solid rgba(239, 68, 68, 0.15);
+            background-color: var(--error-bg);
+            color: var(--error);
+            border: 1px solid var(--error-border);
         }
 
         .badge-trusted {
-            background-color: var(--violet-dim);
+            background-color: rgba(139, 92, 246, 0.1);
             color: var(--violet);
-            border: 1px solid rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.2);
         }
 
         .badge-warning {
-            background-color: var(--red-dim);
-            color: var(--red);
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            background-color: var(--error-bg);
+            color: var(--error);
+            border: 1px solid var(--error-border);
             font-size: 0.7rem;
             margin-left: 6px;
         }
@@ -1101,28 +1240,29 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             align-items: center;
             justify-content: center;
             padding: 20px;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
         }
 
         .modal {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            background-color: #0d1426;
+            border: 1px solid var(--border-muted);
+            border-radius: 16px;
             max-width: 600px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
         }
 
         .modal-header {
             padding: 20px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-muted);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            color: var(--text-main);
         }
 
         .modal-body {
@@ -1130,14 +1270,14 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.8125rem;
             white-space: pre-wrap;
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgba(6, 9, 19, 0.6);
             color: var(--text-muted);
             overflow-x: auto;
         }
 
         .modal-footer {
             padding: 16px 20px;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid var(--border-muted);
             display: flex;
             justify-content: flex-end;
         }
@@ -1146,28 +1286,75 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         .feedback {
             margin-top: 12px;
             padding: 10px 14px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 0.8125rem;
             display: none;
         }
 
         .feedback-success {
-            background-color: var(--green-dim);
-            color: var(--green);
-            border: 1px solid rgba(34, 197, 94, 0.2);
+            background-color: var(--success-bg);
+            color: var(--success);
+            border: 1px solid var(--success-border);
         }
 
         .feedback-error {
-            background-color: var(--red-dim);
-            color: var(--red);
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            background-color: var(--error-bg);
+            color: var(--error);
+            border: 1px solid var(--error-border);
+        }
+
+        /* Unified Modern Footer */
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-brand-name {
+            font-weight: 700;
+            color: #f8fafc;
+            letter-spacing: 0.04em;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: #a5b4fc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(165, 180, 252, 0.4);
         }
 
         .webhook-current-info {
             margin-top: 16px;
             padding: 12px;
-            border: 1px dashed var(--border);
-            border-radius: 6px;
+            border: 1px dashed var(--border-muted);
+            border-radius: 8px;
             background: rgba(255, 255, 255, 0.01);
             font-size: 0.8125rem;
             display: none;
@@ -1175,17 +1362,20 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="brand">
-                <h1>Creduent Protocol Registry</h1>
-                <p>Developer Dashboard</p>
-            </div>
-            <div class="status-badge">
-                <span class="status-dot"></span>
-                <span>SYSTEM LIVE</span>
-            </div>
-        </header>
+    <main class="container">
+        <div class="glass-panel">
+            <header class="header">
+                <div class="title-area">
+                    <span class="brand-badge">Creduent Protocol Registry</span>
+                    <h1>Developer Dashboard</h1>
+                    <p>Management and monitoring dashboard for Creduent Protocol Registry</p>
+                </div>
+                <div class="nav-links">
+                    <a href="/resolver" class="nav-btn">Resolver</a>
+                    <a href="/dashboard" class="nav-btn active">Dashboard</a>
+                    <a href="/playground" class="nav-btn">Playground</a>
+                </div>
+            </header>
 
         <!-- Stats Grid (Section A) -->
         <section class="stats-grid">
@@ -1211,48 +1401,57 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             </div>
         </section>
 
-        <!-- Workspace Layout -->
-        <div class="workspace">
-            <!-- Main panel (Section B) -->
-            <div class="main-panel">
-                <div class="card">
-                    <div class="card-title">
-                        <span>Agent Explorer</span>
-                        <button class="btn btn-secondary btn-sm" onclick="fetchData()">Refresh Table</button>
-                    </div>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Agent ID</th>
-                                    <th>Domain</th>
-                                    <th>Level</th>
-                                    <th>Expires At</th>
-                                    <th>Remaining</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="agent-table-body">
-                                <tr>
-                                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px 0;">
-                                        Loading agent records...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+        <!-- Main Workspace Card (All tools inside the main big box) -->
+        <div class="card" style="margin-top: 24px;">
+            <div class="card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <span>Agent Explorer</span>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleCard('register-card-body', 'reg-toggle-btn')" id="reg-toggle-btn" style="font-size: 0.78rem; font-weight: 600;">
+                        Register
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleCard('webhook-card-body', 'web-toggle-btn')" id="web-toggle-btn" style="font-size: 0.78rem; font-weight: 600;">
+                        Webhook
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="fetchData()" style="font-size: 0.78rem;">
+                        Refresh Table
+                    </button>
                 </div>
             </div>
 
-            <!-- Side panel (Section C & D) -->
-            <div class="side-panel" style="display: flex; flex-direction: column; gap: 24px;">
-                <!-- Register Card (Section C) -->
-                <div class="card">
-                    <div class="card-title">Register New Agent</div>
-                    <form id="register-form" onsubmit="handleRegister(event)">
-                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; border-left: 2px solid var(--amber); padding-left: 8px;">
-                            Direct registration requires admin key. Public registration via <code style="background: rgba(255,255,255,0.05); padding: 1px 4px; border-radius: 3px;">POST /register</code> uses DNS + agent.json verification.
-                        </div>
+            <!-- Agent Explorer Table -->
+            <div class="table-container" style="margin-top: 16px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Agent ID</th>
+                            <th>Domain</th>
+                            <th>Level</th>
+                            <th>Expires At</th>
+                            <th>Remaining</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="agent-table-body">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+                                Loading agent records...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Collapsible Register Agent Panel (Inside the Big Box) -->
+            <div id="register-card-body" style="display: none; margin-top: 24px; border-top: 1px solid var(--border-muted); padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                    <span style="font-size: 1.05rem; font-weight: 700; color: var(--text-main);">Register New Agent</span>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleCard('register-card-body', 'reg-toggle-btn')" style="font-size: 0.72rem; padding: 3px 8px;">✕ Close</button>
+                </div>
+                <form id="register-form" onsubmit="handleRegister(event)">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; border-left: 2px solid var(--warning); padding-left: 10px; background: rgba(245, 158, 11, 0.05); padding-top: 6px; padding-bottom: 6px; border-radius: 0 6px 6px 0;">
+                        Direct registration requires admin key. Public registration uses <code style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;">POST /register</code> with DNS verification.
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div class="form-group">
                             <label for="reg-agent-id">Agent ID</label>
                             <input type="text" id="reg-agent-id" name="reg-agent-id" placeholder="agent://creduent/my-agent" autocomplete="username" required>
@@ -1261,26 +1460,31 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                             <label for="reg-domain">Domain</label>
                             <input type="text" id="reg-domain" name="reg-domain" placeholder="my-agent.com" autocomplete="off" required>
                         </div>
-                        <div class="form-group">
-                            <label for="reg-public-key">Public Key (Ed25519)</label>
-                            <textarea id="reg-public-key" name="reg-public-key" placeholder="ed25519:uMMQ6RfZB5RJu..." required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="reg-admin-key">Admin Key</label>
-                            <input type="password" id="reg-admin-key" name="reg-admin-key" placeholder="Enter admin key..." required autocomplete="current-password">
-                        </div>
-                        <button type="submit" class="btn">Register Agent</button>
-                        <div id="register-feedback" class="feedback"></div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-public-key">Public Key (Ed25519)</label>
+                        <textarea id="reg-public-key" name="reg-public-key" placeholder="ed25519:uMMQ6RfZB5RJu..." required style="min-height: 70px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-admin-key">Admin Key</label>
+                        <input type="password" id="reg-admin-key" name="reg-admin-key" placeholder="Enter admin key..." required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn" style="max-width: 220px;">Register Agent</button>
+                    <div id="register-feedback" class="feedback"></div>
+                </form>
+            </div>
 
-                <!-- Webhook Card (Section D) -->
-                <div class="card">
-                    <div class="card-title">Webhook Manager</div>
-                    <form id="webhook-form" onsubmit="handleWebhookRegister(event)">
-                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; border-left: 2px solid var(--blue); padding-left: 8px;">
-                            Webhook registration requires a valid Ed25519 signature. Sign the payload: <code style="background: rgba(255,255,255,0.05); padding: 1px 4px; border-radius: 3px;">agent_id|webhook_url</code> with your agent's private key.
-                        </div>
+            <!-- Collapsible Webhook Manager Panel (Inside the Big Box) -->
+            <div id="webhook-card-body" style="display: none; margin-top: 24px; border-top: 1px solid var(--border-muted); padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                    <span style="font-size: 1.05rem; font-weight: 700; color: var(--text-main);">Webhook Manager</span>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleCard('webhook-card-body', 'web-toggle-btn')" style="font-size: 0.72rem; padding: 3px 8px;">✕ Close</button>
+                </div>
+                <form id="webhook-form" onsubmit="handleWebhookRegister(event)">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; border-left: 2px solid var(--primary); padding-left: 10px; background: rgba(99, 102, 241, 0.05); padding-top: 6px; padding-bottom: 6px; border-radius: 0 6px 6px 0;">
+                        Sign payload <code style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;">agent_id|webhook_url</code> using your agent's private key.
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div class="form-group">
                             <label for="web-agent-id">Agent ID</label>
                             <input type="text" id="web-agent-id" placeholder="agent://creduent/my-agent" oninput="updateWebhookPayload()" required>
@@ -1289,33 +1493,44 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                             <label for="web-url">Webhook URL</label>
                             <input type="url" id="web-url" placeholder="https://api.my-agent.com/webhook" oninput="updateWebhookPayload()" required>
                         </div>
-                        
-                        <!-- Webhook Payload Display (Hidden until fields filled) -->
-                        <div id="web-payload-container" style="display: none; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 600;">Payload to Sign</div>
-                                <button type="button" class="btn btn-secondary btn-sm" id="copy-web-payload-btn" onclick="copyWebhookPayload()" style="font-size: 0.7rem; padding: 2px 6px;">Copy</button>
-                            </div>
-                            <pre id="web-payload-display" style="background: #050607; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #a78bfa; white-space: pre-wrap; word-break: break-all; line-height: 1.4;"></pre>
+                    </div>
+                    
+                    <!-- Webhook Payload Display (Hidden until fields filled) -->
+                    <div id="web-payload-container" style="display: none; background: rgba(6, 9, 19, 0.6); border: 1px solid var(--border-muted); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 600;">Payload to Sign</div>
+                            <button type="button" class="btn btn-secondary btn-sm" id="copy-web-payload-btn" onclick="copyWebhookPayload()" style="font-size: 0.7rem; padding: 3px 8px;">Copy</button>
                         </div>
+                        <pre id="web-payload-display" style="background: #050607; border: 1px solid var(--border-muted); border-radius: 6px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #a78bfa; white-space: pre-wrap; word-break: break-all; line-height: 1.4;"></pre>
+                    </div>
 
-                        <!-- Signature Input -->
-                        <div class="form-group">
-                            <label for="web-signature">Signature</label>
-                            <textarea id="web-signature" placeholder="Base64-encoded Ed25519 signature..." required style="min-height: 60px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;"></textarea>
-                        </div>
+                    <!-- Signature Input -->
+                    <div class="form-group">
+                        <label for="web-signature">Signature (Ed25519)</label>
+                        <textarea id="web-signature" placeholder="Base64-encoded Ed25519 signature..." required style="min-height: 70px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;"></textarea>
+                    </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <button type="submit" class="btn">Register</button>
-                            <button type="button" class="btn btn-secondary" onclick="handleWebhookQuery()">Query URL</button>
-                        </div>
-                        <div id="webhook-feedback" class="feedback"></div>
-                        <div id="webhook-info" class="webhook-current-info"></div>
-                    </form>
-                </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 340px;">
+                        <button type="submit" class="btn">Register</button>
+                        <button type="button" class="btn btn-secondary" onclick="handleWebhookQuery()">Query URL</button>
+                    </div>
+                    <div id="webhook-feedback" class="feedback"></div>
+                    <div id="webhook-info" class="webhook-current-info"></div>
+                </form>
             </div>
         </div>
-    </div>
+
+        <footer class="footer">
+            <div class="footer-brand">
+                <span class="footer-brand-name">CREDUENT PROTOCOL</span>
+                <span style="color: rgba(255,255,255,0.25);">&bull;</span>
+                <span>Open Trust & Attestation Infrastructure</span>
+            </div>
+            <div class="footer-links">
+                <a href="https://idevsec.com" target="_blank" rel="noopener">IDevSec Ecosystem &rarr;</a>
+            </div>
+        </footer>
+    </main>
 
     <!-- View Modal -->
     <div class="modal-overlay" id="view-modal" onclick="closeModal(event)">
@@ -1444,6 +1659,12 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     </div>
 
     <script>
+        function toggleCard(bodyId) {
+            const body = document.getElementById(bodyId);
+            if (!body) return;
+            const isHidden = body.style.display === 'none' || !body.style.display;
+            body.style.display = isHidden ? 'block' : 'none';
+        }
         // Set default ISO date for renewal to 1 year from now
         function updateDefaultRenewalDate() {
             const nextYear = new Date();
@@ -2717,3 +2938,649 @@ AGENT_CONSOLE_HTML = """<!DOCTYPE html>
 </script>
 </body>
 </html>"""
+
+PLAYGROUND_HTML = r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creduent Playground - Client-Side Cryptographic Sandbox</title>
+    <meta name="description" content="Interactive browser sandbox to generate Ed25519 keypairs, sign agent.json files, and verify attestations locally using Web Crypto.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #060913;
+            --bg-surface: rgba(13, 20, 38, 0.7);
+            --border-glow: rgba(99, 102, 241, 0.15);
+            --border-muted: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-glow: rgba(99, 102, 241, 0.3);
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.08);
+            --success-border: rgba(16, 185, 129, 0.2);
+            --error: #ef4444;
+            --error-bg: rgba(239, 68, 68, 0.08);
+            --error-border: rgba(239, 68, 68, 0.2);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --text-dark: #6b7280;
+            --violet: #8b5cf6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.1) 0%, transparent 45%);
+            padding-bottom: 60px;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1000px;
+            padding: 40px 20px;
+            z-index: 10;
+        }
+
+        .glass-panel {
+            background: var(--bg-surface);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-muted);
+            padding-bottom: 24px;
+            margin-bottom: 30px;
+        }
+
+        .brand-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: inline-block;
+        }
+
+        .title-area h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-area p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-muted);
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-btn.active {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
+            color: #a5b4fc;
+        }
+
+        /* Tabs UI */
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-muted);
+            margin-bottom: 28px;
+        }
+
+        .tab-item {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-item:hover {
+            color: var(--text-main);
+        }
+
+        .tab-item.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-control {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-muted);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            padding: 12px 16px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-muted);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            border-radius: 6px;
+        }
+
+        .feedback {
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            display: none;
+            line-height: 1.5;
+        }
+
+        .feedback-success {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success);
+        }
+
+        .feedback-error {
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error);
+        }
+
+        .code-display-box {
+            position: relative;
+        }
+
+        /* Unified Modern Footer */
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-brand-name {
+            font-weight: 700;
+            color: #f8fafc;
+            letter-spacing: 0.04em;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: #a5b4fc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(165, 180, 252, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .glass-panel {
+                padding: 24px;
+            }
+            .tab-bar {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <div class="glass-panel">
+            <header class="header">
+                <div class="title-area">
+                    <span class="brand-badge">Creduent Protocol Registry</span>
+                    <h1>Creduent Playground</h1>
+                    <p>Client-Side Cryptographic Sandbox (Web Crypto API)</p>
+                </div>
+                <div class="nav-links">
+                    <a href="/resolver" class="nav-btn">Resolver</a>
+                    <a href="/dashboard" class="nav-btn">Dashboard</a>
+                    <a href="/playground" class="nav-btn active">Playground</a>
+                </div>
+            </header>
+
+            <!-- Navigation Tabs -->
+            <div class="tab-bar">
+                <div class="tab-item active" onclick="switchTab('keygen')">1. Keypair Generator</div>
+                <div class="tab-item" onclick="switchTab('signer')">2. Document Signer</div>
+                <div class="tab-item" onclick="switchTab('verifier')">3. Signature Verifier</div>
+            </div>
+
+            <!-- Tab 1: Keypair Generator -->
+            <section id="tab-keygen" class="tab-content active">
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+                    Generate an Ed25519 cryptographic keypair entirely inside your browser using <code>window.crypto.subtle</code>. Private keys never leave your machine.
+                </p>
+
+                <div class="form-group">
+                    <label for="genPublicKey">Generated Public Key (Ed25519) <button class="btn btn-secondary btn-sm" onclick="copyVal('genPublicKey')">Copy</button></label>
+                    <input type="text" id="genPublicKey" class="form-control" placeholder="Click 'Generate Keypair' below..." readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="genPrivateKey">Generated Private Key (PKCS#8 Base64) <button class="btn btn-secondary btn-sm" onclick="copyVal('genPrivateKey')">Copy</button></label>
+                    <textarea id="genPrivateKey" class="form-control" style="min-height: 80px;" placeholder="Click 'Generate Keypair' below..." readonly></textarea>
+                </div>
+
+                <button class="btn" onclick="generatePlaygroundKeys()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-2-2l2 2m7 0a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Generate Ed25519 Keypair
+                </button>
+
+                <div id="keyGenFeedback" class="feedback"></div>
+            </section>
+
+            <!-- Tab 2: Document Signer -->
+            <section id="tab-signer" class="tab-content">
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+                    Sign your <code>agent.json</code> identity file using RFC 8785 JSON Canonicalization Scheme (JCS) and your private key before publishing it to <code>https://domain.com/.well-known/agent.json</code>.
+                </p>
+
+                <div class="form-group">
+                    <label for="signerPayload">Unsigned agent.json Payload</label>
+                    <textarea id="signerPayload" class="form-control" style="min-height: 140px;">{
+  "agent_id": "agent://idevsec/steward",
+  "domain": "idevsec.com",
+  "public_key": "ed25519:uMMQ6RfZB5RJu7kYq2a8tL..."
+}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="signerPrivKey">Private Key (PKCS#8 Base64)</label>
+                    <textarea id="signerPrivKey" class="form-control" style="min-height: 70px;" placeholder="Paste private key from Step 1..."></textarea>
+                </div>
+
+                <button class="btn" onclick="signPlaygroundDocument()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    Sign Document (Client-Side)
+                </button>
+
+                <div id="signerFeedback" class="feedback"></div>
+
+                <div id="signerResultContainer" class="form-group code-display-box" style="display: none; margin-top: 10px;">
+                    <label for="signerResult">Canonical Signed agent.json Output <button class="btn btn-secondary btn-sm" onclick="copyVal('signerResult')">Copy Signed JSON</button></label>
+                    <textarea id="signerResult" class="form-control" style="min-height: 160px; color: #a78bfa;" readonly></textarea>
+                </div>
+            </section>
+
+            <!-- Tab 3: Signature Verifier -->
+            <section id="tab-verifier" class="tab-content">
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+                    Verify any signed <code>agent.json</code> attestation document locally in-browser to confirm that the payload has not been tampered with and matches the embedded public key.
+                </p>
+
+                <div class="form-group">
+                    <label for="verifierPayload">Signed agent.json Payload to Verify</label>
+                    <textarea id="verifierPayload" class="form-control" style="min-height: 160px;" placeholder="Paste signed agent.json containing 'signature' field..."></textarea>
+                </div>
+
+                <button class="btn" onclick="verifyPlaygroundDocument()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Verify Signature
+                </button>
+
+                <div id="verifierFeedback" class="feedback"></div>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-brand">
+                <span class="footer-brand-name">CREDUENT PROTOCOL</span>
+                <span style="color: rgba(255,255,255,0.25);">&bull;</span>
+                <span>Open Trust & Attestation Infrastructure</span>
+            </div>
+            <div class="footer-links">
+                <a href="https://idevsec.com" target="_blank" rel="noopener">IDevSec Ecosystem &rarr;</a>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        function copyVal(id) {
+            const val = document.getElementById(id).value;
+            if (!val) return;
+            navigator.clipboard.writeText(val).then(() => {
+                alert("Copied to clipboard!");
+            });
+        }
+
+        function bytesToBase64(bytes) {
+            let bin = "";
+            for (let i = 0; i < bytes.length; i++) {
+                bin += String.fromCharCode(bytes[i]);
+            }
+            return btoa(bin);
+        }
+
+        function base64ToBytes(b64) {
+            const bin = atob(b64.trim());
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) {
+                bytes[i] = bin.charCodeAt(i);
+            }
+            return bytes;
+        }
+
+        function canonicalize(obj) {
+            if (obj === null) return "null";
+            if (typeof obj !== "object") return JSON.stringify(obj);
+            if (Array.isArray(obj)) {
+                return "[" + obj.map(canonicalize).join(",") + "]";
+            }
+            const keys = Object.keys(obj).sort();
+            const parts = [];
+            for (const key of keys) {
+                const val = obj[key];
+                if (val !== undefined) {
+                    parts.push(JSON.stringify(key) + ":" + canonicalize(val));
+                }
+            }
+            return "{" + parts.join(",") + "}";
+        }
+
+        async function generatePlaygroundKeys() {
+            const feedback = document.getElementById('keyGenFeedback');
+            try {
+                const keyPair = await window.crypto.subtle.generateKey(
+                    { name: "Ed25519" },
+                    true,
+                    ["sign", "verify"]
+                );
+                
+                const rawPub = await window.crypto.subtle.exportKey("raw", keyPair.publicKey);
+                const pkcs8Priv = await window.crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
+
+                const pubB64 = "ed25519:" + bytesToBase64(new Uint8Array(rawPub));
+                const privB64 = bytesToBase64(new Uint8Array(pkcs8Priv));
+
+                document.getElementById('genPublicKey').value = pubB64;
+                document.getElementById('genPrivateKey').value = privB64;
+
+                document.getElementById('signerPrivKey').value = privB64;
+                
+                try {
+                    let doc = JSON.parse(document.getElementById('signerPayload').value);
+                    doc.public_key = pubB64;
+                    document.getElementById('signerPayload').value = JSON.stringify(doc, null, 2);
+                } catch(e){}
+
+                feedback.style.display = 'block';
+                feedback.className = 'feedback feedback-success';
+                feedback.innerHTML = '<strong>✔ Keypair Generated Successfully!</strong><br>Public and Private keys displayed above and pre-filled into Document Signer.';
+            } catch(err) {
+                feedback.style.display = 'block';
+                feedback.className = 'feedback feedback-error';
+                feedback.innerHTML = '<strong>✖ Key Generation Error:</strong> ' + err.message;
+            }
+        }
+
+        async function signPlaygroundDocument() {
+            const rawJsonStr = document.getElementById('signerPayload').value;
+            const privKeyB64 = document.getElementById('signerPrivKey').value.trim();
+            const feedback = document.getElementById('signerFeedback');
+
+            try {
+                if (!privKeyB64) throw new Error("Private Key (PKCS#8 Base64) is required.");
+                let docObj = JSON.parse(rawJsonStr);
+
+                delete docObj.signature;
+
+                const canonicalStr = canonicalize(docObj);
+                const payloadBytes = new TextEncoder().encode(canonicalStr);
+
+                const privKeyBytes = base64ToBytes(privKeyB64);
+                const cryptoPrivKey = await window.crypto.subtle.importKey(
+                    "pkcs8",
+                    privKeyBytes,
+                    { name: "Ed25519" },
+                    false,
+                    ["sign"]
+                );
+
+                const sigBytes = await window.crypto.subtle.sign(
+                    { name: "Ed25519" },
+                    cryptoPrivKey,
+                    payloadBytes
+                );
+
+                const sigB64 = bytesToBase64(new Uint8Array(sigBytes));
+                docObj.signature = sigB64;
+
+                const signedResultStr = JSON.stringify(docObj, null, 2);
+                document.getElementById('signerResult').value = signedResultStr;
+                document.getElementById('signerResultContainer').style.display = 'flex';
+                
+                document.getElementById('verifierPayload').value = signedResultStr;
+
+                feedback.style.display = 'block';
+                feedback.className = 'feedback feedback-success';
+                feedback.innerHTML = '<strong>✔ Document Signed Successfully!</strong><br>Canonical signature attached and pre-filled into Signature Verifier.';
+            } catch(err) {
+                feedback.style.display = 'block';
+                feedback.className = 'feedback feedback-error';
+                feedback.innerHTML = '<strong>✖ Signing Error:</strong> ' + err.message;
+            }
+        }
+
+        async function verifyPlaygroundDocument() {
+            const signedJsonStr = document.getElementById('verifierPayload').value;
+            const feedback = document.getElementById('verifierFeedback');
+
+            try {
+                let docObj = JSON.parse(signedJsonStr);
+                if (!docObj.signature) throw new Error("Missing 'signature' field in JSON.");
+                if (!docObj.public_key) throw new Error("Missing 'public_key' field in JSON.");
+
+                const sigB64 = docObj.signature;
+                const pubKeyStr = docObj.public_key;
+
+                let rawPubKeyB64 = pubKeyStr;
+                if (pubKeyStr.startsWith("ed25519:")) {
+                    rawPubKeyB64 = pubKeyStr.substring(8);
+                }
+
+                const pubKeyBytes = base64ToBytes(rawPubKeyB64);
+                const sigBytes = base64ToBytes(sigB64);
+
+                const docCopy = JSON.parse(JSON.stringify(docObj));
+                delete docCopy.signature;
+
+                const canonicalStr = canonicalize(docCopy);
+                const payloadBytes = new TextEncoder().encode(canonicalStr);
+
+                const cryptoPubKey = await window.crypto.subtle.importKey(
+                    "raw",
+                    pubKeyBytes,
+                    { name: "Ed25519" },
+                    false,
+                    ["verify"]
+                );
+
+                const isValid = await window.crypto.subtle.verify(
+                    { name: "Ed25519" },
+                    cryptoPubKey,
+                    sigBytes,
+                    payloadBytes
+                );
+
+                if (isValid) {
+                    feedback.style.display = 'block';
+                    feedback.className = 'feedback feedback-success';
+                    feedback.innerHTML = `<strong>✔ SIGNATURE VERIFIED SUCCESSFULLY</strong><br>The Ed25519 signature is cryptographically valid for public key <code>${pubKeyStr}</code> over JCS canonical payload.`;
+                } else {
+                    feedback.style.display = 'block';
+                    feedback.className = 'feedback feedback-error';
+                    feedback.innerHTML = `<strong>✖ SIGNATURE VERIFICATION FAILED</strong><br>Signature mismatch! Payload has been tampered with or signed by a different private key.`;
+                }
+            } catch(err) {
+                feedback.style.display = 'block';
+                feedback.className = 'feedback feedback-error';
+                feedback.innerHTML = `<strong>✖ VERIFICATION ERROR:</strong> ${err.message}`;
+            }
+        }
+    </script>
+</body>
+</html>"""
+

@@ -27,7 +27,7 @@ from registry.store import (
 )
 from registry.signer import sign_attestation
 from registry.verifier import verify_agent_registration
-from registry.templates import RESOLVER_HTML, DASHBOARD_HTML
+from registry.templates import RESOLVER_HTML, DASHBOARD_HTML, PLAYGROUND_HTML
 from creduent.utils import load_dotenv
 
 # Load local environment variables if present
@@ -1003,6 +1003,14 @@ def serve_registry_landing():
 @app.get("/registry/dashboard/", response_class=HTMLResponse)
 def serve_dashboard_ui():
     return HTMLResponse(content=DASHBOARD_HTML, status_code=200)
+
+
+@app.get("/playground", response_class=HTMLResponse)
+@app.get("/playground/", response_class=HTMLResponse)
+@app.get("/registry/playground", response_class=HTMLResponse)
+@app.get("/registry/playground/", response_class=HTMLResponse)
+def serve_playground_ui():
+    return HTMLResponse(content=PLAYGROUND_HTML, status_code=200)
 
 
 @app.get("/{uri_path:path}")

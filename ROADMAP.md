@@ -39,7 +39,6 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 
 ## Phase 3 - Scale - Complete
 **Goal:** Make Creduent the default trust layer in major agent frameworks.  
-**Target:** 500 registered agents, 3 framework integrations.
 * [x] **CrewAI integration**: Native `creduent_verify` step in Crew definitions.
 * [x] **LangGraph integration**: Creduent verification node in graph pipelines.
 * [x] **AutoGen integration**: Agent identity verification middleware.
@@ -55,9 +54,9 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 
 ---
 
-## Phase 4 - Expansion & Hardening - July -> December 2026
+## Phase 4 - Expansion & Hardening
 **Goal:** Expand framework coverage, introduce local developer tooling, and harden core cryptography/revocation infrastructure.  
-* [ ] **More Framework Integrations**: Native integrations for LlamaIndex, LangChain (Python & JS), Semantic Kernel, and Google ADK (Agent Development Kit).
+* [x] **More Framework Integrations**: Native integrations for LlamaIndex, LangChain (Python & JS), Semantic Kernel, and Google ADK (Agent Development Kit).
 * [x] **Creduent Playground**: Interactive sandbox on the developer dashboard to cryptographically sign, verify, and debug `agent.json` files live in-browser.
 * [ ] **Key Revocation & Cache Tuning**: Implement edge-native cached endpoints (Vercel/Cloudflare KV) and local SDK LRU cache hooks (5-min TTL) to protect registry origin under live check workloads.
 * [x] **Short-Lived Attestation Windows**: Transition the default attestation TTL from 1 year to 30 days, supported by background SDK auto-renewal workers that refresh keys 7 days before expiry.
@@ -72,9 +71,8 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 
 ---
 
-## Phase 5 - Cryptographic Delegation & Gateway Integration - January -> June 2027
+## Phase 5 - Cryptographic Delegation & Gateway Integration
 **Goal:** Build verifiable provenance and delegation capabilities directly solving the inter-agent security boundaries.  
-**Target:** 3 gateway integrations, 5,000+ registered agents, 1 enterprise POC.
 * [x] **Creduent Delegation Token (CDT) Specification (CREDUENT-007)**: Draft the formal specification defining attenuated capability delegation payload structure.
 * [ ] **The 6-Layer Composite Trust Integration**: Standardize the architectural mapping between Identity, Posture (APH), Delegation (CDT), Policy, Execution Context, and Evidence (Execution Receipts) across all reference specs.
 * [ ] **Verifiable Audit Logging Standard**: Draft specification for linking agent-to-agent call chains and identities into cryptographically signed trace logs (e.g., integrating Langfuse observability traces), enabling machine-speed correlation for compliance audits.
@@ -92,7 +90,7 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 
 ---
 
-## Phase 6 - Infrastructure - 2027 and beyond
+## Phase 6 - Infrastructure
 **Goal:** Creduent is to agents what TLS is to HTTPS, invisible, universal, assumed.
 * [ ] Creduent becomes a standard requirement in enterprise AI procurement checklists.
 * [ ] **Cyber Insurance Compliance Standard**: Partner with security underwriters to validate compliance boundaries, reducing liability premiums for Creduent-certified agent deployments.

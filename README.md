@@ -122,8 +122,12 @@ Call `verify_agent` with target agent ID or domain to receive structural, crypto
 Creduent provides native verification tools and classes for the leading AI agent frameworks:
 
 - **CrewAI**: Import `CreduentVerifyTool` from `creduent.integrations.crewai` to verify external agents within your Crew definitions dynamically.
-- **LangGraph**: Add the `verify_agent_node` node function from `creduent.integrations.langgraph` to your state graph to validate agent identities before executing next nodes.
-- **AutoGen**: Subclass your agents using `CreduentConversableAgent` from `creduent.integrations.autogen` to enforce cryptographic sender identity checks on incoming messages.
+- **LangGraph**: Add `verify_agent_node` from `creduent.integrations.langgraph` or `@idevsec/creduent` to validate agent identities before executing graph nodes.
+- **AutoGen**: Subclass your agents using `CreduentConversableAgent` from `creduent.integrations.autogen` to enforce cryptographic sender identity checks.
+- **LangChain (Python & JS)**: Use `CreduentLangChainTool` / `CreduentLangChainCallbackHandler` in Python or `verifyCreduentAgent` in JS to enforce pre-execution verification.
+- **LlamaIndex (Python & TS)**: Use `create_creduent_llamaindex_tool` in Python or `verifyLlamaIndexAgent` in TS for FunctionTool identity checks.
+- **Semantic Kernel**: Use `CreduentSemanticKernelPlugin` to wrap kernel function calls with zero-trust verification.
+- **Google ADK**: Intercept agent execution with `CreduentGoogleADKPlugin` before sub-agent delegation.
 
 ## Registry API
 

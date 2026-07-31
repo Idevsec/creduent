@@ -395,6 +395,104 @@ jobs:
 
 ---
 
+---
+
+## Example 16: LangChain Agent Verification Tool & Callback (Python)
+
+```python
+from langchain.agents import initialize_agent, AgentType
+from langchain_community.llms import OpenAI
+from creduent.integrations.langchain import CreduentLangChainTool, CreduentLangChainCallbackHandler
+
+# 1. Instantiate the native Creduent verification tool
+creduent_tool = CreduentLangChainTool()
+
+# 2. Optionally configure callback handler for inline zero-trust enforcement
+callback_handler = CreduentLangChainCallbackHandler(
+    target_agent_uris=["agent://idevsec/steward"],
+    strict=True
+)
+
+# 3. Attach to LangChain agent executor
+llm = OpenAI(temperature=0)
+agent = initialize_agent(
+    tools=[creduent_tool],
+    llm=llm,
+    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+    callbacks=[callback_handler]
+)
+
+# Run verification before task execution
+response = agent.run("Verify the target agent at agent://idevsec/steward before proceeding.")
+print(response)
+```
+
+---
+
+## Example 17: LlamaIndex FunctionTool Integration (Python & TS)
+
+```python
+# Python
+from llama_index.core.agent import FunctionCallingAgentWorker
+from creduent.integrations.llamaindex import create_creduent_llamaindex_tool
+
+# Instantiate LlamaIndex FunctionTool
+creduent_tool = create_creduent_llamaindex_tool()
+
+# Attach to FunctionCallingAgent
+agent = FunctionCallingAgentWorker.from_tools([creduent_tool], verbose=True)
+response = agent.as_agent().chat("Check identity for agent://example/mybot")
+print(response)
+```
+
+```typescript
+// TypeScript
+import { verifyLlamaIndexAgent } from "@idevsec/creduent";
+
+const result = await verifyLlamaIndexAgent("agent://example/mybot");
+console.log("LlamaIndex Verified:", result.verified);
+```
+
+---
+
+## Example 18: Microsoft Semantic Kernel Plugin (Python)
+
+```python
+import semantic_kernel as sk
+from creduent.integrations.semantic_kernel import CreduentSemanticKernelPlugin
+
+kernel = sk.Kernel()
+
+# Import Creduent Plugin into Semantic Kernel
+creduent_plugin = kernel.add_plugin(
+    CreduentSemanticKernelPlugin(),
+    plugin_name="CreduentSecurity"
+)
+
+# Invoke zero-trust agent verification function
+result = await kernel.invoke(
+    creduent_plugin["verify_agent"],
+    agent_uri="agent://idevsec/steward"
+)
+print("Verification result:", result)
+```
+
+---
+
+## Example 19: Google Agent Development Kit (ADK) Interceptor
+
+```python
+from creduent.integrations.google_adk import CreduentGoogleADKPlugin
+
+adk_interceptor = CreduentGoogleADKPlugin(strict=True)
+
+# Intercept and verify target agent before sub-agent delegation
+verification_payload = adk_interceptor.verify_agent("agent://idevsec/steward")
+print("ADK Verification Status:", verification_payload["status"])
+```
+
+---
+
 For more details, see:
 - [QUICKSTART.md](QUICKSTART.md)
 - [SPEC.md](SPEC.md)

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-07-31
+
+### Added
+- **Complete Framework Ecosystem Integrations**: Completed 100% native framework coverage across Python and TypeScript SDKs. Introduced native zero-trust verification adapters for **LangChain (Python & JS)**, **LlamaIndex (Python & TS)**, **Microsoft Semantic Kernel**, and **Google Agent Development Kit (ADK)**.
+- **Documentation & Examples Expansion**: Appended Examples 16-19 to `EXAMPLES.md` covering runnable integration snippets for LangChain, LlamaIndex, Semantic Kernel, and Google ADK.
+- **Roadmap Milestone Completion**: Updated Phase 4 framework integrations milestone to completed `[x]` in `ROADMAP.md`.
+
 ## [2.0.12] - 2026-07-21
 
 ### Added

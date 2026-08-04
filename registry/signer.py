@@ -138,6 +138,10 @@ def sign_attestation(agent_data: dict, level: str = "unverified") -> dict:
         "domain": agent_data["domain"],
     }
 
+    for k, v in agent_data.items():
+        if k not in attestation_obj and k != "signature":
+            attestation_obj[k] = v
+
     canonical_str = canonicalize(attestation_obj)
     canonical_bytes = canonical_str.encode("utf-8")
     signature_bytes = private_key.sign(canonical_bytes)

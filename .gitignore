@@ -19,8 +19,12 @@ registry/__pycache__/
 CLAUDE.md
 AGENTS.md
 
-# Test caches
+# Test caches and coverage
 .pytest_cache/
+.coverage
+htmlcov/
+*_test_db.json
+*.lock
 
 # Pending trademark
 TRADEMARK.md

@@ -3,3 +3,4 @@ creduent>=2.0.7
 mcp
 dnspython
 upstash-redis
+base58

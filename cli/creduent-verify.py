@@ -283,10 +283,74 @@ def main():
         action="store_true",
         help="Skip checking endpoint connectivity",
     )
+    parser.add_argument(
+        "--cdt",
+        action="store_true",
+        help="Verify a Creduent Delegation Token (CDT) or delegation chain",
+    )
 
     args = parser.parse_args()
 
     target = args.target
+
+    if args.cdt:
+        print("[+] Verifying CDT Mode")
+        cdt_doc = load_document(target)
+        
+        if isinstance(cdt_doc, list):
+            if not cdt_doc:
+                print("[-] Error: Empty CDT chain", file=sys.stderr)
+                sys.exit(1)
+            root_delegator_id = cdt_doc[0].get("delegator")
+        else:
+            root_delegator_id = cdt_doc.get("delegator")
+
+        if not root_delegator_id:
+            print("[-] Error: CDT must have a delegator field", file=sys.stderr)
+            sys.exit(1)
+
+        print(f"[+] Resolving Root Delegator ID: {root_delegator_id}")
+        try:
+            resolved_root_id = resolve_agent_id(root_delegator_id, local_registry_path=args.registry)
+            root_agent_doc = load_document(resolved_root_id)
+            
+            if root_agent_doc.get("version") == "2.0":
+                keys = root_agent_doc.get("identity", {}).get("keys", [])
+                active_keys = [k for k in keys if k.get("status") == "active"]
+                if not active_keys:
+                    print("[-] Error: No active public keys found in root delegator's document.", file=sys.stderr)
+                    sys.exit(1)
+                pk_str = active_keys[0]["public_key"]
+            else:
+                pk_str = root_agent_doc.get("public_key")
+                
+            if not pk_str or not pk_str.startswith("ed25519:"):
+                print("[-] Error: Root delegator public key is missing or unsupported.", file=sys.stderr)
+                sys.exit(1)
+                
+            root_pubkey = pk_str.split(":", 1)[1]
+        except Exception as e:
+            print(f"[-] Error retrieving root delegator public key: {e}", file=sys.stderr)
+            sys.exit(1)
+
+        from registry.cdt import verify_cdt, verify_delegation_chain
+        
+        if isinstance(cdt_doc, list):
+            print("[+] Verifying CDT delegation chain...")
+            is_valid, msg = verify_delegation_chain(cdt_doc, root_pubkey)
+        else:
+            print("[+] Verifying single CDT...")
+            is_valid, msg = verify_cdt(cdt_doc, root_pubkey)
+            
+        if is_valid:
+            print("=========================================")
+            print("[SUCCESS] CDT VERIFIED SUCCESSFULLY")
+            print("=========================================")
+        else:
+            print(f"[-] CDT Verification Failure: {msg}", file=sys.stderr)
+            sys.exit(1)
+            
+        return
 
     # Resolve agent URI if target is agent://
     if target.startswith("agent://"):

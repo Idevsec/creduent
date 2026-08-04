@@ -1,0 +1,1 @@
+{"version": "1.0", "agent_id": "agent://alice/agent", "owner": "Alice", "public_key": "ed25519:Em6xLy4zxMu6tGRV0X4tdE1JNnmZOjOpsVKbYxj6XO8=", "endpoint": "http://localhost", "capabilities": ["*"], "signature": "dummy"}

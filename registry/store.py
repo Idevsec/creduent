@@ -9,9 +9,13 @@ import traceback
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, BASE_DIR)
 from creduent.utils import load_dotenv
+from registry.cache import CreduentCache
 
 # Load local environment variables if present
 load_dotenv()
+
+# Global cache instance for attestations
+_attestation_cache = CreduentCache()
 
 DB_PATH = "registry_db.json"
 
@@ -135,64 +139,67 @@ def save_attestation(agent_id: str, attestation_obj: dict):
             db[agent_id] = attestation_obj
             with open(DB_PATH, "w", encoding="utf-8") as f:
                 json.dump(db, f, indent=2, ensure_ascii=False)
+                
+    # Event-driven cache invalidation
+    _attestation_cache.delete(agent_id)
 
 
 def get_attestation(agent_id: str) -> dict:
     """
     Retrieves the attestation object for a given agent_id.
     """
+    # Check cache first
+    cached_val = _attestation_cache.get(agent_id)
+    if cached_val is not None:
+        if cached_val == "MISSING":
+            return None
+        return cached_val
+
+    val = None
     if is_redis_configured():
         try:
             client = get_redis_client()
-            val = client.hget("creduent:agents", agent_id)
-            if val:  # Truthy check: handles empty string "" or None
-                if isinstance(val, dict):
-                    return val
-                try:
-                    return json.loads(val)
-                except Exception:
-                    return val
+            raw_val = client.hget("creduent:agents", agent_id)
+            if raw_val:  # Truthy check: handles empty string "" or None
+                if isinstance(raw_val, dict):
+                    val = raw_val
+                else:
+                    try:
+                        val = json.loads(raw_val)
+                    except Exception:
+                        val = raw_val
         except Exception as e:
             print(f"[-] Redis storage error in get_attestation: {e}", file=sys.stderr)
-        return None
     else:
         with file_lock(DB_PATH):
-            if not os.path.exists(DB_PATH):
-                return None
-            with open(DB_PATH, "r", encoding="utf-8") as f:
-                try:
-                    db = json.load(f)
-                    val = db.get(agent_id)
-                    return val if val else None
-                except Exception:
-                    return None
+            if os.path.exists(DB_PATH):
+                with open(DB_PATH, "r", encoding="utf-8") as f:
+                    try:
+                        db = json.load(f)
+                        val = db.get(agent_id)
+                    except Exception:
+                        pass
+    
+    # Cache the result
+    if val:
+        is_revoked = isinstance(val, dict) and val.get("level") == "revoked"
+        _attestation_cache.set(agent_id, val, is_revoked=is_revoked)
+    else:
+        # Cache missing as "MISSING" so we don't query Redis constantly
+        _attestation_cache.set(agent_id, "MISSING", is_negative=True)
+
+    return val
 
 
 def revoke_agent(agent_id: str):
     """
-    Revokes (removes) an agent's attestation.
+    Revokes an agent's attestation by setting its level to 'revoked'.
     """
-    if is_redis_configured():
-        try:
-            client = get_redis_client()
-            client.hdel("creduent:agents", agent_id)
-        except Exception as e:
-            print(f"[-] Redis error in revoke_agent: {e}", file=sys.stderr)
-            traceback.print_exc(file=sys.stderr)
-            raise
-    else:
-        with file_lock(DB_PATH):
-            if not os.path.exists(DB_PATH):
-                return
-            with open(DB_PATH, "r", encoding="utf-8") as f:
-                try:
-                    db = json.load(f)
-                except Exception:
-                    return
-            if agent_id in db:
-                del db[agent_id]
-                with open(DB_PATH, "w", encoding="utf-8") as f:
-                    json.dump(db, f, indent=2, ensure_ascii=False)
+    attestation = get_attestation(agent_id) or {"agent_id": agent_id}
+    attestation["level"] = "revoked"
+    save_attestation(agent_id, attestation)
+    # The cache is deleted inside save_attestation, but let's proactively cache it as revoked
+    _attestation_cache.set(agent_id, attestation, is_revoked=True)
 
 
 # ---------------------------------------------------------------------------
@@ -495,3 +502,6 @@ def delete_challenge(agent_id: str, nonce: str):
     _prune_expired_challenges()
     if key in CHALLENGE_DB:
         del CHALLENGE_DB[key]
+
+def clear_cache():
+    _attestation_cache.clear()

@@ -2,10 +2,18 @@ import os
 import sys
 import time
 import secrets
+import base64
+import hashlib
+import json
+import urllib.parse
+import dns.resolver
 from datetime import datetime, timezone, timedelta
-from fastapi import FastAPI, HTTPException, Request, APIRouter
+from fastapi import FastAPI, HTTPException, Request, APIRouter, Response
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import ed25519
+from cryptography.exceptions import InvalidSignature
 
 # Add parent directory to path to allow importing from registry and creduent packages
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -25,10 +33,14 @@ from registry.store import (
     get_challenge,
     delete_challenge,
 )
-from registry.signer import sign_attestation
+from registry.signer import sign_attestation, get_registry_private_key, get_registry_public_key
 from registry.verifier import verify_agent_registration
 from registry.templates import RESOLVER_HTML, DASHBOARD_HTML, PLAYGROUND_HTML
+from registry.did import generate_did_document
 from creduent.utils import load_dotenv
+from creduent.crypto import canonicalize
+from registry.middleware.ibrl import IBRLMiddleware
+from registry.cdt import verify_delegation_chain
 
 # Load local environment variables if present
 load_dotenv()
@@ -37,6 +49,7 @@ load_dotenv()
 diagnose_redis()
 
 app = FastAPI(title="Creduent Attestation Registry", version="2.0.5")
+app.add_middleware(IBRLMiddleware, limit_per_min=100, window_sec=300)
 router = APIRouter()
 
 
@@ -79,6 +92,10 @@ class RecoveryOverrideRequest(BaseModel):
     agent_id: str
     domain: str
     new_public_key: str
+
+
+class VerifyDelegationRequest(BaseModel):
+    chain: list[dict]
 
 
 CHALLENGE_RATE_LIMIT_WINDOW = 60  # 1 minute
@@ -273,14 +290,14 @@ def register(req: RegisterRequest, request: Request):
 
 
 @router.get("/attest/{agent_id:path}")
-def get_attest(agent_id: str, request: Request):
+def get_attest(agent_id: str, request: Request, response: Response):
     check_rate_limit(request)
     if agent_id.startswith("agent:/") and not agent_id.startswith("agent://"):
         agent_id = "agent://" + agent_id[7:]
     attestation = get_attestation(agent_id)
     if not attestation:
+        response.headers["Cache-Control"] = "public, max-age=15, s-maxage=60"
         raise HTTPException(status_code=404, detail="Attestation not found for agent.")
-
     expired = False
     expires_at_str = attestation.get("expires_at")
     if expires_at_str:
@@ -296,14 +313,74 @@ def get_attest(agent_id: str, request: Request):
     if level == "revoked":
         attestation["expired"] = False
         attestation["status"] = "revoked"
+        response.headers["Cache-Control"] = "public, max-age=15, s-maxage=60"
     elif expired:
         attestation["expired"] = True
         attestation["status"] = "expired"
+        response.headers["Cache-Control"] = "public, max-age=15, s-maxage=60"
     else:
         attestation["expired"] = False
         attestation["status"] = "active"
+        response.headers["Cache-Control"] = "public, max-age=60, s-maxage=300"
 
     return attestation
+
+
+@router.get("/did/{agent_id:path}")
+def get_did(agent_id: str, request: Request, response: Response):
+    check_rate_limit(request)
+    
+    lookup_id = agent_id
+    if lookup_id.startswith("did:creduent:"):
+        parts = lookup_id[len("did:creduent:"):].split(":")
+        if len(parts) >= 2:
+            lookup_id = f"agent://{parts[0]}/{parts[1]}"
+        else:
+            lookup_id = f"agent://{parts[0]}"
+            
+    if lookup_id.startswith("agent:/") and not lookup_id.startswith("agent://"):
+        lookup_id = "agent://" + lookup_id[7:]
+    elif not lookup_id.startswith("agent://"):
+        lookup_id = "agent://" + lookup_id
+        
+    attestation = get_attestation(lookup_id)
+    if not attestation:
+        response.headers["Cache-Control"] = "public, max-age=15, s-maxage=60"
+        raise HTTPException(status_code=404, detail="Attestation not found for agent.")
+
+    response.headers["Cache-Control"] = "public, max-age=60, s-maxage=300"
+    did_doc = generate_did_document(agent_id, attestation)
+    return did_doc
+
+
+@router.get("/.well-known/did.json")
+def get_well_known_did(response: Response):
+    pubkey = get_registry_public_key()
+    if not pubkey:
+        raise HTTPException(
+            status_code=500, detail="Registry public key not configured"
+        )
+    pub_bytes = pubkey.public_bytes(
+        encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw
+    )
+    pub_b64 = base64.b64encode(pub_bytes).decode("utf-8")
+    attestation = {
+        "version": "2.0",
+        "identity": {
+            "agent_id": "agent://creduent/registry",
+            "domain": "creduent.idevsec.com",
+            "keys": [
+                {
+                    "id": "key-1",
+                    "type": "ed25519",
+                    "public_key": f"ed25519:{pub_b64}",
+                    "status": "active"
+                }
+            ]
+        }
+    }
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=7200"
+    return generate_did_document("agent://creduent/registry", attestation)
 
 
 @router.get("/agents")
@@ -354,10 +431,6 @@ def health():
 @router.post("/renew")
 def renew(req: RenewRequest, request: Request):
     check_rate_limit(request)
-    import base64
-    from cryptography.hazmat.primitives.asymmetric import ed25519
-    from registry.signer import get_registry_private_key
-    from creduent.crypto import canonicalize
 
     agent_id = req.agent_id
     if agent_id.startswith("agent:/") and not agent_id.startswith("agent://"):
@@ -382,10 +455,10 @@ def renew(req: RenewRequest, request: Request):
 
         # 1. Try JCS canonicalized dictionary
         payload_dict = {"agent_id": req.agent_id, "new_expires_at": req.new_expires_at}
-        canonical_bytes = canonicalize(payload_dict).encode("utf-8")
 
         verified = False
         try:
+            canonical_bytes = canonicalize(payload_dict).encode("utf-8")
             public_key.verify(signature_bytes, canonical_bytes)
             verified = True
         except Exception:
@@ -453,10 +526,6 @@ def renew(req: RenewRequest, request: Request):
 
 @router.post("/webhook/register")
 def register_webhook(req: WebhookRegisterRequest):
-    import base64
-    from cryptography.hazmat.primitives.asymmetric import ed25519
-    from creduent.crypto import canonicalize
-
     agent_id = req.agent_id
     if agent_id.startswith("agent:/") and not agent_id.startswith("agent://"):
         agent_id = "agent://" + agent_id[7:]
@@ -751,14 +820,6 @@ def get_challenge_endpoint(agent_id: str, request: Request):
 
 @router.post("/verify-challenge")
 def verify_challenge(req: VerifyChallengeRequest, request: Request):
-    import base64
-    import hashlib
-    from cryptography.hazmat.primitives.asymmetric import ed25519
-    from cryptography.exceptions import InvalidSignature
-    from registry.signer import get_registry_private_key
-    from creduent.crypto import canonicalize
-    import json
-
     # Normalize agent_id
     agent_id = req.agent_id
     if agent_id.startswith("agent:/") and not agent_id.startswith("agent://"):
@@ -779,6 +840,8 @@ def verify_challenge(req: VerifyChallengeRequest, request: Request):
             if datetime.now(timezone.utc) > expires_at:
                 delete_challenge(agent_id, req.nonce)
                 raise HTTPException(status_code=401, detail="Challenge expired")
+        except HTTPException:
+            raise
         except Exception:
             pass
 
@@ -890,8 +953,6 @@ def recovery_override(req: RecoveryOverrideRequest, request: Request):
         )
 
     # 2. Check DNS TXT record at _creduent_recovery.{domain}
-    import dns.resolver
-
     recovery_record_name = f"_creduent_recovery.{req.domain}"
     verified = False
     try:
@@ -926,8 +987,6 @@ def recovery_override(req: RecoveryOverrideRequest, request: Request):
         if key in existing:
             agent_data[key] = existing[key]
 
-    from registry.signer import get_registry_private_key
-
     private_key = get_registry_private_key()
     if not private_key:
         raise HTTPException(
@@ -947,12 +1006,53 @@ def recovery_override(req: RecoveryOverrideRequest, request: Request):
     return {**attestation, "status": "recovered"}
 
 
+@router.post("/verify-delegation")
+def verify_delegation(req: VerifyDelegationRequest, request: Request):
+    """
+    Verifies a CDT multi-hop delegation chain.
+    The root delegator must be a registered agent in this registry.
+    """
+    check_rate_limit(request)
+    
+    if not req.chain:
+        raise HTTPException(status_code=400, detail="Empty delegation chain")
+        
+    root_delegator = req.chain[0].get("delegator")
+    if not root_delegator:
+        raise HTTPException(status_code=400, detail="Missing delegator in first token")
+        
+    if root_delegator.startswith("agent:/") and not root_delegator.startswith("agent://"):
+        root_delegator = "agent://" + root_delegator[7:]
+        
+    attestation = get_attestation(root_delegator)
+    if not attestation:
+        raise HTTPException(status_code=404, detail=f"Root delegator {root_delegator} not found in registry")
+        
+    pk_str = attestation.get("public_key", "")
+    if not pk_str.startswith("ed25519:"):
+        raise HTTPException(status_code=400, detail="Unsupported public key format for root delegator")
+        
+    root_pubkey_b64 = pk_str.split(":", 1)[1]
+    
+    is_valid, msg = verify_delegation_chain(req.chain, root_pubkey_b64)
+    if not is_valid:
+        raise HTTPException(status_code=403, detail=f"Delegation chain verification failed: {msg}")
+        
+    # Valid chain, extract final delegate and capabilities
+    final_token = req.chain[-1]
+    return {
+        "status": "valid",
+        "message": "Delegation chain is valid",
+        "root_delegator": root_delegator,
+        "final_delegate": final_token.get("delegate"),
+        "final_delegate_public_key": final_token.get("delegate_public_key"),
+        "granted_capabilities": final_token.get("constraints", {}).get("capabilities", []),
+        "reversibility_tier": final_token.get("constraints", {}).get("reversibility_tier", "")
+    }
+
+
 @router.get("/public-key")
 def get_public_key():
-    import base64
-    from cryptography.hazmat.primitives import serialization
-    from registry.signer import get_registry_public_key
-
     pubkey = get_registry_public_key()
     if not pubkey:
         raise HTTPException(
@@ -977,8 +1077,8 @@ def serve_resolver_ui():
 
 @app.get("/agent:/{agent_id:path}")
 @app.get("/agent://{agent_id:path}")
-def resolve_agent_directly(agent_id: str, request: Request):
-    return get_attest("agent://" + agent_id, request)
+def resolve_agent_directly(agent_id: str, request: Request, response: Response):
+    return get_attest("agent://" + agent_id, request, response)
 
 
 @app.get("/registry")
@@ -1014,9 +1114,7 @@ def serve_playground_ui():
 
 
 @app.get("/{uri_path:path}")
-def catch_all_uri_resolver(uri_path: str, request: Request):
-    import urllib.parse
-
+def catch_all_uri_resolver(uri_path: str, request: Request, response: Response):
     decoded = urllib.parse.unquote(uri_path)
     # Check if this looks like an agent URI or starts with agent:
     if (
@@ -1033,5 +1131,5 @@ def catch_all_uri_resolver(uri_path: str, request: Request):
             and not decoded.startswith("agent:/")
         ):
             decoded = "agent://" + decoded[6:]
-        return get_attest(decoded, request)
+        return get_attest(decoded, request, response)
     raise HTTPException(status_code=404, detail="Not Found")

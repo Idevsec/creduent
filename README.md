@@ -196,6 +196,7 @@ Contributions to the Creduent Protocol standards and reference implementations a
 
 The Creduent Registry includes several security guarantees and resilience safeguards built-in:
 
+- **Adapter Boundary Provenance & Ledger Verifier:** Framework adapters enforce fail-closed `IRREVERSIBLE` defaults (OWASP AISVS v1.0 C9.2.3) for un-bound tool self-assertions via `ProvenanceGuard`, and step-count integrity is independently verified against the Creduent Ledger API (`/ledger/chain/{chain_id}`) via `LedgerChainVerifier` to prevent self-referential truncation attacks.
 - **Fail-Closed Validation:** If an agent's attestation timestamp or expiration date fails to parse due to corruption or malicious payload tempering, the verification pipeline defaults to marking the attestation as `expired` (`expired = True`).
 - **Serverless Rate Limiting Guard:** To prevent clients from bypassing rate limits in stateless environments (like Vercel serverless functions where in-memory fallback databases are wiped during container cold starts), the registry explicitly raises an `HTTP 500` error if Upstash Redis credentials are not configured.
 - **Canonical JCS Serialization:** All cryptographic signature validations use unified JSON Canonicalization Scheme (JCS) encoding wrappers compliant with RFC 8785 to avoid formatting discrepancies.

@@ -59,7 +59,7 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 * [x] **More Framework Integrations**: Native integrations for LlamaIndex, LangChain (Python & JS), Semantic Kernel, and Google ADK (Agent Development Kit).
 * [x] **SDK Adapter Provenance & Ledger Verifier**: Integrated fail-closed `ProvenanceGuard` (OWASP AISVS C9.2.3) and independent `LedgerChainVerifier` (`/ledger/chain/{chain_id}`) across all Python and JS framework adapters.
 * [x] **Creduent Playground**: Interactive sandbox on the developer dashboard to cryptographically sign, verify, and debug `agent.json` files live in-browser.
-* [ ] **Key Revocation & Cache Tuning**: Implement edge-native cached endpoints (Vercel/Cloudflare KV) and local SDK LRU cache hooks (5-min TTL) to protect registry origin under live check workloads.
+* [x] **Key Revocation & Cache Tuning**: Implement edge-native cached endpoints (Vercel/Cloudflare KV) and local SDK LRU cache hooks (5-min TTL) to protect registry origin under live check workloads.
 * [x] **Short-Lived Attestation Windows**: Transition the default attestation TTL from 1 year to 30 days, supported by background SDK auto-renewal workers that refresh keys 7 days before expiry.
 * [x] **DNS-Based Emergency Recovery Flow**: Build an out-of-band recovery path that bypasses compromised-key signatures by allowing owners to overwrite public keys via temporary DNS TXT records (`creduent-override:<hash>`).
 * [x] **Multisig Admin Quorum**: Deprecate the symmetric `CREDUENT_ADMIN_KEY` for the `trusted` tier, replacing it with an asymmetric multisig threshold verification (e.g., 2-of-3 signatures from admin public keys).

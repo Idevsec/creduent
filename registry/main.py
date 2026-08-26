@@ -3,7 +3,7 @@ import sys
 import time
 import secrets
 from datetime import datetime, timezone, timedelta
-from fastapi import FastAPI, HTTPException, Request, APIRouter
+from fastapi import FastAPI, HTTPException, Request, APIRouter, Response
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
@@ -273,7 +273,7 @@ def register(req: RegisterRequest, request: Request):
 
 
 @router.get("/attest/{agent_id:path}")
-def get_attest(agent_id: str, request: Request):
+def get_attest(agent_id: str, request: Request, response: Response):
     check_rate_limit(request)
     if agent_id.startswith("agent:/") and not agent_id.startswith("agent://"):
         agent_id = "agent://" + agent_id[7:]
@@ -302,6 +302,11 @@ def get_attest(agent_id: str, request: Request):
     else:
         attestation["expired"] = False
         attestation["status"] = "active"
+
+    # Allow edge CDNs (Vercel/Cloudflare) to cache successful attestation lookups for 5 minutes (s-maxage=300)
+    # stale-while-revalidate=600 lets the CDN serve stale data while fetching a fresh background update.
+    # Browser caching is kept shorter (max-age=60) to ensure local SDKs don't hold outdated states for too long.
+    response.headers["Cache-Control"] = "public, max-age=60, s-maxage=300, stale-while-revalidate=600"
 
     return attestation
 

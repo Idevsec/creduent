@@ -68,7 +68,7 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 * [x] **Formal Security Audit & Patches**: Completed thorough cryptographic, SSRF, file permission, and dependency audit of the core registry, CLI, and SDKs. Patched webhook SSRF vectors using IP-filtering middleware, restricted metadata lookup endpoints, and integrated environment-based admin credential propagation in the CLI.
 * [x] **Robots & Sitemap Route Integrations**: Implemented structured, dynamic crawl controls and sitemap indexing mappings (`/robots.txt` and `/sitemap.xml`) to support optimized search engine visibility for dynamic UIs.
 * [x] **DID Interoperability**: Resolve `agent://` URIs as Decentralized Identifiers (standardizing `did:creduent` and `did:web` mapping in SDKs and CLI).
-* [ ] **Identity-Based Rate Limiting (IBRL)**: Standardize and implement middleware that rate-limits and blocks request flows by verified `agent_id` (rather than transient IPs), preventing rapid API scanning/probing.
+* [x] **Identity-Based Rate Limiting (IBRL)**: Standardize and implement middleware that rate-limits and blocks request flows by verified `agent_id` (rather than transient IPs), preventing rapid API scanning/probing.
 
 ---
 
@@ -85,7 +85,7 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 * [ ] **Zero-Trust Gateway Integration**: Implement reference middlewares for LLM Gateways (Bifrost, CyberArk) and MCP Gateways to dynamically scope API keys and enforce mandatory PoP signatures based on CDTs.
 * [ ] **Federated attestation**: Support third-party attesters (e.g., security auditors, compliance bodies, LLM providers) issuing custom attestations.
 * [ ] **Cross-Registry Root-and-Node Trust (CREDUENT-005)**: Implement the Parent-and-Child federation model, establishing `creduent.idevsec.com` as the default Root Registry that attests and federates enterprise Node registries.
-* [ ] **Formal RFC**: Submit CREDUENT-001/007 as formal open RFCs to the IETF or equivalent standard bodies.
+* [ ] **Formal RFC**: Submit CREDUENT-001/008 as formal open RFCs to the IETF or equivalent standard bodies.
 * [ ] **Enterprise Node Registry**: Package a self-hostable, SOC2-compliant Creduent Node registry for private enterprise agent fleets, attested by the global Root Registry.
 * [ ] **`agent://` IANA registration**: Formal IANA registration of the `agent://` URI scheme.
 * [ ] **MCP marketplace integration**: Verification requirement integration with major MCP marketplaces.

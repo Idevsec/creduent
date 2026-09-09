@@ -143,7 +143,61 @@ This step is performed by the registry during `/register`. Client-side verifiers
 
 ---
 
-## 6. Resolver Reference Implementation
+## 6. W3C DID Interoperability (`did:creduent` & `did:web`)
+
+To enable seamless interoperability with standard W3C Decentralized Identifier (DID) resolvers and Self-Sovereign Identity (SSI) wallets without altering native `agent://` ergonomics, Creduent defines a bi-directional mapping rule between `agent://` URIs and W3C DIDs.
+
+### 6.1 Syntax Mapping Rules
+
+1. **`did:creduent` Scheme**:
+   $$\text{agent://}\langle\text{namespace}\rangle/\langle\text{agent-name}\rangle \;\Longleftrightarrow\; \text{did:creduent:}\langle\text{namespace}\rangle:\langle\text{agent-name}\rangle$$
+   *Example:* `agent://idevsec/steward` maps to `did:creduent:idevsec:steward`.
+
+2. **`did:web` Scheme**:
+   $$\text{agent://}\langle\text{namespace}\rangle/\langle\text{agent-name}\rangle \;\Longleftrightarrow\; \text{did:web:}\langle\text{domain}\rangle:\text{agent}:\langle\text{agent-name}\rangle$$
+   *Example:* `agent://idevsec/steward` with domain `idevsec.com` maps to `did:web:idevsec.com:agent:steward`.
+
+### 6.2 Dynamic W3C DID Document Generation
+
+Resolvers conforming to CREDUENT-004 MUST be capable of auto-generating a valid W3C DID Document (JSON-LD) from a Creduent `agent.json` identity document:
+
+```json
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/ed25519-2020/v1"
+  ],
+  "id": "did:creduent:idevsec:steward",
+  "alsoKnownAs": [
+    "agent://idevsec/steward"
+  ],
+  "verificationMethod": [
+    {
+      "id": "did:creduent:idevsec:steward#key-1",
+      "type": "Ed25519VerificationKey2020",
+      "controller": "did:creduent:idevsec:steward",
+      "publicKeyMultibase": "z6Mkh..."
+    }
+  ],
+  "authentication": [
+    "did:creduent:idevsec:steward#key-1"
+  ],
+  "assertionMethod": [
+    "did:creduent:idevsec:steward#key-1"
+  ],
+  "service": [
+    {
+      "id": "did:creduent:idevsec:steward#endpoint",
+      "type": "AgentServiceEndpoint",
+      "serviceEndpoint": "https://api.idevsec.com"
+    }
+  ]
+}
+```
+
+---
+
+## 7. Resolver Reference Implementation
 
 The reference implementation is at `creduent.idevsec.com/resolver`. It accepts an `agent://` URI and returns:
 - The resolved `agent.json` document.

@@ -134,6 +134,7 @@ Creduent provides native verification tools and classes for the leading AI agent
 - `POST /register` - Verifies the agent's identity via signature and DNS TXT checks, then issues a signed attestation.
 - `POST /attest` - Developer direct agent registration (no agent_json_url required).
 - `GET /attest/{agent_id}` - Retrieves the active Creduent-signed attestation for the specified agent.
+- `GET /did/{did_uri}` - Resolves W3C DID Document (`did:creduent` or `did:web`) for an agent.
 - `GET /agents` - Lists all registered agent metadata and attestations in the registry.
 - `DELETE /revoke/{agent_id}` - Revokes an agent attestation from the registry (requires multisig headers or legacy `CREDUENT-ADMIN-KEY`).
 - `POST /recovery/override` - Key override using domain DNS TXT record checks.

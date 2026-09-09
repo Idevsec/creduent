@@ -67,21 +67,22 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 * [x] **Schema Decoupling (v2.0)**: Release the v2.0 schema structure separating cryptographic identity (version, keys, owner) from transient policy declarations (endpoint, capabilities), introducing incremental version parsing to avoid breaking v1.x flat documents.
 * [x] **Formal Security Audit & Patches**: Completed thorough cryptographic, SSRF, file permission, and dependency audit of the core registry, CLI, and SDKs. Patched webhook SSRF vectors using IP-filtering middleware, restricted metadata lookup endpoints, and integrated environment-based admin credential propagation in the CLI.
 * [x] **Robots & Sitemap Route Integrations**: Implemented structured, dynamic crawl controls and sitemap indexing mappings (`/robots.txt` and `/sitemap.xml`) to support optimized search engine visibility for dynamic UIs.
-* [ ] **DID Interoperability**: Resolve `agent://` URIs as Decentralized Identifiers (e.g., standardizing `did:creduent` or integrating with `did:web`).
+* [x] **DID Interoperability**: Resolve `agent://` URIs as Decentralized Identifiers (standardizing `did:creduent` and `did:web` mapping in SDKs and CLI).
 * [ ] **Identity-Based Rate Limiting (IBRL)**: Standardize and implement middleware that rate-limits and blocks request flows by verified `agent_id` (rather than transient IPs), preventing rapid API scanning/probing.
 
 ---
 
 ## Phase 5 - Cryptographic Delegation & Gateway Integration
 **Goal:** Build verifiable provenance and delegation capabilities directly solving the inter-agent security boundaries.  
-* [x] **Creduent Delegation Token (CDT) Specification (CREDUENT-007)**: Draft the formal specification defining attenuated capability delegation payload structure.
+* [x] **Creduent Delegation Token (CDT) Specification (CREDUENT-007)**: Draft formal specification defining attenuated capability delegation payload structure.
+* [x] **CREDUENT-007 PoP Specification Update**: Update CREDUENT-007 to mandate Proof-of-Possession (PoP) key-binding (`delegate_public_key`) and `X-CDT-PoP-Signature` presentation headers to neutralize static token replay vectors (LiteLLM breach mitigation).
 * [ ] **The 6-Layer Composite Trust Integration**: Standardize the architectural mapping between Identity, Posture (APH), Delegation (CDT), Policy, Execution Context, and Evidence (Execution Receipts) across all reference specs.
 * [ ] **Verifiable Audit Logging Standard**: Draft specification for linking agent-to-agent call chains and identities into cryptographically signed trace logs (e.g., integrating Langfuse observability traces), enabling machine-speed correlation for compliance audits.
 * [ ] **Intent-to-Action Cryptographic Binding**: Bind delegation policies (CDT) directly to historical execution trace hashes (via Langfuse or equivalent), enabling downstream gateways to verify that the agent's behavior did not deviate from its authorized intent.
 * [x] **Instruction & Prompt Integrity Attestation (CREDUENT-006)**: Draft specification for hashing and cryptographically signing active system prompts, model versions, and tool boundaries to prevent mid-session prompt hijacking.
 * [ ] **Confidential Computing & TPM Attestation**: Design registry workflows to verify virtual Trusted Platform Module (vTPM) quotes and Intel SGX/AWS Nitro enclave measurements, introducing a "Hardware-Attested" trust level.
-* [ ] **SDK Cryptographic Delegation Verification**: Implement recursive client-side delegation verification (`sign_delegation` and `verify_delegation_chain`) in both JS/TS and Python SDKs.
-* [ ] **Zero-Trust Gateway Integration**: Implement reference middlewares for LLM Gateways (Bifrost, CyberArk) and MCP Gateways to dynamically scope API keys and policies based on CDTs.
+* [ ] **SDK Cryptographic Delegation & PoP Verification**: Implement recursive client-side delegation verification (`sign_delegation` and `verify_delegation_chain`) with PoP header signing in both JS/TS and Python SDKs.
+* [ ] **Zero-Trust Gateway Integration**: Implement reference middlewares for LLM Gateways (Bifrost, CyberArk) and MCP Gateways to dynamically scope API keys and enforce mandatory PoP signatures based on CDTs.
 * [ ] **Federated attestation**: Support third-party attesters (e.g., security auditors, compliance bodies, LLM providers) issuing custom attestations.
 * [ ] **Cross-Registry Root-and-Node Trust (CREDUENT-005)**: Implement the Parent-and-Child federation model, establishing `creduent.idevsec.com` as the default Root Registry that attests and federates enterprise Node registries.
 * [ ] **Formal RFC**: Submit CREDUENT-001/007 as formal open RFCs to the IETF or equivalent standard bodies.

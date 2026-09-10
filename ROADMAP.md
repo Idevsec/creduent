@@ -69,6 +69,11 @@ Kashish Kanojia is the creator of the Creduent Protocol, reference registry, sig
 * [x] **Robots & Sitemap Route Integrations**: Implemented structured, dynamic crawl controls and sitemap indexing mappings (`/robots.txt` and `/sitemap.xml`) to support optimized search engine visibility for dynamic UIs.
 * [x] **DID Interoperability**: Resolve `agent://` URIs as Decentralized Identifiers (standardizing `did:creduent` and `did:web` mapping in SDKs and CLI).
 * [x] **Identity-Based Rate Limiting (IBRL)**: Standardize and implement middleware that rate-limits and blocks request flows by verified `agent_id` (rather than transient IPs), preventing rapid API scanning/probing.
+* [ ] **Client-Side DNSSEC RRSIG Validation**: Enforce mandatory DNSSEC validation (RFC 4035) for TXT records at `_creduent.<authority>` during resolution to eliminate unvalidated DNS cache poisoning risks.
+* [ ] **URI Path Normalization & Traversal Mitigation**: Implement strict ABNF parser normalization rejecting `.` and `..` path segments in `agent://` URIs prior to HTTPS URL resolution.
+* [ ] **Dynamic Cache-Control Max-Age Tuning**: Parse HTTP `Cache-Control: max-age=N` headers dynamically in SDK LRU caches to accurately bound key compromise residual risk windows.
+* [ ] **Administrative Owner Metadata Validation**: Standardize `identity.owner` validation for WHOIS-style administrative contact URIs (`mailto:` and `https://`).
+
 
 ---
 

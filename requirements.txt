@@ -1,5 +1,5 @@
 fastapi
-creduent>=2.0.7
+creduent @ git+https://github.com/Idevsec/creduent-python.git@main
 mcp
 dnspython
 upstash-redis

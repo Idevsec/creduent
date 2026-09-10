@@ -1508,7 +1508,6 @@ RESOLVER_HTML = r"""<!DOCTYPE html>
                         }
                     }
                     const img = document.createElement('img');
-                    img.crossOrigin = 'anonymous';
                     img.src = (baseDomain === 'idevsec.com') ? 'https://idevsec.com/logo.png' : `https://www.google.com/s2/favicons?sz=128&domain=${baseDomain}`;
                     img.alt = baseDomain;
                     img.style.width = '32px';
@@ -6001,7 +6000,6 @@ EXPLORE_HTML = r"""<!DOCTYPE html>
                         }
                     }
                     const img = document.createElement('img');
-                    img.crossOrigin = 'anonymous';
                     img.src = (baseDomain === 'idevsec.com') ? 'https://idevsec.com/logo.png' : ('https://www.google.com/s2/favicons?sz=64&domain=' + baseDomain);
                     img.alt = baseDomain;
                     const avatar = document.getElementById('avatar-' + cardId);
@@ -6025,39 +6023,9 @@ EXPLORE_HTML = r"""<!DOCTYPE html>
             }
 
             const lowerDomain = (baseDomain || '').toLowerCase();
+            // Automatically apply sleek dark background for idevsec, stackedid, and light/white logos
             if (lowerDomain.includes('idevsec') || lowerDomain.includes('stacked') || lowerDomain.includes('github') || lowerDomain.includes('apple') || lowerDomain.includes('vercel')) {
                 setDark();
-                return;
-            }
-
-            try {
-                const canvas = document.createElement('canvas');
-                canvas.width = 16;
-                canvas.height = 16;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, 16, 16);
-                const data = ctx.getImageData(0, 0, 16, 16).data;
-
-                let totalLum = 0;
-                let count = 0;
-                for (let i = 0; i < data.length; i += 4) {
-                    const alpha = data[i + 3];
-                    if (alpha > 20) {
-                        const r = data[i], g = data[i + 1], b = data[i + 2];
-                        totalLum += (0.299 * r + 0.587 * g + 0.114 * b);
-                        count++;
-                    }
-                }
-
-                const avgLum = count > 0 ? (totalLum / count) : 0;
-                if (avgLum > 170) {
-                    setDark();
-                }
-            } catch (e) {
-                // If CORS prevents canvas inspection, fallback for white/light logos
-                if (lowerDomain.includes('idevsec') || lowerDomain.includes('stacked')) {
-                    setDark();
-                }
             }
         }
 

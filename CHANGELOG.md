@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-09-15
+
+### Added
+- **Path Traversal & Relative Sequence Mitigation**: Enforced strict boundary validation across SDK target resolution routines (`creduent-python` and `creduent-js`), rejecting relative path traversal sequences (`../`, `..\`) to prevent file/identity boundary escaping.
+- **Administrative Owner Metadata Validation**: Hardened `owner` field validation in `identity` schema to strictly enforce `mailto:` (e.g., `mailto:admin@domain.com`) or `https://` schemes, reducing attack surface ahead of Phase C DID integrations.
+- **Client-Side DNSSEC RRSIG Validation**: Added DoH (DNS-over-HTTPS) DNSSEC validation helpers (`verify_dnssec` in Python, `verifyDnssec` in TypeScript) attaching `dnssec_verified` boolean to `VerifyResult` in non-breaking advisory mode.
+- **Dynamic Cache-Control Max-Age Tuning**: Configured CDN caching headers (`max-age=60`, `s-maxage=300`, `stale-while-revalidate=600`) in `creduent-vercel` and client-side LRU TTL max-age calculation.
+- **Automated Registry Polling & Health-Sync Daemon**: Integrated server-side daemon (`health_sync_all_agents()`) and Vercel Cron endpoint (`/api/cron/health-sync`) to re-verify registered agents, auto-sync document updates, and transition unreachable or tampered agents to `degraded` or `revoked`.
+
+### Changed
+- **CLI Output & Scaffolding**: Updated `creduent verify` terminal display to render `DNSSEC: PASSED (RRSIG Verified)` / `NOT ENABLED (Advisory)` status, and set default scaffold owner in `creduent init` to `mailto:admin@namespace.com`.
+
+## [2.1.2] - 2026-09-10
+
+### Added
+- **Identity-Based Rate Limiting (IBRL / CREDUENT-008)**: Added rate limiting middleware and decorators across Python and TypeScript SDKs, backed by Redis sliding window logs and LRU fallback.
+- **DID Interoperability (`did:creduent`)**: Added bidirectional conversion primitives between `agent://` URIs and W3C DID Documents (`did:creduent`).
+- **Delegation Token (CDT / CREDUENT-007)**: Added cryptographic delegation chain signing and verification primitives (`sign_delegation`, `verify_delegation`).
+
 ## [2.1.1-hotfix] - 2026-08-06
 
 ### Added

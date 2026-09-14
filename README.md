@@ -1,6 +1,6 @@
 # Creduent: Open Standard for AI Agent Identity & Trust
 
-[![Protocol Version](https://img.shields.io/badge/protocol-v2.1.2-cyan)](https://idevsec.com/creduent)
+[![Protocol Version](https://img.shields.io/badge/protocol-v2.2.0-cyan)](https://idevsec.com/creduent)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://idevsec.com/creduent/licensing)
 [![Registry](https://img.shields.io/badge/registry-live-brightgreen)](https://creduent.idevsec.com)
 [![Python SDK](https://img.shields.io/pypi/v/creduent.svg?label=pip%20install%20creduent&color=blue)](https://pypi.org/project/creduent/)
@@ -199,6 +199,9 @@ Contributions to the Creduent Protocol standards and reference implementations a
 The Creduent Registry includes several security guarantees and resilience safeguards built-in:
 
 - **Identity-Based Rate Limiting (IBRL):** Replaces IP-based rate limiting with cryptographic agent identity throttling (`agent_id` / `did:creduent`), neutralizing distributed agent swarm scanning and proxy rotation attacks across Python, JS/TS, CLI, and Registry endpoints.
+- **Path Traversal & Metadata Scheme Normalization:** Strict parser normalization rejecting `.` and `..` path segments in `agent://` URIs prior to resolution, alongside strict `identity.owner` URL scheme validation (`mailto:` and `https://` only) to eliminate path traversal, XSS, and LFI injection vectors.
+- **Client-Side DNSSEC RRSIG Validation & Dynamic Cache Tuning:** Support for DNS-over-HTTPS (DoH) RRSIG validation (`dnssec_verified` field) and dynamic LRU cache TTL parsing (`Cache-Control: max-age=N`).
+- **Automated Registry Health-Sync Daemon:** Server-side background worker (`/api/cron/health-sync`) that periodically re-verifies registered `agent.json` files, auto-syncing verified updates and revoking tampered/unreachable endpoints.
 - **Adapter Boundary Provenance & Ledger Verifier:** Framework adapters enforce fail-closed `IRREVERSIBLE` defaults (OWASP AISVS v1.0 C9.2.3) for un-bound tool self-assertions via `ProvenanceGuard`, and step-count integrity is independently verified against the Creduent Ledger API (`/ledger/chain/{chain_id}`) via `LedgerChainVerifier` to prevent self-referential truncation attacks.
 - **Fail-Closed Validation:** If an agent's attestation timestamp or expiration date fails to parse due to corruption or malicious payload tempering, the verification pipeline defaults to marking the attestation as `expired` (`expired = True`).
 - **Serverless Rate Limiting Guard:** To prevent clients from bypassing rate limits in stateless environments (like Vercel serverless functions where in-memory fallback databases are wiped during container cold starts), the registry explicitly raises an `HTTP 500` error if Upstash Redis credentials are not configured.

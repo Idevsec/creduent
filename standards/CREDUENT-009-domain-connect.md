@@ -69,7 +69,7 @@ The normative service template for Creduent agent identity provisioning is ident
   "description": "Cryptographically binds autonomous AI agents to this domain via the Creduent open protocol.",
   "variableDescription": "%agent_id%: The canonical agent URI (e.g. agent://domain.com/bot); %public_key%: The Ed25519 public key in format ed25519:<key>",
   "syncPubKeyDomain": "idevsec.com",
-  "syncRedirectDomain": "creduent.idevsec.com,idevsec.com,127.0.0.1",
+  "syncRedirectDomain": "creduent.idevsec.com,idevsec.com",
   "records": [
     {
       "type": "TXT",

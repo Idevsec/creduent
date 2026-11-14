@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-11-15
+
+### Added
+- **CREDUENT-009: Automated 1-Click DNS Provisioning via Domain Connect**: Published complete standard specification (`standards/CREDUENT-009-domain-connect.md`) standardizing frictionless, zero-typo agent DNS binding using the IETF Domain Connect protocol.
+- **Official Domain Connect Service Template**: Created `standards/templates/creduent-agent-identity.json` fully validated against the official Domain Connect JSON Schema, featuring `txtConflictMatchingMode: "Prefix"` (`v=creduent1;`) to enable atomic TXT record updates without duplicate entries.
+- **Ephemeral Loopback Authorization Architecture**: Standardized secure local authorization handshake (`http://127.0.0.1:<port>/callback`) using cryptographically secure CSPRNG anti-CSRF state nonces (`state=<hex>`).
+- **Universal DNS Provider Compatibility**: Documented and verified discovery flows across Cloudflare, GoDaddy, 1&1 IONOS, and WordPress.com, with headless CI/CD fallback support for REST API token provisioning.
+- **Specification Indexing**: Added CREDUENT-009 to `standards/README.md` and updated root protocol documentation.
+
 ## [2.2.1] - 2026-09-15
 
 ### Added

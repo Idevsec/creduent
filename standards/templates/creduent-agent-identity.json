@@ -1,0 +1,20 @@
+{
+  "providerId": "idevsec.com",
+  "providerName": "Creduent Protocol",
+  "serviceId": "creduent-agent-identity",
+  "serviceName": "Creduent AI Agent Verification",
+  "version": 1,
+  "description": "Cryptographically binds autonomous AI agents to this domain via the Creduent open protocol.",
+  "variableDescription": "Configures an agent identity record with host, agent_id URI, and public_key.",
+  "syncRedirectDomain": "creduent.idevsec.com",
+  "records": [
+    {
+      "type": "TXT",
+      "host": "_creduent.%host%",
+      "data": "v=creduent1; agent=%agent_id%; k=%public_key%",
+      "ttl": 300,
+      "txtConflictMatchingMode": "Prefix",
+      "txtConflictMatchingPrefix": "v=creduent1;"
+    }
+  ]
+}

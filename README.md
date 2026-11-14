@@ -67,7 +67,10 @@ python cli/creduent-sign.py sign --key private_key.pem --input examples/draft_ag
 ```
 
 ### 2. Expose Metadata and Configure DNS
-Host `agent.json` on your web server at `https://<domain>/.well-known/agent.json`. Then, publish a DNS TXT record under your domain to bind the domain identity to the agent ID:
+Host `agent.json` on your web server at `https://<domain>/.well-known/agent.json`. Then, bind your domain to the agent ID:
+
+* **Automated (1-Click via [CREDUENT-009](standards/CREDUENT-009-domain-connect.md))**: Use `creduent register` or the web dashboard to auto-provision DNS records instantly via **Domain Connect** (Cloudflare, GoDaddy, etc.).
+* **Manual**: Publish a DNS TXT record under your domain:
 ```
 _creduent.example.com TXT "agent://example/agent"
 ```

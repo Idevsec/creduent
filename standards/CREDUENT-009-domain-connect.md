@@ -65,13 +65,15 @@ The normative service template for Creduent agent identity provisioning is ident
   "serviceId": "creduent-agent-identity",
   "serviceName": "Creduent AI Agent Verification",
   "version": 1,
+  "logoUrl": "https://idevsec.com/icon.png",
   "description": "Cryptographically binds autonomous AI agents to this domain via the Creduent open protocol.",
-  "variableDescription": "Configures an agent identity record with host, agent_id URI, and public_key.",
-  "syncRedirectDomain": "creduent.idevsec.com",
+  "variableDescription": "%agent_id%: The canonical agent URI (e.g. agent://domain.com/bot); %public_key%: The Ed25519 public key in format ed25519:<key>",
+  "syncPubKeyDomain": "idevsec.com",
+  "syncRedirectDomain": "creduent.idevsec.com,idevsec.com,127.0.0.1",
   "records": [
     {
       "type": "TXT",
-      "host": "_creduent.%host%",
+      "host": "_creduent",
       "data": "v=creduent1; agent=%agent_id%; k=%public_key%",
       "ttl": 300,
       "txtConflictMatchingMode": "Prefix",
@@ -80,6 +82,8 @@ The normative service template for Creduent agent identity provisioning is ident
   ]
 }
 ```
+
+> **Note on Host Attribute:** Per the official Domain Connect Specification (Rule 9 / DCTL1024), the protocol automatically appends the user's `host` parameter to the record's `host` attribute. Therefore, specifying `"_creduent"` produces `_creduent.<domain>` for apex requests (`host=@`), and `_creduent.<subdomain>.<domain>` for subdomain requests without duplicate labels.
 
 ### 3.2 Template Variables
 | Variable | Description | Example |

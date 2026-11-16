@@ -56,6 +56,7 @@ The normative service template for Creduent agent identity provisioning is ident
 * **Provider ID**: `idevsec.com`
 * **Service ID**: `creduent-agent-identity`
 * **Version**: `1`
+* **Upstream Catalog Reference**: Merged upstream into [Domain-Connect/Templates](https://github.com/Domain-Connect/Templates) ([PR #3101](https://github.com/Domain-Connect/Templates/pull/3101), commit `664376b`).
 
 ### 3.1 Template Definition Schema (`creduent-agent-identity.json`)
 ```json

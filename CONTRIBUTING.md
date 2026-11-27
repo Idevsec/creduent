@@ -58,7 +58,6 @@ Please ensure all contributions align with the core Creduent protocol security g
 - **Canonicalization:** All payloads must be serialized using RFC 8785 JSON Canonicalization Scheme (JCS) before signing or verifying.
 - **Decentralized Verification:** Verification must work locally without trusting a remote server's assertion.
 - **Schema Compliance:** Any new credential types must include corresponding JSON Schema definitions in `schemas/`.
-- **Automated Tests:** All new features and schema updates must include corresponding tests in `tests/` and pass `ruff` and `bandit` checks.
 
 ---
 

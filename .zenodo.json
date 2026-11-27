@@ -1,0 +1,29 @@
+{
+  "title": "Creduent Protocol: Open Cryptographic Identity, Capability Delegation, and DNS-Bound Verification for Autonomous AI Agents",
+  "upload_type": "software",
+  "license": "Apache-2.0",
+  "creators": [
+    {
+      "name": "Kanojia, Kashish",
+      "affiliation": "IDevSec"
+    }
+  ],
+  "keywords": [
+    "creduent",
+    "autonomous-ai-agents",
+    "cryptographic-identity",
+    "ed25519",
+    "w3c-did",
+    "ietf",
+    "domain-connect",
+    "ai-security"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://datatracker.ietf.org/doc/draft-kanojia-creduent-agent-uri/",
+      "relation": "isDocumentedBy",
+      "scheme": "url"
+    }
+  ]
+}
+

@@ -4,6 +4,7 @@
 - **Status:** Provisional / Active
 - **Author / Maintainer:** Kashish Kanojia (`kashish@idevsec.com`)
 - **Organization:** IDevSec (`https://idevsec.com`)
+- **License:** [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) (Copyright 2026 IDevSec)
 - **Related Specifications:** [CREDUENT-001](CREDUENT-001-agent-json.md), [CREDUENT-004](CREDUENT-004-uri-resolution.md), [`draft-kanojia-creduent-agent-uri`](https://datatracker.ietf.org/doc/draft-kanojia-creduent-agent-uri/)
 
 ---

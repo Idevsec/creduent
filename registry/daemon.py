@@ -154,6 +154,10 @@ def send_webhook(agent_id, webhook_url, webhook_secret, domain, expires_at, days
         logging.error(f"Error computing HMAC signature for webhook: {e}")
         headers = {"Content-Type": "application/json"}
 
+    if not webhook_url.startswith(("https://", "http://")):
+        logging.error(f"Rejected non-HTTP(S) webhook URL for '{agent_id}'")
+        return False
+
     req = urllib.request.Request(
         webhook_url,
         data=json.dumps(payload).encode("utf-8"),
@@ -162,7 +166,7 @@ def send_webhook(agent_id, webhook_url, webhook_secret, domain, expires_at, days
     )
 
     try:
-        with urllib.request.urlopen(req, timeout=10) as response:
+        with urllib.request.urlopen(req, timeout=10) as response:  # nosec B310 - scheme validated above
             status = response.getcode()
             logging.info(f"Webhook fired for '{agent_id}' → {webhook_url} [{status}]")
             return True
